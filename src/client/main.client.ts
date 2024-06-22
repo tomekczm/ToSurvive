@@ -1,4 +1,5 @@
 import "./Movement/CharacterController"
 import "./Movement/Climbing"
-import "./BaseExitNotification"
+import "./Notifications"
 import "./Item/ItemRegistrar"
+import "./Inventory/Inventory"

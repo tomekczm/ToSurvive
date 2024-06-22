@@ -6,7 +6,6 @@ import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 type Constraint = ServerStorage["Tools"]["Sword"]
 export class SwordItem extends ClientItem<Constraint> {
     constructor(instance: Instance) {
-        print(instance)
         super(instance as Constraint)
         
         this.abilityManager.add(new RotateAbility(this))

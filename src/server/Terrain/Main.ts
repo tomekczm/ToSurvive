@@ -1,12 +1,12 @@
 import { Players, ServerStorage, TweenService, Workspace } from "@rbxts/services"
 import { evalTerrainSequence } from "shared/NumberSequence"
-import { Plains } from "./Plains"
-import { Snow } from "./Snow"
-import { Desert } from "./Desert"
-import { Rock } from "./Rocky"
+import { Plains } from "./Biomes/Plains"
+import { Snow } from "./Biomes/Snow"
+import { Desert } from "./Biomes/Desert"
+import { Rock } from "./Biomes/Rocky"
 import { hashCode } from "shared/HashCode"
-import { Muddy } from "./Muddy"
-import { Sandy2 } from "./Sandy"
+import { Muddy } from "./Biomes/Muddy"
+import { Sandy2 } from "./Biomes/Sandy"
 
 const GeneratorData = ServerStorage.WaitForChild("TerrainGeneratorData") as Folder
 const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
@@ -14,6 +14,7 @@ const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
 export interface Biome {
     vector: Vector2
     getMaterial(x: number, y: number): Enum.Material
+    getProp(x: number, y: number): Model | undefined;
 }
 
 const biomes: Biome[] = [
@@ -35,14 +36,13 @@ const MASTER_SEED = new Random(tickString).NextNumber(-100000, 100000)
 print(`MASTER_SEED=${MASTER_SEED}`)
 const VIEW_RANGE = 6
 
-const MASTER_RANDOM = new Random(MASTER_SEED)
-const FEATURE_OFFSET = MASTER_RANDOM.NextNumber(1, 100)
-
 const chunks = new Set<string>()
 
+print(MASTER_SEED)
+
 function getData(x: number, z: number) {
-    //x += MASTER_SEED
-    //z += MASTER_SEED
+    x += MASTER_SEED
+    z += MASTER_SEED
 
     let noise = math.noise(x * 0.01, z * 0.01) * 20
 
@@ -105,7 +105,8 @@ function getData(x: number, z: number) {
 
     return {
         height: noise,
-        material: material
+        material: material,
+        prop: closestBiome.getProp(x + 360, z + 360)
     }
 }
 
@@ -123,7 +124,8 @@ function generateChunk(origin: CFrame) {
             const realZ = posZ * SIZE_WHOLE + j * CELL_SIZE
             let {
                 height,
-                material
+                material,
+                prop
             } = getData(realX, realZ)
 
             let pos = new CFrame(realX, height, realZ);
@@ -131,14 +133,27 @@ function generateChunk(origin: CFrame) {
             // Determine the maximum absolute distance in the x or z direction from the origin
             let maxDist = math.max(math.abs(realX), math.abs(realZ));
             
+
             if(maxDist <= 200) {
                 pos = new CFrame(realX, 1, realZ);
-                material = Enum.Material.Grass;
-            } else if(maxDist <= 300) {
-                // Calculate new height using linear interpolation (lerp)
-                // Assuming lerp function is defined or available elsewhere in your code
-                const newHeight = lerp(1, height, (maxDist - 200) / 100);
+                let treshold = lerp(
+                    (math.noise(realX / 10 + 2, realZ / 10 + 2) + 1) / 2,
+                    1,
+                    (maxDist / 200)
+                )
+                
+                if (treshold <= 0.9) {
+                    material = Enum.Material.Grass;
+                }
+            } else if(maxDist <= 500) {
+                const newHeight = lerp(1, height, (maxDist - 200)/300)
+                //const newHeight = height * TweenService.GetValue((maxDist - 200)/300, Enum.EasingStyle.Sine, Enum.EasingDirection.In) + 1
                 pos = new CFrame(realX, newHeight, realZ);
+            }
+
+            if(maxDist > 200 && prop) {
+                prop.PivotTo(pos)
+                prop.Parent = Workspace
             }
 
 			const size = new Vector3(CELL_SIZE, 5, CELL_SIZE)

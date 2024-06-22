@@ -1,5 +1,11 @@
 interface StarterGui extends BasePlayerGui {
 	SafeGui: ScreenGui & {
-		IsSafe: TextLabel;
+		Text: TextLabel;
+	};
+	DayNotificator: ScreenGui & {
+		Text: TextLabel;
+	};
+	Inventory: ScreenGui & {
+		UIListLayout: UIListLayout;
 	};
 }

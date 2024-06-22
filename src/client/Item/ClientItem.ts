@@ -1,7 +1,6 @@
 import { Item } from "shared/Item"
 
 export class ClientItem<T extends Instance = Instance> extends Item<T> {
-
     constructor(item: Instance) {
         super(item as T)
     }
@@ -14,5 +13,13 @@ export class ClientItem<T extends Instance = Instance> extends Item<T> {
     listenToEvent(name: string, cb: (...args: unknown[]) => void) {
         const event = this.fetchEvent(name)
         event.OnClientEvent.Connect((...args: unknown[]) => cb(...args))
+    }
+
+    getName(): string {
+        return (this.item.GetAttribute("Name") || this.item.Name) as string
+    }
+
+    getDescription(): string {
+        return (this.item.GetAttribute("Description") || "No description found.") as string
     }
 }

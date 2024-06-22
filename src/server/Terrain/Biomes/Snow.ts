@@ -1,6 +1,17 @@
-import type { Biome } from "./Main";
+import { ServerStorage } from "@rbxts/services";
+import { BiomeProp } from "../BiomeProp";
+import { GenericBiome } from "../GenericBiome";
+import type { Biome } from "../Main";
 
-export class Snow implements Biome {
+const Props = ServerStorage.Models.IceBiome
+
+export class Snow extends GenericBiome {
+    props = [
+        new BiomeProp(1/3, Props.MultiRock),
+        new BiomeProp(1/3, Props.Tree2),
+        new BiomeProp(1/3, Props.Tree1)
+    ];
+    density = 0.005;
     getMaterial(x: number, y: number): Enum.Material {
         const noiseValue1 = math.noise((x + 733) * 0.001, (y + 733) * 0.1);
         const noiseValue2 = math.noise((x + 568) * 0.001, (y + 568) * 0.1);

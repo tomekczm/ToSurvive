@@ -1,8 +1,9 @@
-import { Players, RunService, TweenService } from "@rbxts/services";
+import { Players, RunService, TweenService, Workspace } from "@rbxts/services";
 import { onCharacterAdded } from "./Events/OnCharacterAdded";
 
 const player = Players.LocalPlayer
 const gui = player.WaitForChild("PlayerGui").WaitForChild("SafeGui").WaitForChild("Text") as TextBox
+const dayGui = player.WaitForChild("PlayerGui").WaitForChild("DayNotificator").WaitForChild("Text") as TextBox
 
 const tweenInfo = new TweenInfo(2)
 const fadeOut = TweenService.Create(gui, tweenInfo, {
@@ -10,17 +11,25 @@ const fadeOut = TweenService.Create(gui, tweenInfo, {
 })
 
 let isOutside = true
-let dissapearDelay: thread | undefined
+let dissapearDelay = new Map<Instance, thread>()
 
-function appear(text: string) {
+function appear(instance: TextBox, text: string) {
+    let delay = dissapearDelay.get(instance);
     gui.Text = text
     gui.TextTransparency = 0.5
-    if(dissapearDelay) task.cancel(dissapearDelay)
-    dissapearDelay = task.spawn(() => {
+    if(delay) task.cancel(delay)
+    dissapearDelay.set(instance, task.spawn(() => {
         task.wait(5)
         fadeOut.Play()
-    })
+    }))
 }
+
+function showNotification(text: string) { appear(gui, text) } 
+function dayUpdate(text: string) { appear(dayGui, text) } 
+
+Workspace.GetAttributeChangedSignal("DateName").Connect(() => {
+    dayUpdate(Workspace.GetAttribute("DateName") as string)
+})
 
 function onCharacter(character: Model) {
 
@@ -33,9 +42,9 @@ function onCharacter(character: Model) {
                                 newPos.Y >= -halfSize && newPos.Y <= halfSize &&
                                 newPos.Z >= -halfSize && newPos.Z <= halfSize
         if(newIsOutside && !isOutside)
-            appear("You entered the base.")
+            showNotification("You entered the base.")
         if(!newIsOutside && isOutside)
-            appear("You left the base.")
+            showNotification("You left the base.")
         isOutside = newIsOutside
     })
 }

@@ -8,7 +8,6 @@ export abstract class Item<T extends Instance = Instance> {
     }
 
     fetchEvent(name: string) {
-        print(this)
         const events = this.item.FindFirstChild("Events")
         assert(events, "Expected an events folder")
         const event = events.FindFirstChild(name) as RemoteEvent
