@@ -1,5 +1,6 @@
 import { Item } from "shared/Item";
 import { ReplicatedFirst, ReplicatedStorage, ServerStorage } from "@rbxts/services";
+import type { Inventory } from "server/Inventory/Inventory";
 //import { ModelBinder } from "./ModelBinder";
 
 const ANIMATIONS_FOLDER = ServerStorage.Animations
@@ -9,11 +10,14 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
     private rigid: RigidConstraint = new Instance("RigidConstraint")
     private equipAnimation: Animation | undefined;
     private equipAnimationLoaded: AnimationTrack | undefined;
+
     animationFolder: Instance | undefined;
-    owner: Player | undefined;
+    inventory: Inventory | undefined;
+    equipped: boolean;
     constructor(item: T /*, modelBinder?: ModelBinder */) {
         super(item)
         this.rigid.Parent = item
+        this.equipped = false;
         this.item.Parent = ReplicatedStorage
         
         this.animationFolder = ANIMATIONS_FOLDER.FindFirstChild(this.item.Name)
@@ -22,12 +26,12 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
     }
 
     getOwnership() {
-        return this.owner
+        return this.inventory
     }
 
-    setOwnership(player: Player) {
-        this.owner = player
-        ReplicatedStorage.Events.CreateItem.FireClient(player, this.item.Name, this.item)
+    setOwnership(player: Inventory) {
+        this.inventory = player
+        ReplicatedStorage.Events.CreateItem.FireClient(player.player, this.item.Name, this.item)
     }
 
     fetchAnimation(name: string) {
@@ -36,10 +40,11 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
     
     getCharacter() {
         const owner = this.getOwnership()
-        return owner?.Character as StarterPlayer["StarterCharacter"]
+        return owner?.player.Character as StarterPlayer["StarterCharacter"]
     }
 
     equip() {
+        this.equipped = true;
         const character = this.getCharacter();
         assert(character, "Tried calling ServerItem.equip without character assigned")
         this.item.Parent = character
@@ -59,18 +64,29 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
     }
 
     unequip() {
+        this.equipped = false;
         this.equipAnimationLoaded?.Stop()
+        this.item.Parent = this.getOwnership()?.stoarge
     }
 
     invokeEvent(name: string, ...args: unknown[]) {
         const owner = this.getOwnership()
         if(!owner) return
         const event = this.fetchEvent(name)
-        event.FireClient(owner, ...args)
+        event.FireClient(owner.player, ...args)
     }
 
-    listenToEvent(name: string, cb: (player: Player, ...args: unknown[]) => void) {
+    listenToEventRaw(name: string, cb: (player: Player, ...args: unknown[]) => void) {
         const event = this.fetchEvent(name)
         event.OnServerEvent.Connect((player, ...args) => cb(player, ...args))
+    }
+
+    listenToEvent(name: string, cb: (...args: unknown[]) => void) {
+        const event = this.fetchEvent(name)
+        event.OnServerEvent.Connect((player, ...args) => {
+            if(player === this.getOwnership()?.player && this.equipped) {
+                cb(...args)
+            }
+        })
     }
 }

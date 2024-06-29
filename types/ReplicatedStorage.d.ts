@@ -1,6 +1,7 @@
 interface ReplicatedStorage extends Instance {
 	TS: Folder & {
 		module: ModuleScript;
+		InventoryData: ModuleScript;
 		Item: ModuleScript;
 		NumberSequence: ModuleScript;
 		Ability: ModuleScript;
@@ -11,7 +12,9 @@ interface ReplicatedStorage extends Instance {
 	Events: Folder & {
 		CreateItem: RemoteEvent;
 		Inventory: Folder & {
-			EquipSlot: RemoteEvent;
+			SwapSlots: RemoteEvent;
+			SetSlot: RemoteEvent;
+			EquipSlot: RemoteFunction;
 		};
 	};
 	Animations: Folder & {
@@ -20,7 +23,12 @@ interface ReplicatedStorage extends Instance {
 		Walking: Animation;
 	};
 	Prefabs: Folder & {
-		Slot: TextBox;
+		Slot: ImageLabel & {
+			UICorner: UICorner;
+			UIGridLayout: UIGridLayout;
+			UIGradient: UIGradient;
+			UIStroke: UIStroke;
+		};
 	};
 	rbxts_include: Folder & {
 		RuntimeLib: ModuleScript;
@@ -32,6 +40,9 @@ interface ReplicatedStorage extends Instance {
 					BehaviorTree3: ModuleScript;
 				};
 				services: ModuleScript;
+				beacon: Folder & {
+					out: ModuleScript;
+				};
 				["compiler-types"]: Folder & {
 					types: Folder;
 				};

@@ -1,8 +1,20 @@
+import { Signal } from "@rbxts/beacon"
 import { Item } from "shared/Item"
 
 export class ClientItem<T extends Instance = Instance> extends Item<T> {
+    equipEvent = new Signal();
+    unequipEvent = new Signal();
+
     constructor(item: Instance) {
         super(item as T)
+    }
+
+    equip() {
+        this.equipEvent.Fire(undefined)
+    }
+
+    unequip() {
+        this.unequipEvent.Fire(undefined)
     }
 
     invokeEvent(name: string, ...args: unknown[]) {
@@ -21,5 +33,9 @@ export class ClientItem<T extends Instance = Instance> extends Item<T> {
 
     getDescription(): string {
         return (this.item.GetAttribute("Description") || "No description found.") as string
+    }
+
+    getThumbnail(): string {
+        return (this.item.GetAttribute("Image")) as string
     }
 }

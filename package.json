@@ -17,6 +17,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "@rbxts/beacon": "^2.1.1",
     "@rbxts/behavior-tree-5": "^1.0.0",
     "@rbxts/services": "^1.5.4"
   }

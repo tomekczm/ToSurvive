@@ -11,8 +11,8 @@ export class SwordItem extends ClientItem<Constraint> {
         this.abilityManager.add(new RotateAbility(this))
         this.abilityManager.add(new PointAtAbility(this))
 
-        Players.LocalPlayer.GetMouse().Button1Down.Connect(() => {
-                this.invokeEvent("Swing")
-        })
+        //Players.LocalPlayer.GetMouse().Button1Down.Connect(() => {
+        //        this.invokeEvent("Swing")
+        //})
     }
 }

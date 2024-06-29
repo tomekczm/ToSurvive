@@ -1,4 +1,5 @@
 import { Players, ReplicatedStorage } from "@rbxts/services";
+import { HammerItem } from "server/Item/Hammer";
 import { ServerItem } from "server/Item/ServerItem";
 import { SwordItem } from "server/Item/Sword";
 import { Item } from "shared/Item";
@@ -6,13 +7,16 @@ import { Item } from "shared/Item";
 const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
 const SetSlot = packets.WaitForChild("SetSlot") as RemoteEvent
+const SwapSlot = packets.SwapSlots
 
 const map = new Map<Player, Inventory>()
 
-class Inventory {
+export class Inventory {
     private itemMap = new Map<number, ServerItem>()
     player: Player;
     stoarge: Folder;
+
+    equippedSlot: number | undefined
     
     static getInventory(player: Player) {
         return map.get(player);
@@ -30,21 +34,54 @@ class Inventory {
         return this.itemMap.get(slot);
     }
 
-    setSlot(slot: number, item: ServerItem) {
-        item.item.Parent = this.stoarge
-        item.setOwnership(
-            this.player
-        )
-        this.itemMap.set(slot, item);
-        print(item.item.GetFullName())
-        SetSlot.FireClient(this.player,slot, item.item)
+    setSlot(slot: number, item: ServerItem | undefined) {
+        if(item) {
+            item.item.Parent = this.stoarge
+            item.setOwnership(
+                this
+            )
+            this.itemMap.set(slot, item);
+            SetSlot.FireClient(this.player,slot, item.item)
+        } else {
+            SetSlot.FireClient(this.player, slot)
+            this.itemMap.delete(slot);
+        }
     }
 
-    equipSlot(index: number) {}
+    equipSlot(index: number) {
+        if(this.equippedSlot !== undefined) {
+            const prevItem = this.getSlot(this.equippedSlot)
+            if(prevItem) {
+                prevItem.unequip()
+
+                const isSameSlot = this.equippedSlot === index 
+                this.equippedSlot = undefined
+                if(isSameSlot) return undefined
+            }
+        }
+
+        this.equippedSlot = index
+
+        const item = this.getSlot(index)
+        if(!item) return
+        item.equip()
+        return item
+    }
 }
 
-equipPacket.OnServerEvent.Connect((player, index) => {
-    Inventory.getInventory(player)?.equipSlot(index as number)
+equipPacket.OnServerInvoke = ((player, slot) => {
+    const inventory = Inventory.getInventory(player);
+    assert(typeOf(slot) === "number" && inventory)
+    return inventory.equipSlot(slot as number)?.item
+})
+
+SwapSlot.OnServerEvent.Connect((player, index1, index2) => {
+    const inventory = Inventory.getInventory(player);
+    assert(typeOf(index1) === "number" && typeOf(index2) === "number" && inventory)
+    const slot1 = inventory.getSlot(index1 as number)
+    const slot2 = inventory.getSlot(index2 as number)
+    inventory.setSlot(index1 as number, slot2);
+    inventory.setSlot(index2 as number, slot1)
 })
 
 Players.PlayerAdded.Connect((player) => {
@@ -53,5 +90,6 @@ Players.PlayerAdded.Connect((player) => {
         player,
         inventory
     )
-    inventory.setSlot(1, new SwordItem())
+    inventory.setSlot(1, new HammerItem())
+    inventory.setSlot(2, new SwordItem())
 })

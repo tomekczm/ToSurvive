@@ -15,6 +15,17 @@ interface ServerStorage extends Instance {
 			};
 			MultiRock: Model;
 		};
+		IceBiome: Folder & {
+			Tree1: Model & {
+				Leaves: MeshPart;
+				Trunk: MeshPart;
+			};
+			Tree2: Model & {
+				Leaves: MeshPart;
+				Trunk: MeshPart;
+			};
+			MultiRock: Model;
+		};
 		Desert: Folder & {
 			SandRock: Model;
 		};
@@ -99,16 +110,11 @@ interface ServerStorage extends Instance {
 				Rig2Motor6D: Motor6D;
 			};
 		};
-		IceBiome: Folder & {
-			Tree1: Model & {
-				Leaves: MeshPart;
-				Trunk: MeshPart;
+		BlackBiome: Folder & {
+			DeadTree: Model & {
+				Part: Part;
+				MeshPart: MeshPart;
 			};
-			Tree2: Model & {
-				Leaves: MeshPart;
-				Trunk: MeshPart;
-			};
-			MultiRock: Model;
 		};
 	};
 	Animations: Folder & {
@@ -131,6 +137,12 @@ interface ServerStorage extends Instance {
 		};
 	};
 	Tools: Folder & {
+		Hammer: Model & {
+			RootPart: Part & {
+				Mesh: SpecialMesh;
+				Hold: Attachment;
+			};
+		};
 		Sword: Model & {
 			RootPart: Part & {
 				Mesh: SpecialMesh;
