@@ -14,6 +14,7 @@ import "./Inventory/Inventory"
 import "./PreloadAnimations"
 import "./Terrain/Main"
 import "./TimeOfDay"
+import "./Building/Hammer"
 import { Zombie } from "./Entities/Zombie";
 
 

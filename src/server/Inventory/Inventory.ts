@@ -2,6 +2,7 @@ import { Players, ReplicatedStorage } from "@rbxts/services";
 import { HammerItem } from "server/Item/Hammer";
 import { ServerItem } from "server/Item/ServerItem";
 import { SwordItem } from "server/Item/Sword";
+import { Recipe } from "shared/HammerRecipes";
 import { Item } from "shared/Item";
 
 const packets = ReplicatedStorage.Events.Inventory
@@ -66,6 +67,41 @@ export class Inventory {
         if(!item) return
         item.equip()
         return item
+    }
+
+    getQuantityByName(name: string) {
+        let quantity = 0
+        for (const [key, value] of this.itemMap) {
+            if(value && value.getName() === name) quantity += value.getQuantity()
+        }
+        return quantity
+    }
+
+    private consumeItem(name: string, quantity: number = 1) {
+        let quantityConsumed = 0;
+        for (const [key, value] of this.itemMap) {
+            if(value.getName() !== name) continue;
+            const quantityLeft = quantity - quantityConsumed;
+            if(quantityLeft === 0) return
+            const itemQuantity = value.getQuantity()
+            const toConsume = math.min(quantityLeft, itemQuantity)
+            value.setQuantity(itemQuantity - toConsume)
+        }
+    }
+
+    useRecipe(recipe: Recipe<Item, unknown>): boolean {
+        const requirements = recipe.requirements
+        for (const requirement of requirements) {
+            const name = requirement.item.getName()
+            const isEnough = this.getQuantityByName(name) >= requirement.quantity;
+            if(!isEnough) return false;
+        }
+
+        for (const requirement of requirements) {
+            const name = requirement.item.getName()
+            this.consumeItem(name, requirement.quantity)
+        }
+        return true
     }
 }
 

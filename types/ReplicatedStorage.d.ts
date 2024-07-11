@@ -10,17 +10,45 @@ interface ReplicatedStorage extends Instance {
 		AbilityManager: ModuleScript;
 	};
 	Events: Folder & {
-		CreateItem: RemoteEvent;
 		Inventory: Folder & {
 			SwapSlots: RemoteEvent;
 			SetSlot: RemoteEvent;
 			EquipSlot: RemoteFunction;
+		};
+		CreateItem: RemoteEvent;
+		Building: Folder & {
+			RecieveSerialized: RemoteEvent;
+		};
+	};
+	Tools: Folder & {
+		Hammer: Model & {
+			RootPart: Part & {
+				Mesh: SpecialMesh;
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Build: RemoteEvent;
+			};
+		};
+		Sword: Model & {
+			RootPart: Part & {
+				Mesh: SpecialMesh;
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
 		};
 	};
 	Animations: Folder & {
 		Climbing: Animation;
 		Idle: Animation;
 		Walking: Animation;
+	};
+	Builds: Folder & {
+		["Wooden Wall"]: Model & {
+			Part: Part;
+		};
 	};
 	Prefabs: Folder & {
 		Slot: ImageLabel & {

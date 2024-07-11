@@ -17,6 +17,8 @@ export interface Biome {
     getProp(x: number, y: number): Model | undefined;
 }
 
+const propHolder = Workspace.WaitForChild("Props") as Folder
+
 const biomes: Biome[] = [
     new Plains(),
     new Snow(),
@@ -153,7 +155,7 @@ function generateChunk(origin: CFrame) {
 
             if(maxDist > 200 && prop) {
                 prop.PivotTo(pos)
-                prop.Parent = Workspace
+                prop.Parent = propHolder
             }
 
 			const size = new Vector3(CELL_SIZE, 5, CELL_SIZE)
@@ -176,7 +178,6 @@ function generateInRange(cframe: CFrame) {
     }
 }
 
-print("2")
 generateInRange(new CFrame())
 
 task.spawn(() => {

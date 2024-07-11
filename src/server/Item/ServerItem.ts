@@ -89,4 +89,8 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
             }
         })
     }
+
+    setQuantity(number: number) {
+        this.item.SetAttribute("Quantity", number)
+    }
 }

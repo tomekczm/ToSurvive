@@ -3,7 +3,7 @@ import { ClientItem } from "./ClientItem";
 import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 
-type Constraint = ServerStorage["Tools"]["Sword"]
+type Constraint = ReplicatedStorage["Tools"]["Sword"]
 export class SwordItem extends ClientItem<Constraint> {
     constructor(instance: Instance) {
         super(instance as Constraint)

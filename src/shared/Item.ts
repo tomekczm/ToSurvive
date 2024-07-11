@@ -1,6 +1,6 @@
 import { AbilityManager } from "./AbilityManager";
 
-export abstract class Item<T extends Instance = Instance> {
+export class Item<T extends Instance = Instance> {
     item: T;
     abilityManager = new AbilityManager<T>(this)
     constructor(item: T) {
@@ -13,6 +13,22 @@ export abstract class Item<T extends Instance = Instance> {
         const event = events.FindFirstChild(name) as RemoteEvent
         assert(event, `event ${name} not found`)
         return event
+    }
+
+    getName(): string {
+        return (this.item.GetAttribute("Name") || this.item.Name) as string
+    }
+
+    getDescription(): string {
+        return (this.item.GetAttribute("Description") || "No description found.") as string
+    }
+
+    getThumbnail(): string {
+        return (this.item.GetAttribute("Image")) as string
+    }
+
+    getQuantity(): number {
+        return (this.item.GetAttribute("Quantity") ?? 1) as number
     }
     
 

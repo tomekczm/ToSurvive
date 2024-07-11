@@ -47,7 +47,6 @@ let draggingSlot: number | undefined
 function equipSlot(number: number) {
     equippedItem?.unequip()
     const item = equipPacket.InvokeServer(number) as Model | undefined
-    print(item)
     if(item === undefined) return
     const itemClass = getItemFromInstance(item)
     itemClass?.equip()

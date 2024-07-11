@@ -1,4 +1,5 @@
 interface ServerStorage extends Instance {
+	TerrainGeneratorData: Folder;
 	Models: Folder & {
 		Plains: Folder & {
 			Tree3: Model & {
@@ -117,42 +118,6 @@ interface ServerStorage extends Instance {
 			};
 		};
 	};
-	Animations: Folder & {
-		Zombie: Folder & {
-			Idle: Animation;
-			Kick: Folder & {
-				Kick2: Animation;
-				Kick1: Animation;
-			};
-			Punch: Folder & {
-				Punch1: Animation;
-				Punch2: Animation;
-			};
-			StandUp: Animation;
-			Walk: Animation;
-		};
-		Sword: Folder & {
-			Hold: Animation;
-			Swing: Animation;
-		};
-	};
-	Tools: Folder & {
-		Hammer: Model & {
-			RootPart: Part & {
-				Mesh: SpecialMesh;
-				Hold: Attachment;
-			};
-		};
-		Sword: Model & {
-			RootPart: Part & {
-				Mesh: SpecialMesh;
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
-	};
 	RBX_ANIMSAVES: Model & {
 		ZombieModel: ObjectValue & {
 			["Imported Animation Clip"]: KeyframeSequence & {
@@ -199,5 +164,23 @@ interface ServerStorage extends Instance {
 			};
 		};
 	};
-	TerrainGeneratorData: Folder;
+	Animations: Folder & {
+		Zombie: Folder & {
+			Idle: Animation;
+			Kick: Folder & {
+				Kick2: Animation;
+				Kick1: Animation;
+			};
+			Punch: Folder & {
+				Punch1: Animation;
+				Punch2: Animation;
+			};
+			StandUp: Animation;
+			Walk: Animation;
+		};
+		Sword: Folder & {
+			Hold: Animation;
+			Swing: Animation;
+		};
+	};
 }
