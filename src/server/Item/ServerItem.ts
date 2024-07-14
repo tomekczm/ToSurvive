@@ -23,6 +23,7 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
         this.animationFolder = ANIMATIONS_FOLDER.FindFirstChild(this.item.Name)
 
         this.equipAnimation = this.fetchAnimation("Hold");
+        this.setQuantity(1)
     }
 
     getOwnership() {
@@ -34,8 +35,18 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
         ReplicatedStorage.Events.CreateItem.FireClient(player.player, this.item.Name, this.item)
     }
 
+    loadAnimation(animation: Animation | undefined) {
+        if(!animation) return
+        const animator = this.getCharacter()["Humanoid"]["Animator"]
+        return animator.LoadAnimation(animation)
+    }
+
     fetchAnimation(name: string) {
         return this.animationFolder?.FindFirstChild(name) as Animation | undefined 
+    }
+
+    animationLoad() {
+
     }
     
     getCharacter() {
@@ -91,6 +102,8 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
     }
 
     setQuantity(number: number) {
+        const player = this.getOwnership()?.player
         this.item.SetAttribute("Quantity", number)
+        if(player) ReplicatedStorage.Events.Inventory.QuantityChanged.FireClient(player, this.item)
     }
 }

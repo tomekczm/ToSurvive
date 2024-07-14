@@ -3,8 +3,9 @@ import { ClientItem } from "client/Item/ClientItem"
 import { getItemFromInstance } from "client/Item/ItemRegistrar";
 import { Item } from "shared/Item";
 
-const guiLookup = new Map<number, ImageLabel>();
-const hotbarGuiLookup = new Map<number, ImageLabel>();
+type SlotGui = ReplicatedStorage["Prefabs"]["Slot"] 
+const guiLookup = new Map<number, SlotGui>();
+const hotbarGuiLookup = new Map<number, SlotGui>();
 const playerGui = Players.LocalPlayer.WaitForChild("PlayerGui") as PlayerGui;
 
 const inventoryGui = playerGui
@@ -38,10 +39,13 @@ const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
 const swapSlot = packets.SwapSlots
 const SetSlot = packets.WaitForChild("SetSlot") as RemoteEvent
+const QuantityChanged = packets.QuantityChanged
 
 let equippedItem: ClientItem | undefined
 
 const inventory = new Map<number, ClientItem>()
+const reverseInventory = new Map<Instance, number>()
+
 let draggingSlot: number | undefined
 
 function equipSlot(number: number) {
@@ -158,21 +162,55 @@ SetSlot.OnClientEvent.Connect((slot, item) => {
         const clientItem = getItemFromInstance(item)
         assert(clientItem, `Client item not found wth!!! ${(item as Instance).GetFullName()}`)
         inventory.set(slot, clientItem)
+        reverseInventory.set(clientItem.item, slot)
+
         const gui = guiLookup.get(slot)
-        if(gui) gui.Image = clientItem.getThumbnail()
+        
+        if(gui) {
+            const quantityText = clientItem.getQuantity() === 1 ? "" : tostring(clientItem.getQuantity())
+            gui.Quantity.Text = quantityText
+            gui.Image = clientItem.getThumbnail()
+        }
         const hotbarGui = hotbarGuiLookup.get(slot)
-        if(hotbarGui) hotbarGui.Image = clientItem.getThumbnail()
+        if(hotbarGui) {
+            const quantityText = clientItem.getQuantity() === 1 ? "" : tostring(clientItem.getQuantity())
+            hotbarGui.Quantity.Text = quantityText
+            hotbarGui.Image = clientItem.getThumbnail()
+            hotbarGui.Image = clientItem.getThumbnail()
+        }
     } else {
+        const slotItem = inventory.get(slot)
+        if(slotItem)
+            reverseInventory.delete(slotItem.item)
         inventory.delete(slot)
         const gui = guiLookup.get(slot)
-        if(gui) gui.Image = ""
+        if(gui) { 
+            gui.Quantity.Text = ""
+            gui.Image = ""
+        }
         const hotbarGui = hotbarGuiLookup.get(slot)
-        if(hotbarGui) hotbarGui.Image = ""
+        if(hotbarGui)  {
+            hotbarGui.Quantity.Text = ""
+            hotbarGui.Image = "" 
+        }
+    }
+})
+
+QuantityChanged.OnClientEvent.Connect((item) => {
+    const slot = reverseInventory.get(item)
+    if(slot) {
+        const item = inventory.get(slot)
+        const gui = guiLookup.get(slot)
+        if(!item) return
+        const quantityText = item.getQuantity() === 1 ? "" : tostring(item.getQuantity())
+        if(gui) gui.Quantity.Text = quantityText
+        const hotbarGui = hotbarGuiLookup.get(slot)
+        if(hotbarGui) hotbarGui.Quantity.Text = quantityText
     }
 })
 
 for(const i of $range(1, MAX_SLOTS)) {
-    const clone = ReplicatedStorage.Prefabs.Slot.Clone() as unknown as ImageLabel;
+    const clone = ReplicatedStorage.Prefabs.Slot.Clone() as unknown as SlotGui;
     clone.Parent = backgroundHotbar;
     clone.LayoutOrder = i;
     clone.Name = tostring(i);
@@ -182,7 +220,7 @@ for(const i of $range(1, MAX_SLOTS)) {
 }
 
 for(const i of $range(1, HOTBAR_SLOTS)) {
-    const clone = ReplicatedStorage.Prefabs.Slot.Clone() as unknown as ImageLabel;
+    const clone = ReplicatedStorage.Prefabs.Slot.Clone() as unknown as SlotGui;
     clone.Parent = hotbarGui;
     hotbarGuiLookup.set(i, clone)
 }

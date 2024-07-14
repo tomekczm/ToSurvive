@@ -16,6 +16,11 @@ interface ServerStorage extends Instance {
 			};
 			MultiRock: Model;
 		};
+		["Wooden Log"]: Model & {
+			WoodenLog: Part & {
+				Weld: Weld;
+			};
+		};
 		IceBiome: Folder & {
 			Tree1: Model & {
 				Leaves: MeshPart;
@@ -119,6 +124,43 @@ interface ServerStorage extends Instance {
 		};
 	};
 	RBX_ANIMSAVES: Model & {
+		StarterCharacter: ObjectValue & {
+			["Imported Animation Clip"]: KeyframeSequence & {
+				End: Keyframe & {
+					HumanoidRootPart: Pose & {
+						["mixamorig:Hips"]: Pose & {
+							["mixamorig:Spine"]: Pose & {
+								["mixamorig:Spine1"]: Pose & {
+									["mixamorig:Spine2"]: Pose & {
+										["mixamorig:RightShoulder"]: Pose & {
+											["mixamorig:RightArm"]: Pose & {
+												["mixamorig:RightForeArm"]: Pose;
+											};
+										};
+										["mixamorig:Neck"]: Pose & {
+											["mixamorig:Head"]: Pose;
+										};
+										["mixamorig:LeftShoulder"]: Pose & {
+											["mixamorig:LeftArm"]: Pose & {
+												["mixamorig:LeftForeArm"]: Pose;
+											};
+										};
+									};
+								};
+							};
+							["mixamorig:LeftUpLeg"]: Pose & {
+								["mixamorig:LeftLeg"]: Pose & {
+									["mixamorig:LeftFoot"]: Pose & {
+										["mixamorig:LeftToeBase"]: Pose;
+									};
+								};
+							};
+						};
+					};
+					RootNode: Pose;
+				};
+			};
+		};
 		ZombieModel: ObjectValue & {
 			["Imported Animation Clip"]: KeyframeSequence & {
 				End: Keyframe & {
@@ -163,8 +205,21 @@ interface ServerStorage extends Instance {
 				};
 			};
 		};
+		tomekcz: ObjectValue & {
+			["Imported Animation Clip"]: KeyframeSequence;
+			["Automatic Save"]: KeyframeSequence;
+		};
 	};
 	Animations: Folder & {
+		Sword: Folder & {
+			Hold: Animation;
+			Swing: Animation;
+		};
+		Axe: Folder & {
+			Swing2: Animation;
+			Swing: Animation;
+			Hold: Animation;
+		};
 		Zombie: Folder & {
 			Idle: Animation;
 			Kick: Folder & {
@@ -177,10 +232,6 @@ interface ServerStorage extends Instance {
 			};
 			StandUp: Animation;
 			Walk: Animation;
-		};
-		Sword: Folder & {
-			Hold: Animation;
-			Swing: Animation;
 		};
 	};
 }

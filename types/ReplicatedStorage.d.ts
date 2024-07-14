@@ -1,17 +1,20 @@
 interface ReplicatedStorage extends Instance {
 	TS: Folder & {
 		module: ModuleScript;
-		InventoryData: ModuleScript;
-		Item: ModuleScript;
 		NumberSequence: ModuleScript;
 		Ability: ModuleScript;
-		Array: ModuleScript;
 		HashCode: ModuleScript;
+		Item: ModuleScript;
+		HammerRecipes: ModuleScript;
+		Bezier: ModuleScript;
+		Array: ModuleScript;
+		InventoryData: ModuleScript;
 		AbilityManager: ModuleScript;
 	};
 	Events: Folder & {
 		Inventory: Folder & {
 			SwapSlots: RemoteEvent;
+			QuantityChanged: RemoteEvent;
 			SetSlot: RemoteEvent;
 			EquipSlot: RemoteFunction;
 		};
@@ -39,6 +42,21 @@ interface ReplicatedStorage extends Instance {
 				Swing: RemoteEvent;
 			};
 		};
+		Axe: Model & {
+			RootPart: Part & {
+				AlternativeHan2d: Attachment;
+				Attachment: Attachment;
+				Mesh: SpecialMesh;
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
 	};
 	Animations: Folder & {
 		Climbing: Animation;
@@ -46,16 +64,14 @@ interface ReplicatedStorage extends Instance {
 		Walking: Animation;
 	};
 	Builds: Folder & {
-		["Wooden Wall"]: Model & {
-			Part: Part;
-		};
+		["Wooden Wall"]: Model;
 	};
 	Prefabs: Folder & {
 		Slot: ImageLabel & {
 			UICorner: UICorner;
-			UIGridLayout: UIGridLayout;
-			UIGradient: UIGradient;
 			UIStroke: UIStroke;
+			UIGradient: UIGradient;
+			Quantity: TextLabel;
 		};
 	};
 	rbxts_include: Folder & {

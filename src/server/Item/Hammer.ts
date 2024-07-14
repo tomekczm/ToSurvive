@@ -1,4 +1,4 @@
-import { ReplicatedStorage, ServerStorage } from "@rbxts/services";
+import { ReplicatedStorage, ServerStorage, Workspace } from "@rbxts/services";
 import { ServerItem } from "./ServerItem";
 import { Ability } from "../../shared/Ability";
 import { SwingAbility } from "../ItemAbilities/Swing";
@@ -15,10 +15,10 @@ class HammerAbility extends Ability<HammerItem> {
            assert(owner)
            const index = _index as number
            const recipe = recipes[index - 1]
-           print(recipe)
            if(owner.useRecipe(recipe)) {
             const clone = recipe.result.Clone()
             clone.PivotTo(cframe as CFrame)
+            clone.Parent = Workspace
            }
         })
     }

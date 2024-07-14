@@ -1,17 +1,30 @@
 import { ServerItem } from "../Item/ServerItem";
 import { Ability } from "../../shared/Ability";
+import { sample } from "shared/Array";
 
-export class SwingAbility extends Ability<ServerItem> {
+export class SwingAbility<T extends ServerItem> extends Ability<T> {
 
-    swingAnimation = this.item.fetchAnimation("Swing");
+    animations = [
+        this.item.fetchAnimation("Swing") as Animation,
+        this.item.fetchAnimation("Swing2") as Animation
+    ]
+
+    firstPlayed: boolean = false
     swingAnimationLoaded: AnimationTrack | undefined;
 
-    constructor(instance: ServerItem) {
-        super(instance);
+    onStart(): void {
         this.item.listenToEvent("Swing", () => {
             this.swing()
         })
     }
+
+
+    scanNearby() {
+        const item = this.item.item
+        const point = item
+    }
+
+    onSwing() {}
 
     swing() {
         const instance = this.item.item
@@ -19,15 +32,22 @@ export class SwingAbility extends Ability<ServerItem> {
 
         if(instance.GetAttribute("SwingDelay")) return
 
-        if(this.swingAnimation) {
-            this.swingAnimationLoaded = animator.LoadAnimation(this.swingAnimation) 
-            this.swingAnimationLoaded.Priority = Enum.AnimationPriority.Action4
-            this.swingAnimationLoaded?.Play()
+        this.swingAnimationLoaded = animator.LoadAnimation(
+            this.animations[(this.firstPlayed) ? 0 : 1]
+        ) 
 
-            instance.SetAttribute("SwingDelay", true)
-            task.delay(this.swingAnimationLoaded.Length, () => {
-                instance.SetAttribute("SwingDelay", false)
-            })
-        }
+        this.swingAnimationLoaded.Priority = Enum.AnimationPriority.Action4
+        this.swingAnimationLoaded?.Play(0.25)
+
+        this.swingAnimationLoaded.GetMarkerReachedSignal("Impact").Once(() => {
+            this.onSwing()
+        })
+
+        instance.SetAttribute("SwingDelay", true)
+        task.delay(this.swingAnimationLoaded.Length, () => {
+            this.firstPlayed = !this.firstPlayed
+            instance.SetAttribute("SwingDelay", false)
+        })
+        
     }
 }

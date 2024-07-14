@@ -19,6 +19,10 @@ export class Item<T extends Instance = Instance> {
         return (this.item.GetAttribute("Name") || this.item.Name) as string
     }
 
+    isStackable() {
+        return (this.item.GetAttribute("Stackable") ?? true) as boolean
+    }
+
     getDescription(): string {
         return (this.item.GetAttribute("Description") || "No description found.") as string
     }

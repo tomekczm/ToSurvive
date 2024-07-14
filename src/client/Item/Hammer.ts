@@ -160,7 +160,7 @@ class HammerAbility extends Ability<HammerItem> {
                 this.moveObject(clone)
             })
 
-            this.buildEvent.FireServer(reverseLookup.get(recipe), this.position);
+            //this.buildEvent.FireServer(reverseLookup.get(recipe), this.position);
         })
     }
 }
@@ -169,5 +169,7 @@ export class HammerItem extends ClientItem<Constraint> {
     constructor(instance: Instance) {
         super(instance as Constraint)
         this.abilityManager.add(new HammerAbility(this))
+        this.abilityManager.add(new RotateAbility(this))
+        this.abilityManager.add(new PointAtAbility(this, "TorsoAttach"))
     }
 }

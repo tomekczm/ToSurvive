@@ -1,4 +1,5 @@
-import { Players, ReplicatedStorage } from "@rbxts/services";
+import { Players, ReplicatedStorage, Workspace } from "@rbxts/services";
+import { AxeItem } from "server/Item/Axe";
 import { HammerItem } from "server/Item/Hammer";
 import { ServerItem } from "server/Item/ServerItem";
 import { SwordItem } from "server/Item/Sword";
@@ -11,6 +12,8 @@ const SetSlot = packets.WaitForChild("SetSlot") as RemoteEvent
 const SwapSlot = packets.SwapSlots
 
 const map = new Map<Player, Inventory>()
+
+const MAX_SLOTS = Workspace.GetAttribute("MAX_SLOTS") as number
 
 export class Inventory {
     private itemMap = new Map<number, ServerItem>()
@@ -49,6 +52,29 @@ export class Inventory {
         }
     }
 
+    giveItem(item: ServerItem): boolean {
+        let emptySlot: number | undefined = undefined
+        for(const i of $range(1, MAX_SLOTS)) {
+            const slot = this.getSlot(i)
+            if(!slot && !emptySlot) {
+                emptySlot = i
+                if(!item.isStackable()) break
+            }
+
+            if(slot) {
+                if(slot.getName() === item.getName() && item.isStackable()) {
+                    slot.setQuantity(slot.getQuantity() + item.getQuantity())
+                    return true
+                }
+            }
+        }
+        if(emptySlot !==  undefined) {
+            this.setSlot(emptySlot, item)
+            return true
+        }
+        return false
+    }
+
     equipSlot(index: number) {
         if(this.equippedSlot !== undefined) {
             const prevItem = this.getSlot(this.equippedSlot)
@@ -71,7 +97,7 @@ export class Inventory {
 
     getQuantityByName(name: string) {
         let quantity = 0
-        for (const [key, value] of this.itemMap) {
+        for (const [_, value] of this.itemMap) {
             if(value && value.getName() === name) quantity += value.getQuantity()
         }
         return quantity
@@ -85,7 +111,12 @@ export class Inventory {
             if(quantityLeft === 0) return
             const itemQuantity = value.getQuantity()
             const toConsume = math.min(quantityLeft, itemQuantity)
+            quantityConsumed += toConsume
             value.setQuantity(itemQuantity - toConsume)
+            if(value.getQuantity() === 0) {
+                value.item.Destroy()
+                this.setSlot(key, undefined)
+            }
         }
     }
 
@@ -128,4 +159,5 @@ Players.PlayerAdded.Connect((player) => {
     )
     inventory.setSlot(1, new HammerItem())
     inventory.setSlot(2, new SwordItem())
+    inventory.setSlot(3, new AxeItem())
 })
