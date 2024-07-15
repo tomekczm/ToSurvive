@@ -19,6 +19,8 @@
   "dependencies": {
     "@rbxts/beacon": "^2.1.1",
     "@rbxts/behavior-tree-5": "^1.0.0",
+    "@rbxts/camera-shaker": "^1.0.8",
+    "@rbxts/rain": "^1.0.4",
     "@rbxts/services": "^1.5.4"
   }
 }

@@ -121,7 +121,7 @@ class HammerAbility extends Ability<HammerItem> {
             if(!descendant.IsA("BasePart")) continue
             descendant.Transparency = 0.4
             descendant.Material = Enum.Material.ForceField
-            descendant.Color = canPlace ? new Color3(0,1,0) : new Color3(1,0,0)
+            //descendant.Color = canPlace ? new Color3(0,1,0) : new Color3(1,0,0)
         }
         this.position = new CFrame(ray.Position).mul(this.offset)
         object.PivotTo(new CFrame(ray.Position).mul(this.offset))

@@ -18,7 +18,7 @@ interface ServerStorage extends Instance {
 		};
 		["Wooden Log"]: Model & {
 			WoodenLog: Part & {
-				Weld: Weld;
+				PickUp: ProximityPrompt;
 			};
 		};
 		IceBiome: Folder & {
@@ -31,6 +31,23 @@ interface ServerStorage extends Instance {
 				Trunk: MeshPart;
 			};
 			MultiRock: Model;
+		};
+		SmallRocks: Folder & {
+			SmallRock2: Model & {
+				BasePart: MeshPart & {
+					PickUp: ProximityPrompt;
+				};
+			};
+			SmallRock3: Model & {
+				BasePart: MeshPart & {
+					PickUp: ProximityPrompt;
+				};
+			};
+			SmallRock1: Model & {
+				BasePart: MeshPart & {
+					PickUp: ProximityPrompt;
+				};
+			};
 		};
 		Desert: Folder & {
 			SandRock: Model;
@@ -124,43 +141,6 @@ interface ServerStorage extends Instance {
 		};
 	};
 	RBX_ANIMSAVES: Model & {
-		StarterCharacter: ObjectValue & {
-			["Imported Animation Clip"]: KeyframeSequence & {
-				End: Keyframe & {
-					HumanoidRootPart: Pose & {
-						["mixamorig:Hips"]: Pose & {
-							["mixamorig:Spine"]: Pose & {
-								["mixamorig:Spine1"]: Pose & {
-									["mixamorig:Spine2"]: Pose & {
-										["mixamorig:RightShoulder"]: Pose & {
-											["mixamorig:RightArm"]: Pose & {
-												["mixamorig:RightForeArm"]: Pose;
-											};
-										};
-										["mixamorig:Neck"]: Pose & {
-											["mixamorig:Head"]: Pose;
-										};
-										["mixamorig:LeftShoulder"]: Pose & {
-											["mixamorig:LeftArm"]: Pose & {
-												["mixamorig:LeftForeArm"]: Pose;
-											};
-										};
-									};
-								};
-							};
-							["mixamorig:LeftUpLeg"]: Pose & {
-								["mixamorig:LeftLeg"]: Pose & {
-									["mixamorig:LeftFoot"]: Pose & {
-										["mixamorig:LeftToeBase"]: Pose;
-									};
-								};
-							};
-						};
-					};
-					RootNode: Pose;
-				};
-			};
-		};
 		ZombieModel: ObjectValue & {
 			["Imported Animation Clip"]: KeyframeSequence & {
 				End: Keyframe & {

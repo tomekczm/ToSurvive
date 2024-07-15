@@ -9,6 +9,7 @@ export abstract class GenericBiome implements Biome {
     private random = new Random()
 
     abstract getMaterial(x: number, y: number): Enum.Material;
+    
     getProp(x: number, y: number): Model | undefined {
         const num = this.random.NextInteger(0, 1000) / 1000;
         if(num >= this.density) return;
@@ -18,8 +19,7 @@ export abstract class GenericBiome implements Biome {
         for (const prop of this.props) {
             sum += prop.chance;
             if (r <= sum) {
-                const clone = prop.model.Clone()
-                clone.ScaleTo(this.random.NextInteger(7, 10) / 10)
+                const clone = prop.getClone(this.random)
                 return clone
             };
         }

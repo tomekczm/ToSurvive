@@ -154,7 +154,7 @@ function generateChunk(origin: CFrame) {
             }
 
             if(maxDist > 200 && prop) {
-                prop.PivotTo(pos)
+                prop.PivotTo(pos.add(new Vector3(0,2.5,0)))
                 prop.Parent = propHolder
             }
 

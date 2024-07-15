@@ -18,6 +18,7 @@ interface ReplicatedStorage extends Instance {
 			SetSlot: RemoteEvent;
 			EquipSlot: RemoteFunction;
 		};
+		CamShake: RemoteEvent;
 		CreateItem: RemoteEvent;
 		Building: Folder & {
 			RecieveSerialized: RemoteEvent;
@@ -37,6 +38,20 @@ interface ReplicatedStorage extends Instance {
 			RootPart: Part & {
 				Mesh: SpecialMesh;
 				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
+		Rock: Model & {
+			RootPart: MeshPart & {
+				PickUp: ProximityPrompt;
+				Attachment: Attachment;
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
 			};
 			Events: Folder & {
 				Swing: RemoteEvent;
@@ -79,6 +94,12 @@ interface ReplicatedStorage extends Instance {
 		Promise: ModuleScript;
 		node_modules: Folder & {
 			["@rbxts"]: Folder & {
+				["camera-shaker"]: Folder & {
+					CameraShaker: ModuleScript & {
+						CameraShakeInstance: ModuleScript;
+						CameraShakePresets: ModuleScript;
+					};
+				};
 				["behavior-tree-5"]: ModuleScript & {
 					BehaviorTreeCreator: ModuleScript;
 					BehaviorTree3: ModuleScript;
@@ -86,6 +107,9 @@ interface ReplicatedStorage extends Instance {
 				services: ModuleScript;
 				beacon: Folder & {
 					out: ModuleScript;
+				};
+				rain: Folder & {
+					src: ModuleScript;
 				};
 				["compiler-types"]: Folder & {
 					types: Folder;
