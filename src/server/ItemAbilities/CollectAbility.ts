@@ -21,12 +21,17 @@ export class CollectAbility extends SwingAbility<ServerItem<Constriant>> {
     sound = this.hitPoint.Sound
 
     onSwing(): void {
+        const damage = (this.item.item.GetAttribute("Damage") ?? 5) as number
         const partsInBounds = Workspace.GetPartBoundsInRadius(this.hitPoint.WorldPosition, 10)
         for(const instance of partsInBounds) {
             const parent = instance.Parent
             if(!parent) continue
             const tag = CollectionService.HasTag(parent, "Tree")
             if(!tag) continue
+
+            const startHealth = parent.GetAttribute("Health") as number
+            const health = startHealth - damage
+            parent.SetAttribute("Health", health)
 
             const sound = this.sound.Clone()
             sound.Parent = this.hitPoint
@@ -39,6 +44,10 @@ export class CollectAbility extends SwingAbility<ServerItem<Constriant>> {
             sound.Ended.Once(() => {
                 sound.Destroy()
             })
+
+            if(health % 5 !== 0) {
+                return
+            }
 
             const position = new Vector3(
                 rng.NextNumber(-5 ,5),

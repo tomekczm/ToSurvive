@@ -4,8 +4,9 @@ import { HammerItem } from "server/Item/Hammer";
 import { RockItem } from "server/Item/Rock";
 import { ServerItem } from "server/Item/ServerItem";
 import { SwordItem } from "server/Item/Sword";
-import { Recipe } from "shared/HammerRecipes";
+import { WoodenWaterBucket } from "server/Item/WoodenWaterBucket";
 import { Item } from "shared/Item";
+import { Recipe } from "shared/Recipes/Recipe";
 
 const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
@@ -17,7 +18,7 @@ const map = new Map<Player, Inventory>()
 const MAX_SLOTS = Workspace.GetAttribute("MAX_SLOTS") as number
 
 export class Inventory {
-    private itemMap = new Map<number, ServerItem>()
+    itemMap = new Map<number, ServerItem>()
     player: Player;
     stoarge: Folder;
 
@@ -40,6 +41,10 @@ export class Inventory {
     }
 
     setSlot(slot: number, item: ServerItem | undefined) {
+        let prevItem
+        if(this.equippedSlot && slot === this.equippedSlot)
+            prevItem = this.getSlot(this.equippedSlot) 
+
         if(item) {
             item.item.Parent = this.stoarge
             item.setOwnership(
@@ -51,6 +56,7 @@ export class Inventory {
             SetSlot.FireClient(this.player, slot)
             this.itemMap.delete(slot);
         }
+        prevItem?.unequip()
     }
 
     giveItem(item: ServerItem): boolean {
@@ -162,4 +168,5 @@ Players.PlayerAdded.Connect((player) => {
     inventory.setSlot(2, new SwordItem())
     inventory.setSlot(3, new AxeItem())
     inventory.setSlot(4, new RockItem())
+    inventory.setSlot(5, new WoodenWaterBucket())
 })

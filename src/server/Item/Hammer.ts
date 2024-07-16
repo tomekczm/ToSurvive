@@ -3,7 +3,7 @@ import { ServerItem } from "./ServerItem";
 import { Ability } from "../../shared/Ability";
 import { SwingAbility } from "../ItemAbilities/Swing";
 import { Inventory } from "server/Inventory/Inventory";
-import { recipes } from "shared/HammerRecipes";
+import { recipes } from "shared/Recipes/HammerRecipes";
 
 type Constraint = ReplicatedStorage["Tools"]["Hammer"]
 

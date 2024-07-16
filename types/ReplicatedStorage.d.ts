@@ -3,19 +3,23 @@ interface ReplicatedStorage extends Instance {
 		module: ModuleScript;
 		NumberSequence: ModuleScript;
 		Ability: ModuleScript;
-		HashCode: ModuleScript;
+		Recipes: Folder & {
+			Recipe: ModuleScript;
+			HammerRecipes: ModuleScript;
+		};
+		InventoryData: ModuleScript;
 		Item: ModuleScript;
-		HammerRecipes: ModuleScript;
 		Bezier: ModuleScript;
 		Array: ModuleScript;
-		InventoryData: ModuleScript;
+		HashCode: ModuleScript;
 		AbilityManager: ModuleScript;
 	};
 	Events: Folder & {
 		Inventory: Folder & {
 			SwapSlots: RemoteEvent;
-			QuantityChanged: RemoteEvent;
 			SetSlot: RemoteEvent;
+			QuantityChanged: RemoteEvent;
+			ForceUnequipMainSlot: RemoteEvent;
 			EquipSlot: RemoteFunction;
 		};
 		CamShake: RemoteEvent;
@@ -34,24 +38,14 @@ interface ReplicatedStorage extends Instance {
 				Build: RemoteEvent;
 			};
 		};
-		Sword: Model & {
-			RootPart: Part & {
-				Mesh: SpecialMesh;
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
 		Rock: Model & {
 			RootPart: MeshPart & {
-				PickUp: ProximityPrompt;
-				Attachment: Attachment;
 				HitPoint: Attachment & {
 					Sound: Sound & {
 						Modifier: PitchShiftSoundEffect;
 					};
 				};
+				Attachment: Attachment;
 			};
 			Events: Folder & {
 				Swing: RemoteEvent;
@@ -72,6 +66,24 @@ interface ReplicatedStorage extends Instance {
 				Swing: RemoteEvent;
 			};
 		};
+		Sword: Model & {
+			SurfaceAppearance: SurfaceAppearance;
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+			RootPart: Part & {
+				Mesh: SpecialMesh;
+				Attachment: Attachment;
+			};
+		};
+		["Wooden Water Bucket"]: Model & {
+			Events: Folder & {
+				Build: RemoteEvent;
+			};
+			RootPart: MeshPart & {
+				Attachment: Attachment;
+			};
+		};
 	};
 	Animations: Folder & {
 		Climbing: Animation;
@@ -80,6 +92,9 @@ interface ReplicatedStorage extends Instance {
 	};
 	Builds: Folder & {
 		["Wooden Wall"]: Model;
+		["Wooden Water Bucket"]: Model & {
+			RootPart: MeshPart;
+		};
 	};
 	Prefabs: Folder & {
 		Slot: ImageLabel & {
