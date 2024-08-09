@@ -14,12 +14,20 @@ export class WoodenWaterBucket extends ClientItem<Constraint> {
         this.abilityManager.add(new PointAtAbility(this, "TorsoAttach"))
     }
 
-    getFullness() {
-        return (this.item.GetAttribute("Fullness") ?? 0) as number
+    getCapacity() {
+        return this.item.GetAttribute("Capacity") as number ?? 0
+    }
+
+    getMaxCapacity() {
+        return this.item.GetAttribute("MaxCapacity") as number ?? 5
     }
 
     getDescription(): string {
-        return "Place the bucket to fill it up" + "\n"
-                + this.getFullness() + "%"
+        const capacity = this.getCapacity()
+        const maxCapacity = this.getMaxCapacity()
+        const roundedUpCapacity = tostring(math.floor(capacity * 10) / 10)
+        const procentage = tostring(math.floor((capacity / maxCapacity) * 1000) / 10)
+
+        return `Place the bucket during rain to fill it up \n${roundedUpCapacity}/${maxCapacity}L (${procentage}%)`
     }
 }

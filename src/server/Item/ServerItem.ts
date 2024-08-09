@@ -106,12 +106,16 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
         const inventory = this.getOwnership()
         this.item.SetAttribute("Quantity", number)
 
+        if(player) ReplicatedStorage.Events.Inventory.QuantityChanged.FireClient(player, this.item)
+
         if(inventory && this.getQuantity() === 0) {
             for(const [i, value] of inventory.itemMap) {
                 if(value.item === this.item) inventory.setSlot(i, undefined)
             }
         }
+    }
 
-        if(player) ReplicatedStorage.Events.Inventory.QuantityChanged.FireClient(player, this.item)
+    consumeItem(quantity = 1) {
+        this.setQuantity(this.getQuantity() - quantity)
     }
 }

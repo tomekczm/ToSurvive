@@ -38,17 +38,12 @@ interface ReplicatedStorage extends Instance {
 				Build: RemoteEvent;
 			};
 		};
-		Rock: Model & {
-			RootPart: MeshPart & {
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
-				Attachment: Attachment;
-			};
+		["Wooden Water Bucket"]: Model & {
 			Events: Folder & {
-				Swing: RemoteEvent;
+				Build: RemoteEvent;
+			};
+			RootPart: MeshPart & {
+				Attachment: Attachment;
 			};
 		};
 		Axe: Model & {
@@ -76,12 +71,30 @@ interface ReplicatedStorage extends Instance {
 				Attachment: Attachment;
 			};
 		};
-		["Wooden Water Bucket"]: Model & {
-			Events: Folder & {
-				Build: RemoteEvent;
-			};
+		Rock: Model & {
 			RootPart: MeshPart & {
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
 				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
+		Flint: Model & {
+			RootPart: MeshPart & {
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
 			};
 		};
 	};
@@ -93,7 +106,10 @@ interface ReplicatedStorage extends Instance {
 	Builds: Folder & {
 		["Wooden Wall"]: Model;
 		["Wooden Water Bucket"]: Model & {
-			RootPart: MeshPart;
+			RootPart: MeshPart & {
+				WashRock: ProximityPrompt;
+				PickUp: ProximityPrompt;
+			};
 		};
 	};
 	Prefabs: Folder & {

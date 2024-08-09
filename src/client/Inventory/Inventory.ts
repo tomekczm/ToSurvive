@@ -46,6 +46,8 @@ let equippedItem: ClientItem | undefined
 const inventory = new Map<number, ClientItem>()
 const reverseInventory = new Map<Instance, number>()
 
+const forceUnequipPacket = packets.ForceUnequipMainSlot
+
 let draggingSlot: number | undefined
 
 function equipSlot(number: number) {
@@ -224,3 +226,7 @@ for(const i of $range(1, HOTBAR_SLOTS)) {
     clone.Parent = hotbarGui;
     hotbarGuiLookup.set(i, clone)
 }
+
+forceUnequipPacket.OnClientEvent.Connect(() => {
+    equippedItem?.unequip()
+})

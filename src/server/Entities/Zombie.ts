@@ -1,4 +1,4 @@
-import { RunService, ServerStorage, Workspace } from "@rbxts/services";
+import { Players, RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { damageFlag, getFlagHealth } from "server/Flag";
 import { sample } from "shared/Array";
 
@@ -39,6 +39,8 @@ export class Zombie {
     state = (dt: number) => this.defaultState(dt)
     humanoid: Animator;
     target?: Model;
+    controllerManager: ControllerManager;
+    goal: Vector3 | undefined;
 
     defaultState(dt: number) {
         const target = flag.GetPivot().Position
@@ -70,7 +72,11 @@ export class Zombie {
     }
 
     targetPlayerState(dt: number) {
+        this.controllerManager.BaseMoveSpeed = 4
+        this.walkAnimation.AdjustSpeed(4)
 
+        if(this.target)
+            this.setTarget(this.target.GetPivot().Position)
     }
 
     attackedByPlayer(character: Model) {
@@ -79,7 +85,8 @@ export class Zombie {
     }
 
     setTarget(target: Vector3) {
-        this.setDirection((target.sub(this.model.GetPivot().Position)).Unit)
+        this.goal = target
+        //this.setDirection((target.sub(this.model.GetPivot().Position)).Unit)
     }
 
     setDirection(direction: Vector3) {
@@ -87,9 +94,10 @@ export class Zombie {
             this.walkAnimation.Play();
         const humanoid = this.model.ControllerManager
         const pivot = this.model.GetPivot()
-        const flagPivot = flag.GetPivot()
-        const lookAt = new Vector3(flagPivot.X, pivot.Y, flagPivot.Z)
-        this.model.PivotTo(CFrame.lookAt(pivot.Position, lookAt))
+        //const flagPivot = flag.GetPivot()
+        //const lookAt = new Vector3(flagPivot.X, pivot.Y, flagPivot.Z)
+        direction = new Vector3(direction.X, 0, direction.Z)
+       
         humanoid.MovingDirection = direction
     }
 
@@ -106,6 +114,9 @@ export class Zombie {
         this.model.PivotTo(new CFrame(position))
         
         this.model.Parent = Workspace
+
+        this.controllerManager = this.model.FindFirstChild("ControllerManager") as ControllerManager
+        const humanoidRootPart = this.model.FindFirstChild("HumanoidRootPart") as BasePart
         const humanoid = this.model.Humanoid.Animator
         this.humanoid = humanoid
 
@@ -134,13 +145,29 @@ export class Zombie {
         this.idleAnimation = humanoid.LoadAnimation(IDLE)
         this.walkAnimation = humanoid.LoadAnimation(WALK)
 
+        //controllerManager.BaseMoveSpeed = 0
+
+        //this.walkAnimation.GetMarkerReachedSignal("StepStart").Connect(() => {
+        //    humanoidRootPart.ApplyImpulse(controllerManager.MovingDirection.mul(250))
+        //})
+
         this.wakeUpAnimation.Play()
+
+        task.delay(10, () => {
+            print("HI")
+            this.attackedByPlayer((Players.WaitForChild("tomekcz") as Player)!.Character as Model)
+        })
 
 
 
         this.wakeUpAnimation.Stopped.Once(() => {
             this.idleAnimation.Play()
             RunService.Heartbeat.Connect((dt) => {
+                if(this.goal) {
+                    const pivot = this.model.GetPivot()
+                    const final = CFrame.lookAlong(pivot.Position, this.goal)
+                    this.model.PivotTo(final)
+                }
                 this.state(dt)
             })
         })

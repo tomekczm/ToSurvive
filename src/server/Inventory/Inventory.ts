@@ -12,6 +12,7 @@ const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
 const SetSlot = packets.WaitForChild("SetSlot") as RemoteEvent
 const SwapSlot = packets.SwapSlots
+const forceUnequipPacket = packets.ForceUnequipMainSlot
 
 const map = new Map<Player, Inventory>()
 
@@ -36,6 +37,11 @@ export class Inventory {
         this.stoarge = stoarge;
     }
 
+    getEquippedItem() {
+        if(this.equippedSlot) return this.getSlot(this.equippedSlot)
+        return
+    }
+
     getSlot(slot: number) {
         return this.itemMap.get(slot);
     }
@@ -56,7 +62,10 @@ export class Inventory {
             SetSlot.FireClient(this.player, slot)
             this.itemMap.delete(slot);
         }
-        prevItem?.unequip()
+        if(prevItem) {
+            prevItem.unequip()
+            forceUnequipPacket.FireClient(this.player)
+        }
     }
 
     giveItem(item: ServerItem): boolean {

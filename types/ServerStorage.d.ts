@@ -32,6 +32,13 @@ interface ServerStorage extends Instance {
 			};
 			MultiRock: Model;
 		};
+		Flower: Model & {
+			Top: MeshPart & {
+				CanColor: BoolValue;
+			};
+			["Cube.090"]: MeshPart;
+			["Cylinder.023"]: MeshPart;
+		};
 		SmallRocks: Folder & {
 			SmallRock2: Model & {
 				BasePart: MeshPart & {
@@ -191,11 +198,16 @@ interface ServerStorage extends Instance {
 		};
 	};
 	Animations: Folder & {
+		Axe: Folder & {
+			Swing2: Animation;
+			Swing: Animation;
+			Hold: Animation;
+		};
 		Sword: Folder & {
 			Hold: Animation;
 			Swing: Animation;
 		};
-		Axe: Folder & {
+		Rock: Folder & {
 			Swing2: Animation;
 			Swing: Animation;
 			Hold: Animation;

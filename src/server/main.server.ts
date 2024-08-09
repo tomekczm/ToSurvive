@@ -14,6 +14,7 @@ import "./Inventory/Inventory"
 import "./PreloadAnimations"
 import "./Terrain/Main"
 import "./TimeOfDay"
+import "./Weather"
 import { Zombie } from "./Entities/Zombie";
 
 
@@ -35,6 +36,8 @@ function getBorderPosition(index: number) {
         return new Vector3(-halfSize, 0, -(halfSize - (normalizedIndex % size)))
     }
 }
+
+task.delay(1, () => { new Zombie(new Vector3(100, 20,0)) })
 
 /*
 task.spawn(() => {
