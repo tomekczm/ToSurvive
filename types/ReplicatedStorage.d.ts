@@ -1,4 +1,65 @@
 interface ReplicatedStorage extends Instance {
+	Viewmodel: Model & {
+		AnimationController: AnimationController & {
+			Animator: Animator;
+		};
+		LeftArm: MeshPart & {
+			Rig4Motor6D: Motor6D;
+		};
+		RightHand: MeshPart & {
+			Rig3Motor6D: Motor6D;
+			RigidConstraint: RigidConstraint;
+		};
+		HumanoidRootPart: Part & {
+			ClimbSensor: ControllerPartSensor;
+			BuoyancySensor: BuoyancySensor;
+			GroundSensor: ControllerPartSensor;
+			["mixamorig:Hips"]: Bone & {
+				["mixamorig:LeftUpLeg"]: Bone & {
+					["mixamorig:LeftLeg"]: Bone & {
+						["mixamorig:LeftFoot"]: Bone & {
+							["mixamorig:LeftToeBase"]: Bone;
+						};
+					};
+				};
+				["mixamorig:RightUpLeg"]: Bone & {
+					["mixamorig:RightLeg"]: Bone & {
+						["mixamorig:RightFoot"]: Bone & {
+							["mixamorig:RightToeBase"]: Bone;
+						};
+					};
+				};
+				["mixamorig:Spine"]: Bone & {
+					["mixamorig:Spine1"]: Bone & {
+						["mixamorig:Spine2"]: Bone & {
+							["mixamorig:RightShoulder"]: Bone & {
+								["mixamorig:RightArm"]: Bone & {
+									["mixamorig:RightForeArm"]: Bone & {
+										["mixamorig:RightHand"]: Bone & {
+											RightAttachBone: Bone;
+										};
+									};
+								};
+							};
+							["mixamorig:Neck"]: Bone & {
+								["mixamorig:Head"]: Bone;
+							};
+							["mixamorig:LeftShoulder"]: Bone & {
+								["mixamorig:LeftArm"]: Bone & {
+									["mixamorig:LeftForeArm"]: Bone & {
+										["mixamorig:LeftHand"]: Bone & {
+											LeftAttachBone: Bone;
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+		AnimSaves: ObjectValue;
+	};
 	TS: Folder & {
 		module: ModuleScript;
 		NumberSequence: ModuleScript;
@@ -100,6 +161,7 @@ interface ReplicatedStorage extends Instance {
 	};
 	Animations: Folder & {
 		Climbing: Animation;
+		WalkBackwards: Animation;
 		Idle: Animation;
 		Walking: Animation;
 	};

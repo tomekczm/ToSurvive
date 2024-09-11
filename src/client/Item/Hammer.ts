@@ -7,6 +7,7 @@ import { recipes, reverseLookup } from "shared/Recipes/HammerRecipes";
 import { Recipe } from "shared/Recipes/Recipe"
 import { Item } from "shared/Item";
 import { CraftAndBuildAbility } from "client/ItemAbility/CraftAndBuildAbility";
+import { Viewmodel } from "client/ItemAbility/Viewmodel";
 
 
 export class HammerItem extends ClientItem<Constraint> {
@@ -15,5 +16,6 @@ export class HammerItem extends ClientItem<Constraint> {
         this.abilityManager.add(new CraftAndBuildAbility(this))
         this.abilityManager.add(new RotateAbility(this))
         this.abilityManager.add(new PointAtAbility(this, "TorsoAttach"))
+        this.abilityManager.add(new Viewmodel(this))
     }
 }

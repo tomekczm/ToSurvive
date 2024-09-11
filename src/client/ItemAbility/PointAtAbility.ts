@@ -54,12 +54,14 @@ export class PointAtAbility extends Ability<ClientItem> {
             this.enablePrimaryControl()
             this.primaryControl.Target = target
 
+            mouse.TargetFilter =  Workspace.WaitForChild("NoRay")
+
             const camera = Workspace!.CurrentCamera as Camera
             this.event = RunService.RenderStepped.Connect(() => {  
                 //const viewportCenter = new Vector2(camera.ViewportSize.X/2, camera.ViewportSize.Y/2)
 	            //const viewportRay = camera.ViewportPointToRay(viewportCenter.X, viewportCenter.Y, 500)
-                //const unitRay = mouse.UnitRay
-                target.Position = mouse.Hit.Position//unitRay.Origin.add(unitRay.Direction.mul(500))
+                const unitRay = mouse.UnitRay
+                target.Position = character.GetPivot().add(unitRay.Direction.mul(500)).Position  //mouse.Hit.Position//unitRay.Origin.add(unitRay.Direction.mul(500))
             })
         })
 

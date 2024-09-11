@@ -29,8 +29,14 @@ export class CollectAbility extends SwingAbility<ServerItem<Constriant>> {
             const tag = CollectionService.HasTag(parent, "Tree")
             if(!tag) continue
 
+            const healthPoints = parent.GetAttribute("HealthPoints") as number || 10
             const startHealth = parent.GetAttribute("Health") as number
             const health = startHealth - damage
+
+            if(healthPoints <= 0) {
+                continue
+            }
+
             parent.SetAttribute("Health", health)
 
             const sound = this.sound.Clone()
@@ -45,13 +51,16 @@ export class CollectAbility extends SwingAbility<ServerItem<Constriant>> {
                 sound.Destroy()
             })
 
-            if(health % 5 !== 0) {
+            if(health > 0) {
                 return
             }
 
+            parent.SetAttribute("Health", 100)
+            parent.SetAttribute("HealthPoints", healthPoints - 1)
+
             const position = new Vector3(
                 rng.NextNumber(-5 ,5),
-                10,
+                rng.NextNumber(10, 15), // 10
                 rng.NextNumber(-5 ,5)
             ).add(this.hitPoint.WorldPosition)
 

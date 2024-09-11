@@ -3,6 +3,7 @@ import { ClientItem } from "./ClientItem";
 import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { SwingAbility } from "client/ItemAbility/SwingAbility";
+import { Viewmodel } from "client/ItemAbility/Viewmodel";
 
 type Constraint = ReplicatedStorage["Tools"]["Hammer"]
 export class AxeItem extends ClientItem<Constraint> {
@@ -11,5 +12,6 @@ export class AxeItem extends ClientItem<Constraint> {
         this.abilityManager.add(new SwingAbility(this))
         this.abilityManager.add(new RotateAbility(this))
         this.abilityManager.add(new PointAtAbility(this, "TorsoAttach"))
+        this.abilityManager.add(new Viewmodel(this))
     }
 }

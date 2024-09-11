@@ -30,7 +30,6 @@ function disableShiftlock() {
     TweenService.Create(humanoid, tweenInfo, {
         CameraOffset: new Vector3(0, 0, 0),
     }).Play()
-    RunService.UnbindFromRenderStep("Shiftlock")
     UserInputService.MouseBehavior = Enum.MouseBehavior.Default
     GameSettings.RotationType = Enum.RotationType.MovementRelative
 }
@@ -47,6 +46,7 @@ export class RotateAbility extends Ability<ClientItem> {
 
     event: RBXScriptConnection | undefined
     shiftLockConnection: RBXScriptConnection | undefined
+    renderstepped: RBXScriptConnection | undefined;
 
     constructor(item: ClientItem) {
         super(item);
@@ -60,13 +60,14 @@ export class RotateAbility extends Ability<ClientItem> {
                 else enableShiftlock()
             })
 
-            RunService.BindToRenderStep("Rotate", Enum.RenderPriority.Last.Value + 1, () => {
+            this.renderstepped = RunService.RenderStepped.Connect(() => {
                 const character = player.Character
                 if(!character) return
                 if(!isShiftlockOn) {
                     const pivot = character.GetPivot()
                     const lookAt = new Vector3(mouse.Hit.X, pivot.Y, mouse.Hit.Z)
                     character.PivotTo(CFrame.lookAt(pivot.Position, lookAt))
+                    
                     //const [_, y] = Workspace.CurrentCamera!.CFrame.Rotation.ToEulerAnglesYXZ();
                     //const cFrame = new CFrame(character.GetPivot().Position)
                     //const newPos = cFrame.mul(CFrame.Angles(0, y ,0))
@@ -77,6 +78,8 @@ export class RotateAbility extends Ability<ClientItem> {
         })
 
         item.unequipEvent.Connect(() => {
+            this.shiftLockConnection?.Disconnect()
+            this.renderstepped?.Disconnect()
             disableShiftlock()
             //RunService.UnbindFromRenderStep("Rotate")
         })
