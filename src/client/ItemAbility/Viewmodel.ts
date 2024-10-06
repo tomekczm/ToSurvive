@@ -16,6 +16,8 @@ export class Viewmodel extends Ability<ClientItem> {
     connectionAttribute: RBXScriptConnection | undefined
     rigid!: RigidConstraint
     clone!: Instance;
+    animation?: AnimationTrack;
+    offset: Vector3 = new Vector3(0,0,0);
 
     fetchAnimation(name: string) {
         const itemName = this.item.item.Name
@@ -23,10 +25,24 @@ export class Viewmodel extends Ability<ClientItem> {
         return animationFolder?.FindFirstChild(name) as Animation
     }
 
-    
+    offsetChanged() {
+        this.offset = this.clone.GetAttribute("ViewportOffset") as Vector3 ?? 0
+    }
+
+    getViewportOffset(cframe: CFrame) {
+        return cframe.XVector.mul(this.offset.X)
+            .add(cframe.YVector.mul(this.offset.Y))
+            .add(cframe.ZVector.mul(this.offset.Z)) 
+    }
 
     onStart(): void {
         this.clone = this.item.item.Clone();
+
+        this.offsetChanged()
+        this.clone.GetAttributeChangedSignal("ViewportOffset").Connect(() => {
+            this.offsetChanged()
+        })
+
         this.clone.FindFirstAncestorWhichIsA("RigidConstraint")?.Destroy()
         this.rigid = new Instance("RigidConstraint")
         this.rigid.Parent = this.clone;
@@ -34,6 +50,10 @@ export class Viewmodel extends Ability<ClientItem> {
             this.clone.Parent = ReplicatedStorage
             this.connection?.Disconnect()
             viewmodel.Parent = ReplicatedStorage
+
+            //task.delay(60, () => {
+            //    this.animation?.Stop();
+            //})
         })
 
         this.item.equipEvent.Connect(() => {
@@ -45,8 +65,16 @@ export class Viewmodel extends Ability<ClientItem> {
             this.rigid.Attachment0 = attachment
             this.rigid.Attachment1 = attach
 
-            const animation = animator.LoadAnimation(this.fetchAnimation("VM_Hold"))
+            animator.GetPlayingAnimationTracks().forEach((e) => {
+                e.Stop()
+            })
+
+            this.animation = animator.LoadAnimation(this.fetchAnimation("VM_Hold"))
+            print(this.animation)
             let time = 0;
+            
+            this.animation?.Play();
+
             this.connection = RunService.RenderStepped.Connect((dt) => {
                 time += dt;
                 let cframe = Workspace.CurrentCamera!.CFrame
@@ -56,9 +84,12 @@ export class Viewmodel extends Ability<ClientItem> {
                 const sinY = -math.abs(math.sin(time) * 0.1)
                 const sinX = 0.05 * math.cos(time);
         
+                //print(cframe)
+
                 const walkOffset = 
                     cframe.RightVector.mul(sinX) // Horizontal component
-                    .add(cframe.UpVector.mul(sinY)); // Vertical component, with phase shift
+                    .add(cframe.UpVector.mul(sinY)) // Vertical component, with phase shift
+    
 
                 if(isInFirstPerson()) {
                     viewmodel.Parent = NoRay
@@ -69,7 +100,6 @@ export class Viewmodel extends Ability<ClientItem> {
                 cframe = cframe.add(walkOffset);
             
                 viewmodel.PivotTo(cframe);
-                animation.Play();
             })
         })
     }

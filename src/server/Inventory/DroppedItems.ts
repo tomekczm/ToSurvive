@@ -5,7 +5,7 @@ import { ServerItem } from "server/Item/ServerItem"
 type ItemCallback = () => ServerItem
 const map = new Map<Instance, ItemCallback>
 
-export function registerCollectableItem(item: Instance, callback: ItemCallback) {
+export function registerCollectableItem(item: Instance, callback: ItemCallback, destroyHost = true) {
     map.set(item, callback)
 }
 

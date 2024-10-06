@@ -68,11 +68,11 @@ interface ReplicatedStorage extends Instance {
 			Recipe: ModuleScript;
 			HammerRecipes: ModuleScript;
 		};
-		InventoryData: ModuleScript;
-		Item: ModuleScript;
-		Bezier: ModuleScript;
-		Array: ModuleScript;
 		HashCode: ModuleScript;
+		Item: ModuleScript;
+		InventoryData: ModuleScript;
+		Array: ModuleScript;
+		Bezier: ModuleScript;
 		AbilityManager: ModuleScript;
 	};
 	Events: Folder & {
@@ -125,11 +125,12 @@ interface ReplicatedStorage extends Instance {
 		Sword: Model & {
 			SurfaceAppearance: SurfaceAppearance;
 			Events: Folder & {
+				Hit: RemoteEvent;
 				Swing: RemoteEvent;
 			};
 			RootPart: Part & {
-				Mesh: SpecialMesh;
 				Attachment: Attachment;
+				Mesh: SpecialMesh;
 			};
 		};
 		Rock: Model & {
@@ -162,8 +163,16 @@ interface ReplicatedStorage extends Instance {
 	Animations: Folder & {
 		Climbing: Animation;
 		WalkBackwards: Animation;
-		Idle: Animation;
 		Walking: Animation;
+		Axe: Folder & {
+			VM_Hold: Animation;
+		};
+		Hammer: Folder & {
+			VM_Hold: Animation;
+		};
+		Right: Animation;
+		Left: Animation;
+		Idle: Animation;
 	};
 	Builds: Folder & {
 		["Wooden Wall"]: Model;
@@ -175,6 +184,127 @@ interface ReplicatedStorage extends Instance {
 		};
 	};
 	Prefabs: Folder & {
+		Crow: Model & {
+			GEO_RedtailHawk_01: MeshPart & {
+				Root: Bone & {
+					Body: Bone & {
+						RightArm1_LoResClavical: Bone & {
+							RightArm1_LoResUpperArm: Bone & {
+								RightArm1_LoResLowerArm: Bone & {
+									RightArm1_LoResHand: Bone;
+								};
+							};
+						};
+						RightLeg1_LoResUpperLeg: Bone & {
+							RightLeg1_LoResLowerLeg: Bone & {
+								RightLeg1_LoResFoot: Bone;
+							};
+						};
+						Neck: Bone & {
+							Head: Bone;
+						};
+						Tail: Bone;
+						LeftArm1_LoResClavical: Bone & {
+							LeftArm1_LoResUpperArm: Bone & {
+								LeftArm1_LoResLowerArm: Bone & {
+									LeftArm1_LoResHand: Bone;
+								};
+							};
+						};
+						LeftLeg1_LoResUpperLeg: Bone & {
+							LeftLeg1_LoResLowerLeg: Bone & {
+								LeftLeg1_LoResFoot: Bone;
+							};
+						};
+					};
+				};
+				SurfaceAppearance: SurfaceAppearance;
+			};
+			InitialPoses: Folder & {
+				GEO_RedtailHawk_01_Composited: CFrameValue;
+				LeftLeg1_LoResToe_end_Composited: CFrameValue;
+				Tail_Composited: CFrameValue;
+				RightLeg1_LoResUpperLeg_Composited: CFrameValue;
+				RightLeg1_LoResLowerLeg_Composited: CFrameValue;
+				RightLeg1_LoResToe_end_Initial: CFrameValue;
+				LeftLeg1_LoResToe_Composited: CFrameValue;
+				LeftArm1_LoResClavical_Initial: CFrameValue;
+				LeftLeg1_LoResFoot_Composited: CFrameValue;
+				Neck_Initial: CFrameValue;
+				RightArm1_LoResUpperArm_Composited: CFrameValue;
+				RightLeg1_LoResUpperLeg_Original: CFrameValue;
+				RightLeg1_LoResFoot_Original: CFrameValue;
+				LeftLeg1_LoResToe_end_Initial: CFrameValue;
+				Head_Initial: CFrameValue;
+				LeftLeg1_LoResUpperLeg_Original: CFrameValue;
+				LeftArm1_LoResClavical_Original: CFrameValue;
+				LeftLeg1_LoResLowerLeg_Original: CFrameValue;
+				RightLeg1_LoResToe_end_Original: CFrameValue;
+				RightLeg1_LoResToe_Initial: CFrameValue;
+				LeftArm1_LoResHand_Initial: CFrameValue;
+				Root_Initial: CFrameValue;
+				Head_Composited: CFrameValue;
+				Body_Initial: CFrameValue;
+				LeftArm1_LoResLowerArm_Initial: CFrameValue;
+				LeftLeg1_LoResUpperLeg_Composited: CFrameValue;
+				LeftLeg1_LoResFoot_Original: CFrameValue;
+				LeftArm1_LoResClavical_Composited: CFrameValue;
+				RightLeg1_LoResToe_end_Composited: CFrameValue;
+				Root_Original: CFrameValue;
+				RightArm1_LoResClavical_Original: CFrameValue;
+				LeftLeg1_LoResLowerLeg_Initial: CFrameValue;
+				LeftLeg1_LoResToe_Original: CFrameValue;
+				Body_Original: CFrameValue;
+				RightArm1_LoResUpperArm_Original: CFrameValue;
+				LeftLeg1_LoResLowerLeg_Composited: CFrameValue;
+				LeftLeg1_LoResFoot_Initial: CFrameValue;
+				RightArm1_LoResUpperArm_Initial: CFrameValue;
+				RightArm1_LoResClavical_Initial: CFrameValue;
+				Body_Composited: CFrameValue;
+				RightArm1_LoResHand_Initial: CFrameValue;
+				Tail_Initial: CFrameValue;
+				LeftArm1_LoResHand_Composited: CFrameValue;
+				RightArm1_LoResLowerArm_Original: CFrameValue;
+				LeftLeg1_LoResToe_end_Original: CFrameValue;
+				LeftLeg1_LoResUpperLeg_Initial: CFrameValue;
+				RightLeg1_LoResUpperLeg_Initial: CFrameValue;
+				LeftArm1_LoResUpperArm_Initial: CFrameValue;
+				Tail_Original: CFrameValue;
+				Head_Original: CFrameValue;
+				Neck_Original: CFrameValue;
+				LeftArm1_LoResLowerArm_Original: CFrameValue;
+				RightLeg1_LoResLowerLeg_Initial: CFrameValue;
+				RightLeg1_LoResFoot_Initial: CFrameValue;
+				RightArm1_LoResLowerArm_Initial: CFrameValue;
+				GEO_RedtailHawk_01_Initial: CFrameValue;
+				RightLeg1_LoResToe_Original: CFrameValue;
+				LeftArm1_LoResUpperArm_Composited: CFrameValue;
+				LeftArm1_LoResLowerArm_Composited: CFrameValue;
+				LeftArm1_LoResUpperArm_Original: CFrameValue;
+				RightLeg1_LoResToe_Composited: CFrameValue;
+				RightArm1_LoResHand_Composited: CFrameValue;
+				GEO_RedtailHawk_01_Original: CFrameValue;
+				RightArm1_LoResLowerArm_Composited: CFrameValue;
+				RightLeg1_LoResFoot_Composited: CFrameValue;
+				RightLeg1_LoResLowerLeg_Original: CFrameValue;
+				Neck_Composited: CFrameValue;
+				RightArm1_LoResClavical_Composited: CFrameValue;
+				LeftArm1_LoResHand_Original: CFrameValue;
+				Root_Composited: CFrameValue;
+				RightArm1_LoResHand_Original: CFrameValue;
+				LeftLeg1_LoResToe_Initial: CFrameValue;
+			};
+			AnimationController: AnimationController & {
+				Animator: Animator;
+			};
+		};
+		SnowVFX: Part & {
+			Snowfall: ParticleEmitter;
+		};
+		CrowFlight: Folder & {
+			FlyNormal: Animation;
+			FlyPatterned: Animation;
+		};
 		Slot: ImageLabel & {
 			UICorner: UICorner;
 			UIStroke: UIStroke;
@@ -191,6 +321,19 @@ interface ReplicatedStorage extends Instance {
 					CameraShaker: ModuleScript & {
 						CameraShakeInstance: ModuleScript;
 						CameraShakePresets: ModuleScript;
+					};
+				};
+				["raycast-hitbox"]: Folder & {
+					src: ModuleScript & {
+						HitboxCaster: ModuleScript;
+						GoodSignal: ModuleScript;
+						VisualizerCache: ModuleScript;
+						Solvers: Folder & {
+							Vector3: ModuleScript;
+							Attachment: ModuleScript;
+							LinkAttachments: ModuleScript;
+							Bone: ModuleScript;
+						};
 					};
 				};
 				["behavior-tree-5"]: ModuleScript & {

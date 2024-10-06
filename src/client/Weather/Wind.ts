@@ -2,7 +2,7 @@ import Rain from "@rbxts/rain"
 import { RunService, SoundService, TweenService, Workspace } from "@rbxts/services"
 import WindShake from "./WindShake/WindShake"
 import { shake } from "client/CamShake"
-import CameraShaker from "@rbxts/camera-shaker"
+import CameraShaker, { CameraShakeInstance } from "@rbxts/camera-shaker"
 
 WindShake.Init({
     MatchWorkspaceWind: true
@@ -41,7 +41,9 @@ Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
 
     if(weather === "Rain") {
         SoundService.Wind.Play()
-
+        //shake.ShakeSustain(
+        //    CameraShaker.Presets.RoughDriving
+        //)
         Rain.SetIntensityRatio(intensity)
         Rain.Enable(tweenInfo)
 
@@ -52,6 +54,19 @@ Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
                 GlobalWind: vector
             }
         )
+        
+        tween.Play()
+
+        const cloudTween = TweenService.Create(
+            Workspace.Terrain.WaitForChild("Clouds") as Clouds,
+            new TweenInfo(10),
+            {
+                Cover: math.random(677, 1000) / 1000
+            }
+        )
+
+        cloudTween.Play()
+        cloudTween.Completed.Wait()
         
         tween.Play()
         
@@ -78,5 +93,15 @@ Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
         )
         
         tween.Play()
+        const cloudTween = TweenService.Create(
+            Workspace.Terrain.WaitForChild("Clouds") as Clouds,
+            new TweenInfo(10),
+            {
+                Cover: math.random(0, 677) / 1000
+            }
+        )
+
+        cloudTween.Play()
+        cloudTween.Completed.Wait()
     }
 })

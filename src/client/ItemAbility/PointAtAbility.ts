@@ -35,12 +35,12 @@ export class PointAtAbility extends Ability<ClientItem> {
         super(item);
         const altHand = this.item.item.FindFirstChild("RootPart")?.FindFirstChild("AlternativeHand") as Attachment
 
-        const character = player.Character
-        if(!character) return
-        const IKControl = character.FindFirstChild(mode) as IKControl
-        this.primaryControl = IKControl
-
         item.equipEvent.Connect(() => {
+
+            const character = player.Character
+            if(!character) return
+            const IKControl = character.FindFirstChild(mode) as IKControl
+            this.primaryControl = IKControl    
 
             if(altHand) {
                 this.hasSecoundaryHand = true;

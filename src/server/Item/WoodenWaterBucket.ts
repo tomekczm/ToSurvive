@@ -11,6 +11,7 @@ class WoodenWaterBucketAbility extends Ability<WoodenWaterBucket> {
         item.listenToEvent("Build", (cframe) => {
            this.item.setQuantity(this.item.getQuantity() - 1)
            const clone = prefab.Clone()
+           clone.SetAttribute("Capacity", this.item.getCapacity())
            clone.Parent = Workspace
            clone.PivotTo(cframe as CFrame)
            clone.RootPart.PickUp.Enabled = true
@@ -34,5 +35,9 @@ export class WoodenWaterBucket extends ServerItem<Constraint> {
 
     setCapacity(number: number) {
         this.item.SetAttribute("Capacity", number)
+    }
+
+    getCapacity() {
+        return this.item.GetAttribute("Capacity") as number ?? 0
     }
 }

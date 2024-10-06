@@ -21,6 +21,7 @@
     "@rbxts/behavior-tree-5": "^1.0.0",
     "@rbxts/camera-shaker": "^1.0.8",
     "@rbxts/rain": "^1.0.4",
+    "@rbxts/raycast-hitbox": "^4.0.1-ts.1",
     "@rbxts/services": "^1.5.4"
   }
 }

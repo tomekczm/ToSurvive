@@ -24,7 +24,11 @@ export class SwingAbility<T extends ServerItem> extends Ability<T> {
         const point = item
     }
 
+    onSwingStart() {}
+
     onSwing() {}
+
+    onSwingEnd() {}
 
     swing() {
         const instance = this.item.item
@@ -36,11 +40,17 @@ export class SwingAbility<T extends ServerItem> extends Ability<T> {
             this.animations[(this.firstPlayed) ? 0 : 1]
         ) 
 
+        this.onSwingStart()
+
         this.swingAnimationLoaded.Priority = Enum.AnimationPriority.Action4
         this.swingAnimationLoaded?.Play(0.25)
 
         this.swingAnimationLoaded.GetMarkerReachedSignal("Impact").Once(() => {
             this.onSwing()
+        })
+
+        this.swingAnimationLoaded.Ended.Once(() => {
+            this.onSwingEnd()
         })
 
         instance.SetAttribute("SwingDelay", true)

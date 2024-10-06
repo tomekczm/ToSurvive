@@ -40,8 +40,6 @@ const VIEW_RANGE = 6
 
 const chunks = new Set<string>()
 
-print(MASTER_SEED)
-
 function getData(x: number, z: number) {
     x += MASTER_SEED
     z += MASTER_SEED
@@ -149,7 +147,6 @@ function generateChunk(origin: CFrame) {
                 }
             } else if(maxDist <= 500) {
                 const newHeight = lerp(1, height, (maxDist - 200)/300)
-                //const newHeight = height * TweenService.GetValue((maxDist - 200)/300, Enum.EasingStyle.Sine, Enum.EasingDirection.In) + 1
                 pos = new CFrame(realX, newHeight, realZ);
             }
 

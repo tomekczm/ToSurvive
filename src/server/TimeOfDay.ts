@@ -1,46 +1,51 @@
-/*
-import { Lighting, TweenService, Workspace } from "@rbxts/services"
+import { Lighting, RunService } from "@rbxts/services";
+import { Zombie } from "./Entities/Zombie";
 
-const time = new Instance("NumberValue")
-time.Parent = script
-time.Changed.Connect((newTime) => {
-    Lighting.SetMinutesAfterMidnight(newTime)
-})
+const RANDOM_SPAWNER = new Random();
 
-const dayCycle = TweenService.Create(
-	time,
-	new TweenInfo(40,Enum.EasingStyle.Linear,Enum.EasingDirection.In),
-	{
-		Value: 60 * 12
-	}
-)
+const size = 300;
+const peremiter = 4 * size;
 
-const nightCycle = TweenService.Create(
-	time,
-	new TweenInfo(40,Enum.EasingStyle.Linear,Enum.EasingDirection.In),
-	{
-		Value: 60 * 24
-	}
-)
+function getBorderPosition(index: number) {
+    const normalizedIndex = index % peremiter;
+    const halfSize = size / 2
+    if(normalizedIndex < size) {
+        return new Vector3(normalizedIndex - halfSize, 0, halfSize)
+     } else if  (normalizedIndex < 2 * size) {
+        return new Vector3(halfSize, 0, halfSize - (normalizedIndex % size))
+    } else if (normalizedIndex < 3 * size) {
+        return new Vector3(halfSize - (normalizedIndex % size), 0, -halfSize)
+    } else {
+        return new Vector3(-halfSize, 0, -(halfSize - (normalizedIndex % size)))
+    }
+}
 
-let night = 0;
-let day = 0;
+let isNight = false;
+let nightTask: thread | undefined
 
-task.spawn(() => {
-    while(true) {
-        print("DAY")
-        day++;
+RunService.Heartbeat.Connect((dt) => {
+    Lighting.ClockTime += dt * 0.01
 
-        Workspace.SetAttribute("DateName", "Day " + day)
-
-        dayCycle.Play()
-        dayCycle.Completed.Wait()
-        print("NIGHT")
-        night++;
-
-        Workspace.SetAttribute("DateName", "Night " + night)
-        nightCycle.Play()
-        nightCycle.Completed.Wait()
+    const isNightNow = Lighting.ClockTime >= 17.6 || Lighting.ClockTime <= 6.3
+    if(isNightNow !== isNight) {
+        if(!isNight) {
+            nightTask = task.spawn(randomSpawn)
+        } else if(nightTask) {
+            task.cancel(nightTask)
+        }
+        
+        isNight = isNightNow
     }
 })
-*/
+
+new Zombie(new Vector3(-200, 100 ,0))
+
+function randomSpawn() {
+    while(true) {
+        let axis = RANDOM_SPAWNER.NextNumber(0, peremiter)
+    
+        const vector = getBorderPosition(axis).add(new Vector3(0,10,0));
+        new Zombie(vector)
+        task.wait(5)
+    }
+}

@@ -1,4 +1,5 @@
 import { Players, RunService, TweenService, UserInputService, Workspace } from "@rbxts/services";
+import { isInFirstPerson } from "client/FirstPersonMode";
 import { ClientItem } from "client/Item/ClientItem";
 import { Ability } from "shared/Ability";
 
@@ -6,6 +7,7 @@ const player = Players.LocalPlayer
 const mouse = player.GetMouse()
 
 let isShiftlockOn = true
+let isOffsetIn = false
 
 const tweenInfo = new TweenInfo(1)
 
@@ -17,21 +19,27 @@ function enableShiftlock() {
         CameraOffset: new Vector3(2, 0, 0),
     }).Play()
 
+    isOffsetIn = true
+
     UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
     GameSettings.RotationType = Enum.RotationType.CameraRelative
     
 }
 
 
-function disableShiftlock() {
-    isShiftlockOn = false
+function disableShiftlock(onlyOffset = false) {
+    if(!onlyOffset) {
+        isShiftlockOn = false
+        UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+        GameSettings.RotationType = Enum.RotationType.MovementRelative
+    }
+
+    isOffsetIn = false
     const humanoid = Players.LocalPlayer.Character?.WaitForChild("Humanoid") as Humanoid
     assert(humanoid)
     TweenService.Create(humanoid, tweenInfo, {
         CameraOffset: new Vector3(0, 0, 0),
     }).Play()
-    UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-    GameSettings.RotationType = Enum.RotationType.MovementRelative
 }
 
 interface UserSettings {
@@ -62,7 +70,9 @@ export class RotateAbility extends Ability<ClientItem> {
 
             this.renderstepped = RunService.RenderStepped.Connect(() => {
                 const character = player.Character
+                const humanoid = character?.FindFirstChild("Humanoid") as Humanoid
                 if(!character) return
+                
                 if(!isShiftlockOn) {
                     const pivot = character.GetPivot()
                     const lookAt = new Vector3(mouse.Hit.X, pivot.Y, mouse.Hit.Z)
@@ -72,6 +82,12 @@ export class RotateAbility extends Ability<ClientItem> {
                     //const cFrame = new CFrame(character.GetPivot().Position)
                     //const newPos = cFrame.mul(CFrame.Angles(0, y ,0))
                     //character.PivotTo(newPos)
+                } else {
+                    if(isInFirstPerson()) {
+                        disableShiftlock(true)
+                    } else if (isShiftlockOn && !isOffsetIn) {
+                        enableShiftlock()
+                    }
                 }
             })
             

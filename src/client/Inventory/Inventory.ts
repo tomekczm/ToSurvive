@@ -111,8 +111,32 @@ UserInputService.InputBegan.Connect((input) => {
     equipSlot(number)
 })
 
+let highlightedSlot: ImageLabel | undefined
+
+function highlightSlot(input: InputObject) {
+    const key = numberMap.get(input.KeyCode)
+    if(!key) return
+    const slot = hotbarGuiLookup.get(key)
+    if(!slot) return
+
+    const _highlightedSlot = highlightedSlot
+    if(highlightedSlot) {
+        highlightedSlot.TweenSize(UDim2.fromOffset(100, 100), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.125)
+        highlightedSlot = undefined
+    }
+
+    if(slot !== _highlightedSlot) {
+        highlightedSlot = slot;
+        slot.TweenSize(UDim2.fromOffset(110, 110), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.125)
+    }
+
+}
+
 // Dragging begin
 UserInputService.InputBegan.Connect((input) => {
+
+    highlightSlot(input)
+
     if(input.UserInputType !== Enum.UserInputType.MouseButton1)
         return
 
@@ -228,5 +252,6 @@ for(const i of $range(1, HOTBAR_SLOTS)) {
 }
 
 forceUnequipPacket.OnClientEvent.Connect(() => {
+    print("HI")
     equippedItem?.unequip()
 })

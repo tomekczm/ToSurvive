@@ -32,12 +32,23 @@ interface ServerStorage extends Instance {
 			};
 			MultiRock: Model;
 		};
-		Flower: Model & {
+		Soul: Model & {
+			SoulFragment: Part & {
+				ParticleEmitter: ParticleEmitter;
+			};
+		};
+		Flowers: Model & {
 			Top: MeshPart & {
 				CanColor: BoolValue;
 			};
 			["Cube.090"]: MeshPart;
 			["Cylinder.023"]: MeshPart;
+		};
+		BlackBiome: Folder & {
+			DeadTree: Model & {
+				Part: Part;
+				MeshPart: MeshPart;
+			};
 		};
 		SmallRocks: Folder & {
 			SmallRock2: Model & {
@@ -56,8 +67,72 @@ interface ServerStorage extends Instance {
 				};
 			};
 		};
-		Desert: Folder & {
-			SandRock: Model;
+		Ragdoll: Model & {
+			LeftLowerArm: MeshPart & {
+				Attachment1: Attachment;
+				BallSocketConstraint: BallSocketConstraint;
+				Attachment0: Attachment;
+			};
+			RightUpperArm: MeshPart & {
+				HingeConstraint: HingeConstraint;
+				Attachment0: Attachment;
+				Attachment1: Attachment;
+			};
+			Head: Part & {
+				["Noob Face"]: Decal;
+				Mesh: SpecialMesh;
+				Attachment1: Attachment;
+			};
+			UpperTorso: MeshPart & {
+				RShoulder: Attachment;
+				LShoulder: Attachment;
+				Attachment1: Attachment;
+			};
+			RightHand: MeshPart & {
+				Attachment1: Attachment;
+			};
+			LowerTorso: MeshPart & {
+				HingeConstraint: HingeConstraint;
+			};
+			LeftUpperLeg: MeshPart & {
+				HingeConstraint: HingeConstraint;
+				Attachment0: Attachment;
+				Attachment1: Attachment;
+			};
+			LeftUpperArm: MeshPart & {
+				Attachment1: Attachment;
+				HingeConstraint: HingeConstraint;
+				Attachment0: Attachment;
+			};
+			RightLowerArm: MeshPart & {
+				Attachment0: Attachment;
+				BallSocketConstraint: BallSocketConstraint;
+				Attachment1: Attachment;
+			};
+			LeftHand: MeshPart & {
+				Attachment1: Attachment;
+			};
+			RightUpperLeg: MeshPart & {
+				HingeConstraint: HingeConstraint;
+				Attachment0: Attachment;
+				Attachment1: Attachment;
+			};
+			LeftFoot: MeshPart & {
+				Attachment1: Attachment;
+			};
+			RightLowerLeg: MeshPart & {
+				Attachment0: Attachment;
+				BallSocketConstraint: BallSocketConstraint;
+				Attachment1: Attachment;
+			};
+			RightFoot: MeshPart & {
+				Attachment1: Attachment;
+			};
+			LeftLowerLeg: MeshPart & {
+				Attachment0: Attachment;
+				BallSocketConstraint: BallSocketConstraint;
+				Attachment1: Attachment;
+			};
 		};
 		ZombieModel: Model & {
 			Humanoid: Humanoid & {
@@ -71,14 +146,8 @@ interface ServerStorage extends Instance {
 				Rig3Motor6D: Motor6D;
 			};
 			LeftAttach: IKControl;
-			AnimSaves: ObjectValue;
 			IKControl: IKControl;
-			ControllerManager: ControllerManager & {
-				GroundController: GroundController;
-				SwimController: SwimController;
-				ClimbController: ClimbController;
-				AirController: AirController;
-			};
+			AnimSaves: ObjectValue;
 			LeftArm: MeshPart & {
 				Rig4Motor6D: Motor6D;
 			};
@@ -140,57 +209,13 @@ interface ServerStorage extends Instance {
 				Rig2Motor6D: Motor6D;
 			};
 		};
-		BlackBiome: Folder & {
-			DeadTree: Model & {
-				Part: Part;
-				MeshPart: MeshPart;
-			};
+		Desert: Folder & {
+			SandRock: Model;
 		};
 	};
 	RBX_ANIMSAVES: Model & {
-		ZombieModel: ObjectValue & {
-			["Imported Animation Clip"]: KeyframeSequence & {
-				End: Keyframe & {
-					HumanoidRootPart: Pose & {
-						["mixamorig:Hips"]: Pose & {
-							["mixamorig:Spine"]: Pose & {
-								["mixamorig:Spine1"]: Pose & {
-									["mixamorig:Spine2"]: Pose & {
-										["mixamorig:RightShoulder"]: Pose & {
-											["mixamorig:RightArm"]: Pose & {
-												["mixamorig:RightForeArm"]: Pose;
-											};
-										};
-										["mixamorig:Neck"]: Pose & {
-											["mixamorig:Head"]: Pose;
-										};
-										["mixamorig:LeftShoulder"]: Pose & {
-											["mixamorig:LeftArm"]: Pose & {
-												["mixamorig:LeftForeArm"]: Pose;
-											};
-										};
-									};
-								};
-							};
-							["mixamorig:LeftUpLeg"]: Pose & {
-								["mixamorig:LeftLeg"]: Pose & {
-									["mixamorig:LeftFoot"]: Pose & {
-										["mixamorig:LeftToeBase"]: Pose;
-									};
-								};
-							};
-							["mixamorig:RightUpLeg"]: Pose & {
-								["mixamorig:RightLeg"]: Pose & {
-									["mixamorig:RightFoot"]: Pose & {
-										["mixamorig:RightToeBase"]: Pose;
-									};
-								};
-							};
-						};
-					};
-					RootNode: Pose;
-				};
-			};
+		Crow: ObjectValue & {
+			["Imported Animation Clip"]: KeyframeSequence;
 		};
 		tomekcz: ObjectValue & {
 			["Imported Animation Clip"]: KeyframeSequence;
@@ -204,8 +229,9 @@ interface ServerStorage extends Instance {
 			Hold: Animation;
 		};
 		Sword: Folder & {
-			Hold: Animation;
+			Swing2: Animation;
 			Swing: Animation;
+			Hold: Animation;
 		};
 		Rock: Folder & {
 			Swing2: Animation;

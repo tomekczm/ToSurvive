@@ -37,6 +37,7 @@ task.spawn(() => {
             dt = dt / 10
             const buckets = CollectionService.GetTagged("Bucket") as Bucket[]
             for(const bucket of buckets) {
+                if(bucket.Parent !== Workspace) continue;
                 const maxCapacity = bucket.GetAttribute("MaxCapacity") as number ?? 5
                 const currentCapacity = bucket.GetAttribute("Capacity") as number ?? 0
                 const newValue = math.min(maxCapacity, currentCapacity + dt)
@@ -47,7 +48,7 @@ task.spawn(() => {
             }
         })
 
-        task.wait(math.random(60, 120))
+        task.wait(math.random(10, 20))
         Workspace.SetAttribute("Weather", "None")
 
         connection.Disconnect()

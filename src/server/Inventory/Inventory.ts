@@ -25,6 +25,18 @@ export class Inventory {
 
     equippedSlot: number | undefined
     
+    private onCharacter(character: Model) {
+        task.spawn(() => {
+            const humanoid = character.WaitForChild("Humanoid") as Humanoid
+            humanoid.Died.Once(() => {
+                if(!this.equippedSlot) return
+                const item = this.getSlot(this.equippedSlot) 
+                item?.unequip()
+                forceUnequipPacket.FireClient(this.player)
+            })
+        })
+    }
+
     static getInventory(player: Player) {
         return map.get(player);
     }
@@ -35,6 +47,12 @@ export class Inventory {
         stoarge.Name = "Stoarge"
         stoarge.Parent = this.player
         this.stoarge = stoarge;
+
+        const character = this.player.Character
+        if(character) {
+            this.onCharacter(character)
+        }
+        this.player.CharacterAdded.Connect((model) => this.onCharacter(model))
     }
 
     getEquippedItem() {
