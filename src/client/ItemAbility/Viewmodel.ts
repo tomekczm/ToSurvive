@@ -70,7 +70,6 @@ export class Viewmodel extends Ability<ClientItem> {
             })
 
             this.animation = animator.LoadAnimation(this.fetchAnimation("VM_Hold"))
-            print(this.animation)
             let time = 0;
             
             this.animation?.Play();

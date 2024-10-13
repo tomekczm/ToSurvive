@@ -49,11 +49,20 @@ const reverseInventory = new Map<Instance, number>()
 const forceUnequipPacket = packets.ForceUnequipMainSlot
 
 let draggingSlot: number | undefined
+let delay = false
+let slotHighlightDelay = false
 
 function equipSlot(number: number) {
+    //it just breaks if u spam buttons w/o any delay
+    if(delay) return
+    delay = true
+    task.delay(0.1, () => { delay = false })
     equippedItem?.unequip()
     const item = equipPacket.InvokeServer(number) as Model | undefined
-    if(item === undefined) return
+    if(item === undefined) {
+        equippedItem = undefined
+        return
+    }
     const itemClass = getItemFromInstance(item)
     itemClass?.equip()
     equippedItem = itemClass
@@ -114,6 +123,11 @@ UserInputService.InputBegan.Connect((input) => {
 let highlightedSlot: ImageLabel | undefined
 
 function highlightSlot(input: InputObject) {
+
+    if(slotHighlightDelay) return
+    slotHighlightDelay = true
+    task.delay(0.1, () => { slotHighlightDelay = false })
+
     const key = numberMap.get(input.KeyCode)
     if(!key) return
     const slot = hotbarGuiLookup.get(key)
@@ -252,6 +266,6 @@ for(const i of $range(1, HOTBAR_SLOTS)) {
 }
 
 forceUnequipPacket.OnClientEvent.Connect(() => {
-    print("HI")
     equippedItem?.unequip()
+    equippedItem = undefined
 })

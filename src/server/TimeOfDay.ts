@@ -24,7 +24,7 @@ let isNight = false;
 let nightTask: thread | undefined
 
 RunService.Heartbeat.Connect((dt) => {
-    Lighting.ClockTime += dt * 0.01
+    Lighting.ClockTime += dt * 0.05
 
     const isNightNow = Lighting.ClockTime >= 17.6 || Lighting.ClockTime <= 6.3
     if(isNightNow !== isNight) {

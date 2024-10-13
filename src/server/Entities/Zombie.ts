@@ -4,6 +4,7 @@ import { hurtHighlight } from "server/VFX";
 import { sample } from "shared/Array";
 import { addEntity } from "./Entities";
 import { Soul } from "./Soul";
+import { Janitor } from "@rbxts/janitor";
 
 const Animations = ServerStorage.Animations.Zombie
 const model = ServerStorage.Models.ZombieModel
@@ -22,12 +23,22 @@ const entities: Zombie[] = []
 const ATTACK_LENGTH = 5;
 const Ragdoll = ServerStorage.Models.Ragdoll.Clone()
 
+CollectionService.GetInstanceAddedSignal("Zombie").Connect((_model) => {
+    const model = _model as Model;
+    for(const child of model.GetChildren()) {
+        if(!child.IsA("BasePart")) continue;
+        child.CanCollide = child.Name === "Collision"
+    }
+})
+
 type ZombieModel = ServerStorage["Models"]["ZombieModel"]
 export class Zombie {
     private model: ZombieModel // ZombieModel model;
     private wakeUpAnimation: AnimationTrack;
     private idleAnimation: AnimationTrack;
     private walkAnimation: AnimationTrack;
+
+    private janitor = new Janitor();
 
     private wasAttacking = false;
     private damage = 10
@@ -50,6 +61,7 @@ export class Zombie {
     death() {
         new Soul(this.model.GetPivot().Position)
         const noob = Ragdoll.Clone()
+
         noob.PivotTo(
             this.model.HumanoidRootPart.CFrame
         )
@@ -69,13 +81,16 @@ export class Zombie {
         ragdollTarget.Value = noob
         ragdollTarget.Parent = this.model
         CollectionService.AddTag(this.model, "Ragdoll")
-
+        this.janitor.Cleanup()
+        task.delay(25, () => {
+            this.model.Destroy()
+            noob.Destroy()
+        })
     }
 
     defaultState(dt: number) {
         const target = flag.GetPivot().Position
-        const distance = this.goal?.Magnitude
-
+        this.ikControl.Enabled = false;
         this.ikControl.Target = undefined;
         this.target = flag;
         this.setTarget(target)
@@ -84,13 +99,13 @@ export class Zombie {
 
     targetPlayerState(dt: number) {
         if(this.targetHumanoid?.Health === 0) {
-            this.state = this.defaultState
+            this.state = (dt) => { this.defaultState(dt) }
         }
         if(this.target) {
             const playerPivot = this.target.GetPivot().Position
             const distance = this.getDistanceTo(playerPivot)
-            if(distance >= 100) {
-                this.state = this.defaultState
+            if(distance >= 30) {
+                this.state = (dt) => { this.defaultState(dt) }
                 return
             }
             this.setTarget(playerPivot)
@@ -205,19 +220,22 @@ export class Zombie {
         this.wakeUpAnimation.Play()
 
 
-        this.model.Humanoid.Died.Connect(() => {
+        const died = this.model.Humanoid.Died.Connect(() => {
             this.humanoid.GetPlayingAnimationTracks().forEach((track) => {
                 track.Stop(0)
             })
             this.state = () => {}
             this.death()
         })
+        this.janitor.Add(died, "Disconnect")
 
-        this.wakeUpAnimation.Stopped.Once(() => {
+        const wakeUpConnection = this.wakeUpAnimation.Stopped.Once(() => {
             this.idleAnimation.Play()
-            RunService.Heartbeat.Connect((dt) => {
+            const heartbeat = RunService.Heartbeat.Connect((dt) => {
                 this.state(dt)
             })
+            this.janitor.Add(heartbeat, "Disconnect")
         })
+        this.janitor.Add(wakeUpConnection, "Disconnect")
     }
 }

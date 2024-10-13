@@ -18,8 +18,13 @@ export class MeleeSwing extends SwingAbility {
 
         this.swingConnection = raycastHitbox.OnHit.Connect((part, humanoid) => {
             this.item.invokeEvent("Hit", humanoid)
+            this.raycastHitbox.HitStop()
         })
         super.onStart()
+    }
+
+    onNoLongerSwinging(): void {
+        this.raycastHitbox.HitStop()
     }
 
     localSwing(): void {

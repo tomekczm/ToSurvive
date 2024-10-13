@@ -12,7 +12,8 @@ export function registerCollectableItem(item: Instance, callback: ItemCallback, 
 ProximityPromptService.PromptTriggered.Connect(async (prompt, player) => {
     const { Inventory } = await import("./Inventory")
     if(prompt.Name !== "PickUp") return
-    const host = prompt.Parent!.Parent as Instance
+    const isPart = prompt.GetAttribute("IsPart") ?? false
+    const host = ((isPart) ? prompt.Parent : prompt.Parent!.Parent) as Instance
     const ItemCallback = map.get(host)
     assert(ItemCallback)
     const inventory = Inventory.getInventory(player)

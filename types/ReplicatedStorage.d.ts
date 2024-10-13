@@ -122,6 +122,19 @@ interface ReplicatedStorage extends Instance {
 				Swing: RemoteEvent;
 			};
 		};
+		Flint: Model & {
+			RootPart: MeshPart & {
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
 		Sword: Model & {
 			SurfaceAppearance: SurfaceAppearance;
 			Events: Folder & {
@@ -146,17 +159,16 @@ interface ReplicatedStorage extends Instance {
 				Swing: RemoteEvent;
 			};
 		};
-		Flint: Model & {
+		Spear: Model & {
 			RootPart: MeshPart & {
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
 				Attachment: Attachment;
 			};
 			Events: Folder & {
 				Swing: RemoteEvent;
+				Throw: RemoteEvent;
+				Hit: RemoteEvent;
+				PrepareThrow: RemoteEvent;
+				ThrowStop: RemoteEvent;
 			};
 		};
 	};
@@ -317,11 +329,40 @@ interface ReplicatedStorage extends Instance {
 		Promise: ModuleScript;
 		node_modules: Folder & {
 			["@rbxts"]: Folder & {
+				["behavior-tree-5"]: ModuleScript & {
+					BehaviorTreeCreator: ModuleScript;
+					BehaviorTree3: ModuleScript;
+				};
+				services: ModuleScript;
+				beacon: Folder & {
+					out: ModuleScript;
+				};
+				["compiler-types"]: Folder & {
+					types: Folder;
+				};
 				["camera-shaker"]: Folder & {
 					CameraShaker: ModuleScript & {
 						CameraShakeInstance: ModuleScript;
 						CameraShakePresets: ModuleScript;
 					};
+				};
+				nextcast: Folder & {
+					out: ModuleScript & {
+						errorMessages: ModuleScript;
+						signal: ModuleScript;
+						partCache: ModuleScript;
+						caster: ModuleScript & {
+							activeCast: ModuleScript;
+						};
+					};
+				};
+				janitor: Folder & {
+					src: ModuleScript & {
+						Promise: ModuleScript;
+					};
+				};
+				rain: Folder & {
+					src: ModuleScript;
 				};
 				["raycast-hitbox"]: Folder & {
 					src: ModuleScript & {
@@ -335,20 +376,6 @@ interface ReplicatedStorage extends Instance {
 							Bone: ModuleScript;
 						};
 					};
-				};
-				["behavior-tree-5"]: ModuleScript & {
-					BehaviorTreeCreator: ModuleScript;
-					BehaviorTree3: ModuleScript;
-				};
-				services: ModuleScript;
-				beacon: Folder & {
-					out: ModuleScript;
-				};
-				rain: Folder & {
-					src: ModuleScript;
-				};
-				["compiler-types"]: Folder & {
-					types: Folder;
 				};
 				types: Folder & {
 					include: Folder & {

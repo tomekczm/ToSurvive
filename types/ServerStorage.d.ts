@@ -16,57 +16,6 @@ interface ServerStorage extends Instance {
 			};
 			MultiRock: Model;
 		};
-		["Wooden Log"]: Model & {
-			WoodenLog: Part & {
-				PickUp: ProximityPrompt;
-			};
-		};
-		IceBiome: Folder & {
-			Tree1: Model & {
-				Leaves: MeshPart;
-				Trunk: MeshPart;
-			};
-			Tree2: Model & {
-				Leaves: MeshPart;
-				Trunk: MeshPart;
-			};
-			MultiRock: Model;
-		};
-		Soul: Model & {
-			SoulFragment: Part & {
-				ParticleEmitter: ParticleEmitter;
-			};
-		};
-		Flowers: Model & {
-			Top: MeshPart & {
-				CanColor: BoolValue;
-			};
-			["Cube.090"]: MeshPart;
-			["Cylinder.023"]: MeshPart;
-		};
-		BlackBiome: Folder & {
-			DeadTree: Model & {
-				Part: Part;
-				MeshPart: MeshPart;
-			};
-		};
-		SmallRocks: Folder & {
-			SmallRock2: Model & {
-				BasePart: MeshPart & {
-					PickUp: ProximityPrompt;
-				};
-			};
-			SmallRock3: Model & {
-				BasePart: MeshPart & {
-					PickUp: ProximityPrompt;
-				};
-			};
-			SmallRock1: Model & {
-				BasePart: MeshPart & {
-					PickUp: ProximityPrompt;
-				};
-			};
-		};
 		Ragdoll: Model & {
 			LeftLowerArm: MeshPart & {
 				Attachment1: Attachment;
@@ -79,7 +28,6 @@ interface ServerStorage extends Instance {
 				Attachment1: Attachment;
 			};
 			Head: Part & {
-				["Noob Face"]: Decal;
 				Mesh: SpecialMesh;
 				Attachment1: Attachment;
 			};
@@ -134,6 +82,59 @@ interface ServerStorage extends Instance {
 				Attachment1: Attachment;
 			};
 		};
+		IceBiome: Folder & {
+			Tree1: Model & {
+				Leaves: MeshPart;
+				Trunk: MeshPart;
+			};
+			Tree2: Model & {
+				Leaves: MeshPart;
+				Trunk: MeshPart;
+			};
+			MultiRock: Model;
+		};
+		Soul: Model & {
+			SoulFragment: Part & {
+				PickUp: ProximityPrompt;
+				ParticleEmitter: ParticleEmitter;
+			};
+		};
+		Flowers: Model & {
+			Top: MeshPart & {
+				CanColor: BoolValue;
+			};
+			["Cube.090"]: MeshPart;
+			["Cylinder.023"]: MeshPart;
+		};
+		BlackBiome: Folder & {
+			DeadTree: Model & {
+				Part: Part;
+				MeshPart: MeshPart;
+			};
+		};
+		Spear: MeshPart;
+		SmallRocks: Folder & {
+			SmallRock2: Model & {
+				BasePart: MeshPart & {
+					PickUp: ProximityPrompt;
+				};
+			};
+			SmallRock3: Model & {
+				BasePart: MeshPart & {
+					PickUp: ProximityPrompt;
+				};
+			};
+			SmallRock1: Model & {
+				BasePart: MeshPart & {
+					PickUp: ProximityPrompt;
+				};
+			};
+		};
+		["Wooden Log"]: Model & {
+			WoodenLog: Part & {
+				PickUp: ProximityPrompt;
+			};
+		};
 		ZombieModel: Model & {
 			Humanoid: Humanoid & {
 				Animator: Animator;
@@ -146,21 +147,11 @@ interface ServerStorage extends Instance {
 				Rig3Motor6D: Motor6D;
 			};
 			LeftAttach: IKControl;
-			IKControl: IKControl;
-			AnimSaves: ObjectValue;
-			LeftArm: MeshPart & {
-				Rig4Motor6D: Motor6D;
-			};
-			Torso: MeshPart & {
-				Rig5Motor6D: Motor6D;
-			};
-			RightLeg: MeshPart & {
-				Rig1Motor6D: Motor6D;
-			};
 			HumanoidRootPart: Part & {
+				GroundSensor: ControllerPartSensor;
 				ClimbSensor: ControllerPartSensor;
 				BuoyancySensor: BuoyancySensor;
-				GroundSensor: ControllerPartSensor;
+				WeldConstraint: WeldConstraint;
 				["mixamorig:Hips"]: Bone & {
 					["mixamorig:LeftUpLeg"]: Bone & {
 						["mixamorig:LeftLeg"]: Bone & {
@@ -205,6 +196,18 @@ interface ServerStorage extends Instance {
 					};
 				};
 			};
+			IKControl: IKControl;
+			AnimSaves: ObjectValue;
+			LeftArm: MeshPart & {
+				Rig4Motor6D: Motor6D;
+			};
+			Torso: MeshPart & {
+				Rig5Motor6D: Motor6D;
+			};
+			RightLeg: MeshPart & {
+				Rig1Motor6D: Motor6D;
+			};
+			Collision: Part;
 			LeftLeg: MeshPart & {
 				Rig2Motor6D: Motor6D;
 			};
@@ -217,12 +220,13 @@ interface ServerStorage extends Instance {
 		Crow: ObjectValue & {
 			["Imported Animation Clip"]: KeyframeSequence;
 		};
-		tomekcz: ObjectValue & {
-			["Imported Animation Clip"]: KeyframeSequence;
-			["Automatic Save"]: KeyframeSequence;
-		};
 	};
 	Animations: Folder & {
+		Rock: Folder & {
+			Swing2: Animation;
+			Swing: Animation;
+			Hold: Animation;
+		};
 		Axe: Folder & {
 			Swing2: Animation;
 			Swing: Animation;
@@ -233,10 +237,12 @@ interface ServerStorage extends Instance {
 			Swing: Animation;
 			Hold: Animation;
 		};
-		Rock: Folder & {
+		Spear: Folder & {
 			Swing2: Animation;
-			Swing: Animation;
+			PrepareThrow: Animation;
 			Hold: Animation;
+			Throw: Animation;
+			Swing: Animation;
 		};
 		Zombie: Folder & {
 			Idle: Animation;

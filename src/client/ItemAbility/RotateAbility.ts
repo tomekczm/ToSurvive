@@ -16,7 +16,7 @@ function enableShiftlock() {
     const humanoid = Players.LocalPlayer.Character?.WaitForChild("Humanoid") as Humanoid
     assert(humanoid)
     TweenService.Create(humanoid, tweenInfo, {
-        CameraOffset: new Vector3(2, 0, 0),
+        CameraOffset: new Vector3(2,0,0),
     }).Play()
 
     isOffsetIn = true
@@ -56,7 +56,7 @@ export class RotateAbility extends Ability<ClientItem> {
     shiftLockConnection: RBXScriptConnection | undefined
     renderstepped: RBXScriptConnection | undefined;
 
-    constructor(item: ClientItem) {
+    constructor(item: ClientItem, offset = new Vector3(2,0,0)) {
         super(item);
 
         item.equipEvent.Connect(() => {

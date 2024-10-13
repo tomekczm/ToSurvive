@@ -35,6 +35,10 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
         ReplicatedStorage.Events.CreateItem.FireClient(player.player, this.item.Name, this.item)
     }
 
+    getAnimation(name: string) {
+        return this.loadAnimation(this.fetchAnimation(name))
+    }
+
     loadAnimation(animation: Animation | undefined) {
         if(!animation) return
         const animator = this.getCharacter()["Humanoid"]["Animator"]
@@ -94,7 +98,7 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
 
     listenToEvent(name: string, cb: (...args: unknown[]) => void) {
         const event = this.fetchEvent(name)
-        event.OnServerEvent.Connect((player, ...args) => {
+        return event.OnServerEvent.Connect((player, ...args) => {
             if(player === this.getOwnership()?.player && this.equipped) {
                 cb(...args)
             }
