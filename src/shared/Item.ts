@@ -3,7 +3,10 @@ import { AbilityManager } from "./AbilityManager";
 export class Item<T extends Instance = Instance> {
     item: T;
     abilityManager = new AbilityManager<T>(this)
+    selfAttachment?: Attachment;
+
     constructor(item: T) {
+        this.selfAttachment = item.FindFirstChild("RootPart")?.FindFirstChild("Attachment") as Attachment
         this.item = item
     }
 
@@ -13,6 +16,10 @@ export class Item<T extends Instance = Instance> {
         const event = events.FindFirstChild(name) as RemoteEvent
         assert(event, `event ${name} not found`)
         return event
+    }
+
+    getAttribute<T>(name: string, _default?: T) {
+        return (this.item.GetAttribute(name) ?? _default) as T
     }
 
     getName(): string {
@@ -28,7 +35,7 @@ export class Item<T extends Instance = Instance> {
     }
 
     getThumbnail(): string {
-        return (this.item.GetAttribute("Image")) as string
+        return (this.item.GetAttribute("Image")) as string ?? "http://www.roblox.com/asset/?id=15311273253"
     }
 
     getQuantity(): number {

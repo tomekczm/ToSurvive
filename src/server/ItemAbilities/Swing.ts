@@ -2,7 +2,7 @@ import { ServerItem } from "../Item/ServerItem";
 import { Ability } from "../../shared/Ability";
 import { sample } from "shared/Array";
 
-export class SwingAbility<T extends ServerItem> extends Ability<T> {
+export class SwingAbility<T extends ServerItem = ServerItem> extends Ability<T> {
 
     animations = [
         this.item.fetchAnimation("Swing") as Animation,
@@ -16,12 +16,6 @@ export class SwingAbility<T extends ServerItem> extends Ability<T> {
         this.item.listenToEvent("Swing", () => {
             this.swing()
         })
-    }
-
-
-    scanNearby() {
-        const item = this.item.item
-        const point = item
     }
 
     onSwingStart() {}

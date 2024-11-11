@@ -4,6 +4,7 @@ import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { SwingAbility } from "client/ItemAbility/SwingAbility";
 import { Ability } from "shared/Ability";
+import { SetPrompts, SetProximity } from "client/ProximityPrompts";
 
 
 type Bucket = ReplicatedStorage["Builds"]["Wooden Water Bucket"]
@@ -19,6 +20,22 @@ ProximityPromptService.PromptButtonHoldBegan.Connect((prompt) => {
     }
 })
 
+
+class FirecampFuel extends Ability<RockItem> {
+
+    setPrompts(mode: boolean) {
+        SetPrompts("AddFuel", mode)
+    }
+
+    onEquip() {
+        this.setPrompts(true)
+    }
+
+    onUnequip() {
+        this.setPrompts(false)
+    }
+}
+
 class WashRockAbility extends Ability<RockItem> {
     rotateAbility: PointAtAbility;
 
@@ -29,17 +46,11 @@ class WashRockAbility extends Ability<RockItem> {
 
     onStart(): void {
         this.item.equipEvent.Connect(() => {
-            const tagged = CollectionService.GetTagged("Bucket") as Bucket[]
-            for(const bucket of tagged) {
-                if(bucket.IsDescendantOf(Workspace)) bucket.RootPart.WashRock.Enabled = true
-            }
+            SetPrompts("WashPrompt", true)
         })
 
         this.item.unequipEvent.Connect(() => {
-            const tagged = CollectionService.GetTagged("Bucket") as Bucket[]
-            for(const bucket of tagged) {
-                bucket.RootPart.WashRock.Enabled = false
-            }
+            SetPrompts("WashPrompt", false)
         })
     }
 }
@@ -55,5 +66,6 @@ export class RockItem extends ClientItem<Constraint> {
         this.abilityManager.add(new RotateAbility(this))
         this.abilityManager.add(pointAtAbility)
         this.abilityManager.add(new WashRockAbility(this, pointAtAbility))
+        this.abilityManager.add(new FirecampFuel(this))
     }
 }

@@ -3,7 +3,7 @@ import { Players, UserInputService } from "@rbxts/services";
 import { ClientItem } from "client/Item/ClientItem";
 import { Ability } from "shared/Ability";
 
-export class SwingAbility extends Ability<ClientItem> {
+export class SwingAbility extends Ability<ClientItem<Model>> {
     connection: RBXScriptConnection | undefined;
     connectionAttribute: RBXScriptConnection | undefined
     raycastHitbox!: HitboxObject;

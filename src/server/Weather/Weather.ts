@@ -1,4 +1,5 @@
-import { CollectionService, RunService, Workspace } from "@rbxts/services";
+import { CollectionService, Debris, ReplicatedStorage, RunService, ServerStorage, Workspace } from "@rbxts/services";
+import { startCampfires, stopCampfires } from "./Campfires";
 
 Workspace.SetAttribute("Weather", "None")
 let connection
@@ -30,9 +31,14 @@ CollectionService.GetInstanceAddedSignal("Bucket").Connect((bucket) => {
 
 task.spawn(() => {
     while(true) {
+        startCampfires()
+
         task.wait(math.random(20, 30))
         Workspace.SetAttribute("Weather", "Rain")
 
+        stopCampfires()
+
+        
         connection = RunService.Heartbeat.Connect((dt) => {
             dt = dt / 10
             const buckets = CollectionService.GetTagged("Bucket") as Bucket[]
@@ -49,6 +55,7 @@ task.spawn(() => {
         })
 
         task.wait(math.random(10, 20))
+
         Workspace.SetAttribute("Weather", "None")
 
         connection.Disconnect()

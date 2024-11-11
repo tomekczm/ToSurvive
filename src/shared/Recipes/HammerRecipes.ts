@@ -8,5 +8,8 @@ export const { recipes, reverseLookup } = createRecipeBook<Item, Model>([
     ).setResult(ReplicatedStorage.Builds["Wooden Wall"]),
     new Recipe<Item, Model>().setRecipe(
         new Stack(new Item(ReplicatedStorage.Tools.Sword), 3)
-    ).setResult(ReplicatedStorage.Builds["Wooden Wall"])
+    ).setResult(ReplicatedStorage.Builds["Wooden Wall"]),
+    new Recipe<Item, Model>().setRecipe(
+        new Stack(new Item(ReplicatedStorage.Tools.Sword), 1)
+    ).setResult(ReplicatedStorage.Builds["Campfire"])
 ])

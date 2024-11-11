@@ -3,7 +3,7 @@ import { ReplicatedFirst, ReplicatedStorage, ServerStorage } from "@rbxts/servic
 import type { Inventory } from "server/Inventory/Inventory";
 //import { ModelBinder } from "./ModelBinder";
 
-const ANIMATIONS_FOLDER = ServerStorage.Animations
+const ANIMATIONS_FOLDER = ReplicatedStorage.WaitForChild("ItemAnimations")
 
 export class ServerItem<T extends Instance = Instance> extends Item<T> {
     //modelBinder: ModelBinder | undefined;
@@ -28,6 +28,10 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
 
     getOwnership() {
         return this.inventory
+    }
+
+    getPosition() {
+        return this.selfAttachment?.WorldPosition as Vector3
     }
 
     setOwnership(player: Inventory) {
@@ -72,9 +76,7 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
             this.equipAnimationLoaded.Play()
         }
 
-        const rootPart = this.item.FindFirstChild("RootPart")
-        const attachment = rootPart?.FindFirstChild("Attachment") as Attachment
-        this.rigid.Attachment0 = attachment
+        this.rigid.Attachment0 = this.selfAttachment
         this.rigid.Attachment1 = attach2
     }
 
@@ -117,6 +119,7 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
                 if(value.item === this.item) inventory.setSlot(i, undefined)
             }
         }
+        return this;
     }
 
     consumeItem(quantity = 1) {

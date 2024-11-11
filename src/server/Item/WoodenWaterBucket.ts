@@ -2,18 +2,18 @@ import { ReplicatedStorage, ServerStorage, Workspace } from "@rbxts/services";
 import { ServerItem } from "./ServerItem";
 import { Ability } from "shared/Ability";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
+import { placeAndConnect } from "server/ItemAbilities/PlaceConnective";
 
 type WaterBucket = ReplicatedStorage["Builds"]["Wooden Water Bucket"]
 
 class WoodenWaterBucketAbility extends Ability<WoodenWaterBucket> {
     constructor(item: WoodenWaterBucket, prefab: WaterBucket) {
         super(item);
-        item.listenToEvent("Build", (cframe) => {
+        item.listenToEvent("Build", (target) => {
            this.item.setQuantity(this.item.getQuantity() - 1)
            const clone = prefab.Clone()
            clone.SetAttribute("Capacity", this.item.getCapacity())
-           clone.Parent = Workspace
-           clone.PivotTo(cframe as CFrame)
+           placeAndConnect(target, clone)
            clone.RootPart.PickUp.Enabled = true
 
            registerCollectableItem(clone, () => {

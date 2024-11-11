@@ -1,6 +1,6 @@
-import { ContentProvider, ServerStorage } from "@rbxts/services";
+import { ContentProvider, ReplicatedStorage, ServerStorage } from "@rbxts/services";
 
-const descendants = ServerStorage.Animations.GetDescendants()
+const descendants = ReplicatedStorage.WaitForChild("ItemAnimations").GetDescendants()
 const toLoad: Animation[] = []
 
 descendants.forEach((instance) => {

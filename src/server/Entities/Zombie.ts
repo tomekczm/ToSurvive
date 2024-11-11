@@ -6,7 +6,7 @@ import { addEntity } from "./Entities";
 import { Soul } from "./Soul";
 import { Janitor } from "@rbxts/janitor";
 
-const Animations = ServerStorage.Animations.Zombie
+const Animations = ReplicatedStorage.Animations.Zombie
 const model = ServerStorage.Models.ZombieModel
 
 const WAKE_UP = Animations.StandUp

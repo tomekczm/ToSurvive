@@ -23,6 +23,14 @@ interface StarterGui extends BasePlayerGui {
 	DayNotificator: ScreenGui & {
 		Text: TextLabel;
 	};
+	Tree: ScreenGui & {
+		Background: Frame & {
+			Holder: Frame;
+		};
+		Gradient: CanvasGroup & {
+			UIGradient: UIGradient;
+		};
+	};
 	Crafting: ScreenGui & {
 		Background: Frame & {
 			UIGridLayout: UIGridLayout;

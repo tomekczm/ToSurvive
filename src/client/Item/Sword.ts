@@ -1,9 +1,10 @@
-import { Players, ServerStorage } from "@rbxts/services";
+import { CollectionService, Players, ServerStorage } from "@rbxts/services";
 import { ClientItem } from "./ClientItem";
 import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { SwingAbility } from "client/ItemAbility/SwingAbility";
 import { MeleeSwing } from "client/ItemAbility/MeleeSwing";
+import { Ability } from "shared/Ability";
 
 type Constraint = ReplicatedStorage["Tools"]["Sword"]
 export class SwordItem extends ClientItem<Constraint> {

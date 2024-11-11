@@ -1,4 +1,5 @@
-import { Players, ReplicatedStorage, RunService, UserInputService, Workspace } from "@rbxts/services"
+import { Players, ReplicatedStorage, RunService, StarterPlayer, UserInputService, Workspace } from "@rbxts/services"
+import { onCharacterAdded } from "client/Events/OnCharacterAdded";
 import { ClientItem } from "client/Item/ClientItem"
 import { getItemFromInstance } from "client/Item/ItemRegistrar";
 import { Item } from "shared/Item";
@@ -18,6 +19,9 @@ const backgroundHotbar = inventoryBackground
                             .WaitForChild("InventoryBackground")
                             .WaitForChild("Frame")
 
+const worldModel = inventoryBackground.WaitForChild("ViewportFrame")
+                                    .WaitForChild("WorldModel")
+
 const hotbarGui = inventoryGui.WaitForChild("Hotbar")
 
 const hoverGui = playerGui
@@ -35,6 +39,8 @@ const hoverTitle = hoverGui.WaitForChild("Title") as TextBox
 const MAX_SLOTS = Workspace.GetAttribute("MAX_SLOTS") as number
 const HOTBAR_SLOTS = Workspace.GetAttribute("HOTBAR_SLOTS") as number
 
+const ANIMATIONS_FOLDER = ReplicatedStorage.WaitForChild("ItemAnimations")
+
 const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
 const swapSlot = packets.SwapSlots
@@ -45,6 +51,34 @@ let equippedItem: ClientItem | undefined
 
 const inventory = new Map<number, ClientItem>()
 const reverseInventory = new Map<Instance, number>()
+
+const character = StarterPlayer.StarterCharacter
+const clone = character.Clone()
+clone.Parent = worldModel
+
+
+const cam = new Instance("Camera")
+cam.Parent = worldModel;
+(worldModel.Parent as ViewportFrame).CurrentCamera = cam;
+
+cam.CFrame = new CFrame(new Vector3(0, 22, 20), clone.GetPivot().Position).add(new Vector3(0, -2.5, 0))
+cam.FieldOfView = 20;
+
+RunService.RenderStepped.Connect((dt) => {
+    clone.PivotTo(clone.GetPivot().mul(CFrame.Angles(0, dt * 1, 0)))
+})
+
+/*
+onCharacterAdded((model) => {
+    const animator = model.WaitForChild("Humanoid").WaitForChild("Animator") as Animator
+    if(!animator) {
+        return
+    }
+    animator.AnimationPlayed.Connect((anim) => {
+        
+    })
+})
+*/
 
 const forceUnequipPacket = packets.ForceUnequipMainSlot
 
@@ -185,7 +219,51 @@ UserInputService.InputEnded.Connect((input) => {
     draggingGui.Visible = false;
 })
 
+const rigid = new Instance("RigidConstraint")
+rigid.Parent = clone
+let equipAnimationLoaded: AnimationTrack
+let itemEquipped: Instance
+let currentItemName: string 
+
+function loadAnimationPreview(item: Item | undefined) {
+
+    if(item === undefined) {
+        equipAnimationLoaded?.Stop(0)
+        itemEquipped?.Destroy();
+        currentItemName = ""
+        return
+    }
+
+    const name = item.getName()
+    if(name === currentItemName) {
+        return;
+    }
+    currentItemName = name
+
+    equipAnimationLoaded?.Stop(0)
+    itemEquipped?.Destroy();
+
+    const equipAnimation = ANIMATIONS_FOLDER.FindFirstChild(name)?.FindFirstChild("Hold") as Animation
+    const itemClone = item.item.Clone()
+    itemEquipped = itemClone
+    const attach2 = clone["HumanoidRootPart"]["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:RightShoulder"]["mixamorig:RightArm"]["mixamorig:RightForeArm"]["mixamorig:RightHand"]["RightAttachBone"]
+    const animator = clone["Humanoid"]["Animator"]
+
+    if(equipAnimation) {
+        equipAnimationLoaded = animator.LoadAnimation(equipAnimation)
+        equipAnimationLoaded.Priority = Enum.AnimationPriority.Action2
+        equipAnimationLoaded.Play(0)
+    }
+
+    const rootPart = itemClone.FindFirstChild("RootPart")
+    const attachment = rootPart?.FindFirstChild("Attachment") as Attachment
+    rigid.Attachment0 = attachment
+    rigid.Attachment1 = attach2
+    itemClone.Parent = clone
+}
+
 function itemHover(item: ClientItem | undefined) {
+    loadAnimationPreview(item)
     if(!item) {
         hoverGui.Visible = false
         return

@@ -14,5 +14,6 @@ import "./Inventory/Inventory"
 import "./PreloadAnimations"
 import "./Terrain/Main"
 import "./TimeOfDay"
-import "./Weather"
+import "./Weather/Weather"
+import "./Terrain/Structures/Village"
 import { Zombie } from "./Entities/Zombie";

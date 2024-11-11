@@ -19,6 +19,9 @@ export interface Biome {
 
 const propHolder = Workspace.WaitForChild("Props") as Folder
 
+const UNDER_LAYER_DEPTH = 20; // Depth for the under layer
+const UNDER_LAYER_MATERIAL = Enum.Material.Rock; // Material for the under layer
+
 const biomes: Biome[] = [
     new Plains(),
     new Snow(),
@@ -38,9 +41,13 @@ const MASTER_SEED = new Random(tickString).NextNumber(-100000, 100000)
 print(`MASTER_SEED=${MASTER_SEED}`)
 const VIEW_RANGE = 6
 
+const overrides = new Map<string, Enum.Material>();
+
+const RNG = new Random()
+
 const chunks = new Set<string>()
 
-function getData(x: number, z: number) {
+export function getData(x: number, z: number) {
     x += MASTER_SEED
     z += MASTER_SEED
 
@@ -68,21 +75,40 @@ function getData(x: number, z: number) {
 
     let closestDistance = math.huge
     let closestBiome: Biome | undefined = undefined
+    let secondBiome: Biome | undefined = undefined
+    let secondDistance = math.huge
 
     for (const i of $range(1, biomes.size())) {
         const biome = biomes[i-1];
         const distance = (vector.sub(biome.vector)).Magnitude
         //print(`${distance} < ${closestDistance}`)
         if(distance < closestDistance) {
+            if(closestBiome) {
+                secondBiome = closestBiome
+                secondDistance = closestDistance
+            }
             closestDistance = distance
             closestBiome = biome
         }
     }
-    //print(closestDistance)
-
     assert(closestBiome)
 
-    const material = closestBiome.getMaterial(x, z)
+    let material = closestBiome.getMaterial(x, z)
+
+    let difference = (secondDistance - closestDistance)
+
+    //print(difference)
+    //task.wait()
+    if(difference <= 0.05 && secondBiome) {
+        
+        let secondaryMaterial = secondBiome.getMaterial(x, z)
+        difference *= 20;
+        const treshold = ((math.noise(x / 10 + 2, z / 10 + 2) + 1) / 2) * difference
+        if(treshold <= 0.1) {
+            material = secondaryMaterial
+        }
+    }
+
     
     const cMultiplier = GeneratorData.GetAttribute("CMultiplier") as number
 	const mLess = GeneratorData.GetAttribute("Mless") as NumberSequence
@@ -128,6 +154,8 @@ function generateChunk(origin: CFrame) {
                 prop
             } = getData(realX, realZ)
 
+            //task.wait()
+            //print(new Vector2(realX, realZ))
             let pos = new CFrame(realX, height, realZ);
 
             // Determine the maximum absolute distance in the x or z direction from the origin
@@ -154,6 +182,10 @@ function generateChunk(origin: CFrame) {
                 prop.PivotTo(pos.add(new Vector3(0,2.5,0)))
                 prop.Parent = propHolder
             }
+
+            const underLayerSize = new Vector3(CELL_SIZE, UNDER_LAYER_DEPTH * 5, CELL_SIZE);
+            const underLayerPos = pos.add(new Vector3(0, -(UNDER_LAYER_DEPTH * 5) / 2, 0));
+            Workspace.Terrain.FillBlock(underLayerPos, underLayerSize, UNDER_LAYER_MATERIAL);
 
 			const size = new Vector3(CELL_SIZE, 5, CELL_SIZE)
 			Workspace.Terrain.FillBlock(pos, size, material)

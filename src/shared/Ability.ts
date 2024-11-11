@@ -5,7 +5,9 @@ export class Ability<T extends Item> {
     item: T;
     constructor(item: T) {
         this.item = item
-        this.onStart()
+        task.defer(() => {
+            this.onStart()
+        })
     }
 
     onStart() {}

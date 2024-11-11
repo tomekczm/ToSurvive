@@ -3,6 +3,7 @@ import { AxeItem } from "server/Item/Axe";
 import { HammerItem } from "server/Item/Hammer";
 import { RockItem } from "server/Item/Rock";
 import { ServerItem } from "server/Item/ServerItem";
+import { ShovelItem } from "server/Item/Shovel";
 import { SpearItem } from "server/Item/Spear";
 import { SwordItem } from "server/Item/Sword";
 import { WoodenWaterBucket } from "server/Item/WoodenWaterBucket";
@@ -195,7 +196,8 @@ Players.PlayerAdded.Connect((player) => {
     inventory.setSlot(1, new HammerItem())
     inventory.setSlot(2, new SwordItem())
     inventory.setSlot(3, new AxeItem())
-    inventory.setSlot(4, new RockItem())
+    inventory.setSlot(4, new RockItem().setQuantity(10))
     inventory.setSlot(5, new WoodenWaterBucket())
     inventory.setSlot(6, new SpearItem())
+    inventory.setSlot(7, new ShovelItem())
 })

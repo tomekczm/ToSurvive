@@ -1,197 +1,265 @@
 interface ReplicatedStorage extends Instance {
-	Viewmodel: Model & {
-		AnimationController: AnimationController & {
-			Animator: Animator;
-		};
-		LeftArm: MeshPart & {
-			Rig4Motor6D: Motor6D;
-		};
-		RightHand: MeshPart & {
-			Rig3Motor6D: Motor6D;
-			RigidConstraint: RigidConstraint;
-		};
-		HumanoidRootPart: Part & {
-			ClimbSensor: ControllerPartSensor;
-			BuoyancySensor: BuoyancySensor;
-			GroundSensor: ControllerPartSensor;
-			["mixamorig:Hips"]: Bone & {
-				["mixamorig:LeftUpLeg"]: Bone & {
-					["mixamorig:LeftLeg"]: Bone & {
-						["mixamorig:LeftFoot"]: Bone & {
-							["mixamorig:LeftToeBase"]: Bone;
-						};
-					};
-				};
-				["mixamorig:RightUpLeg"]: Bone & {
-					["mixamorig:RightLeg"]: Bone & {
-						["mixamorig:RightFoot"]: Bone & {
-							["mixamorig:RightToeBase"]: Bone;
-						};
-					};
-				};
-				["mixamorig:Spine"]: Bone & {
-					["mixamorig:Spine1"]: Bone & {
-						["mixamorig:Spine2"]: Bone & {
-							["mixamorig:RightShoulder"]: Bone & {
-								["mixamorig:RightArm"]: Bone & {
-									["mixamorig:RightForeArm"]: Bone & {
-										["mixamorig:RightHand"]: Bone & {
-											RightAttachBone: Bone;
-										};
-									};
-								};
-							};
-							["mixamorig:Neck"]: Bone & {
-								["mixamorig:Head"]: Bone;
-							};
-							["mixamorig:LeftShoulder"]: Bone & {
-								["mixamorig:LeftArm"]: Bone & {
-									["mixamorig:LeftForeArm"]: Bone & {
-										["mixamorig:LeftHand"]: Bone & {
-											LeftAttachBone: Bone;
-										};
-									};
-								};
-							};
-						};
-					};
-				};
-			};
-		};
-		AnimSaves: ObjectValue;
-	};
-	TS: Folder & {
-		module: ModuleScript;
-		NumberSequence: ModuleScript;
-		Ability: ModuleScript;
-		Recipes: Folder & {
-			Recipe: ModuleScript;
-			HammerRecipes: ModuleScript;
-		};
-		HashCode: ModuleScript;
-		Item: ModuleScript;
-		InventoryData: ModuleScript;
-		Array: ModuleScript;
-		Bezier: ModuleScript;
-		AbilityManager: ModuleScript;
-	};
-	Events: Folder & {
-		Inventory: Folder & {
-			SwapSlots: RemoteEvent;
-			SetSlot: RemoteEvent;
-			QuantityChanged: RemoteEvent;
-			ForceUnequipMainSlot: RemoteEvent;
-			EquipSlot: RemoteFunction;
-		};
-		CamShake: RemoteEvent;
-		CreateItem: RemoteEvent;
-		Building: Folder & {
-			RecieveSerialized: RemoteEvent;
-		};
-	};
-	Tools: Folder & {
-		Hammer: Model & {
-			RootPart: Part & {
-				Mesh: SpecialMesh;
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Build: RemoteEvent;
-			};
-		};
-		["Wooden Water Bucket"]: Model & {
-			Events: Folder & {
-				Build: RemoteEvent;
-			};
-			RootPart: MeshPart & {
-				Attachment: Attachment;
-			};
-		};
-		Axe: Model & {
-			RootPart: Part & {
-				AlternativeHan2d: Attachment;
-				Attachment: Attachment;
-				Mesh: SpecialMesh;
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
-		Flint: Model & {
-			RootPart: MeshPart & {
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
-		Sword: Model & {
-			SurfaceAppearance: SurfaceAppearance;
-			Events: Folder & {
-				Hit: RemoteEvent;
-				Swing: RemoteEvent;
-			};
-			RootPart: Part & {
-				Attachment: Attachment;
-				Mesh: SpecialMesh;
-			};
-		};
-		Rock: Model & {
-			RootPart: MeshPart & {
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
-		Spear: Model & {
-			RootPart: MeshPart & {
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-				Throw: RemoteEvent;
-				Hit: RemoteEvent;
-				PrepareThrow: RemoteEvent;
-				ThrowStop: RemoteEvent;
-			};
-		};
-	};
 	Animations: Folder & {
 		Climbing: Animation;
-		WalkBackwards: Animation;
-		Walking: Animation;
+		Idle: Animation;
 		Axe: Folder & {
-			VM_Hold: Animation;
-		};
-		Hammer: Folder & {
 			VM_Hold: Animation;
 		};
 		Right: Animation;
 		Left: Animation;
-		Idle: Animation;
+		Hammer: Folder & {
+			VM_Hold: Animation;
+		};
+		WalkBackwards: Animation;
+		Walking: Animation;
+		Zombie: Folder & {
+			Idle: Animation;
+			Kick: Folder & {
+				Kick2: Animation;
+				Kick1: Animation;
+			};
+			Punch: Folder & {
+				Punch1: Animation;
+				Punch2: Animation;
+			};
+			StandUp: Animation;
+			Walk: Animation;
+		};
 	};
-	Builds: Folder & {
-		["Wooden Wall"]: Model;
-		["Wooden Water Bucket"]: Model & {
-			RootPart: MeshPart & {
-				WashRock: ProximityPrompt;
-				PickUp: ProximityPrompt;
+	rbxts_include: Folder & {
+		RuntimeLib: ModuleScript;
+		Promise: ModuleScript;
+		node_modules: Folder & {
+			["@rbxts"]: Folder & {
+				["linked-lists"]: Folder & {
+					out: ModuleScript & {
+						classes: Folder & {
+							lists: Folder & {
+								SinglyLinkedList: ModuleScript;
+								["reusable-tests"]: Folder & {
+									CircularLinkedListTests: ModuleScript;
+									SinglyLinkedListTests: ModuleScript;
+									UniversalLinkedListTests: ModuleScript;
+									DoublyLinkedListTests: ModuleScript;
+									AcyclicLinkedListTests: ModuleScript;
+								};
+								CircularSinglyLinkedList: ModuleScript;
+								CircularDoublyLinkedList: ModuleScript;
+								DoublyLinkedList: ModuleScript;
+							};
+							nodes: Folder & {
+								SinglyLinkedListNode: ModuleScript;
+								DoublyLinkedListNode: ModuleScript;
+							};
+						};
+						interfaces: Folder;
+					};
+				};
+				["behavior-tree-5"]: ModuleScript & {
+					BehaviorTreeCreator: ModuleScript;
+					BehaviorTree3: ModuleScript;
+				};
+				services: ModuleScript;
+				beacon: Folder & {
+					out: ModuleScript;
+				};
+				["compiler-types"]: Folder & {
+					types: Folder;
+				};
+				["camera-shaker"]: Folder & {
+					CameraShaker: ModuleScript & {
+						CameraShakeInstance: ModuleScript;
+						CameraShakePresets: ModuleScript;
+					};
+				};
+				["raycast-hitbox"]: Folder & {
+					src: ModuleScript & {
+						HitboxCaster: ModuleScript;
+						GoodSignal: ModuleScript;
+						VisualizerCache: ModuleScript;
+						Solvers: Folder & {
+							Vector3: ModuleScript;
+							Attachment: ModuleScript;
+							LinkAttachments: ModuleScript;
+							Bone: ModuleScript;
+						};
+					};
+				};
+				testez: Folder & {
+					src: ModuleScript & {
+						TestPlanner: ModuleScript;
+						TestRunner: ModuleScript;
+						TestBootstrap: ModuleScript;
+						TestSession: ModuleScript;
+						LifecycleHooks: ModuleScript;
+						Reporters: Folder & {
+							TextReporter: ModuleScript;
+							TextReporterQuiet: ModuleScript;
+							TeamCityReporter: ModuleScript;
+						};
+						TestPlan: ModuleScript;
+						TestResults: ModuleScript;
+						TestEnum: ModuleScript;
+						Context: ModuleScript;
+						Expectation: ModuleScript;
+					};
+				};
+				nextcast: Folder & {
+					out: ModuleScript & {
+						errorMessages: ModuleScript;
+						signal: ModuleScript;
+						partCache: ModuleScript;
+						caster: ModuleScript & {
+							activeCast: ModuleScript;
+						};
+					};
+				};
+				janitor: Folder & {
+					src: ModuleScript & {
+						Promise: ModuleScript;
+					};
+				};
+				rain: Folder & {
+					src: ModuleScript;
+				};
+				geom: Folder & {
+					node_modules: Folder & {
+						["@rbxts"]: Folder & {
+							sift: Folder & {
+								out: ModuleScript & {
+									Dictionary: ModuleScript & {
+										includes: ModuleScript;
+										flip: ModuleScript;
+										every: ModuleScript;
+										update: ModuleScript;
+										equalsDeep: ModuleScript;
+										flatten: ModuleScript;
+										copy: ModuleScript;
+										mergeDeep: ModuleScript;
+										values: ModuleScript;
+										keys: ModuleScript;
+										copyDeep: ModuleScript;
+										some: ModuleScript;
+										freeze: ModuleScript;
+										map: ModuleScript;
+										removeValue: ModuleScript;
+										fromEntries: ModuleScript;
+										freezeDeep: ModuleScript;
+										set: ModuleScript;
+										removeValues: ModuleScript;
+										fromArrays: ModuleScript;
+										entries: ModuleScript;
+										removeKeys: ModuleScript;
+										removeKey: ModuleScript;
+										count: ModuleScript;
+										filter: ModuleScript;
+										has: ModuleScript;
+										withKeys: ModuleScript;
+										equals: ModuleScript;
+										merge: ModuleScript;
+									};
+									Set: ModuleScript & {
+										map: ModuleScript;
+										["delete"]: ModuleScript;
+										differenceSymmetric: ModuleScript;
+										intersection: ModuleScript;
+										fromArray: ModuleScript;
+										toArray: ModuleScript;
+										isSuperset: ModuleScript;
+										merge: ModuleScript;
+										copy: ModuleScript;
+										count: ModuleScript;
+										filter: ModuleScript;
+										has: ModuleScript;
+										isSubset: ModuleScript;
+										difference: ModuleScript;
+										add: ModuleScript;
+									};
+									Types: ModuleScript;
+									Array: ModuleScript & {
+										last: ModuleScript;
+										shuffle: ModuleScript;
+										is: ModuleScript;
+										concatDeep: ModuleScript;
+										update: ModuleScript;
+										copy: ModuleScript;
+										reduceRight: ModuleScript;
+										copyDeep: ModuleScript;
+										map: ModuleScript;
+										removeValue: ModuleScript;
+										equals: ModuleScript;
+										first: ModuleScript;
+										find: ModuleScript;
+										removeIndex: ModuleScript;
+										count: ModuleScript;
+										reverse: ModuleScript;
+										zipAll: ModuleScript;
+										includes: ModuleScript;
+										removeValues: ModuleScript;
+										zip: ModuleScript;
+										unshift: ModuleScript;
+										toSet: ModuleScript;
+										equalsDeep: ModuleScript;
+										flatten: ModuleScript;
+										splice: ModuleScript;
+										sort: ModuleScript;
+										difference: ModuleScript;
+										freezeDeep: ModuleScript;
+										slice: ModuleScript;
+										findLast: ModuleScript;
+										freeze: ModuleScript;
+										findWhere: ModuleScript;
+										removeIndices: ModuleScript;
+										findWhereLast: ModuleScript;
+										shift: ModuleScript;
+										pop: ModuleScript;
+										set: ModuleScript;
+										create: ModuleScript;
+										every: ModuleScript;
+										at: ModuleScript;
+										push: ModuleScript;
+										insert: ModuleScript;
+										filter: ModuleScript;
+										differenceSymmetric: ModuleScript;
+										concat: ModuleScript;
+										reduce: ModuleScript;
+										some: ModuleScript;
+									};
+									Util: ModuleScript & {
+										equalObjects: ModuleScript;
+										isEmpty: ModuleScript;
+										func: ModuleScript;
+									};
+									None: ModuleScript;
+								};
+							};
+						};
+					};
+					Output: ModuleScript & {
+						Pack: ModuleScript;
+						Math: ModuleScript;
+						Utilities: ModuleScript;
+						Algorithms: Folder & {
+							Circumcircle: ModuleScript;
+							Spring: ModuleScript;
+							["Convex-Hull"]: ModuleScript;
+							Bezier: ModuleScript;
+							Voronoi: ModuleScript & {
+								LuaFortune: Folder & {
+									voronoi: ModuleScript;
+									points: ModuleScript;
+									bsp: ModuleScript;
+								};
+							};
+						};
+						Uniq: ModuleScript;
+					};
+				};
+				types: Folder & {
+					include: Folder & {
+						generated: Folder;
+					};
+				};
 			};
 		};
 	};
@@ -324,64 +392,236 @@ interface ReplicatedStorage extends Instance {
 			Quantity: TextLabel;
 		};
 	};
-	rbxts_include: Folder & {
-		RuntimeLib: ModuleScript;
-		Promise: ModuleScript;
-		node_modules: Folder & {
-			["@rbxts"]: Folder & {
-				["behavior-tree-5"]: ModuleScript & {
-					BehaviorTreeCreator: ModuleScript;
-					BehaviorTree3: ModuleScript;
-				};
-				services: ModuleScript;
-				beacon: Folder & {
-					out: ModuleScript;
-				};
-				["compiler-types"]: Folder & {
-					types: Folder;
-				};
-				["camera-shaker"]: Folder & {
-					CameraShaker: ModuleScript & {
-						CameraShakeInstance: ModuleScript;
-						CameraShakePresets: ModuleScript;
-					};
-				};
-				nextcast: Folder & {
-					out: ModuleScript & {
-						errorMessages: ModuleScript;
-						signal: ModuleScript;
-						partCache: ModuleScript;
-						caster: ModuleScript & {
-							activeCast: ModuleScript;
+	Events: Folder & {
+		Inventory: Folder & {
+			SwapSlots: RemoteEvent;
+			SetSlot: RemoteEvent;
+			QuantityChanged: RemoteEvent;
+			ForceUnequipMainSlot: RemoteEvent;
+			EquipSlot: RemoteFunction;
+		};
+		CamShake: RemoteEvent;
+		CreateItem: RemoteEvent;
+		Building: Folder & {
+			RecieveSerialized: RemoteEvent;
+		};
+	};
+	ItemAnimations: Folder & {
+		Rock: Folder & {
+			Swing2: Animation;
+			Swing: Animation;
+			Hold: Animation;
+		};
+		Axe: Folder & {
+			Swing2: Animation;
+			Swing: Animation;
+			Hold: Animation;
+		};
+		Sword: Folder & {
+			Swing2: Animation;
+			Swing: Animation;
+			Hold: Animation;
+		};
+		Shovel: Folder & {
+			Swing2: Animation;
+			Swing: Animation;
+			Hold: Animation;
+		};
+		Spear: Folder & {
+			Swing2: Animation;
+			PrepareThrow: Animation;
+			Hold: Animation;
+			Throw: Animation;
+			Swing: Animation;
+		};
+	};
+	Builds: Folder & {
+		Campfire: Model & {
+			Hitbox: Part;
+			BuildingAttach: Part & {
+				AddFuel: ProximityPrompt;
+				Highlight: Highlight;
+			};
+		};
+		["Wooden Water Bucket"]: Model & {
+			RootPart: MeshPart & {
+				PickUp: ProximityPrompt;
+				WashRock: ProximityPrompt;
+				ParticleEmitter: ParticleEmitter;
+			};
+		};
+		["Wooden Wall"]: Model;
+	};
+	Viewmodel: Model & {
+		AnimationController: AnimationController & {
+			Animator: Animator;
+		};
+		LeftArm: MeshPart & {
+			Rig4Motor6D: Motor6D;
+		};
+		RightHand: MeshPart & {
+			Rig3Motor6D: Motor6D;
+			RigidConstraint: RigidConstraint;
+		};
+		HumanoidRootPart: Part & {
+			ClimbSensor: ControllerPartSensor;
+			BuoyancySensor: BuoyancySensor;
+			GroundSensor: ControllerPartSensor;
+			["mixamorig:Hips"]: Bone & {
+				["mixamorig:LeftUpLeg"]: Bone & {
+					["mixamorig:LeftLeg"]: Bone & {
+						["mixamorig:LeftFoot"]: Bone & {
+							["mixamorig:LeftToeBase"]: Bone;
 						};
 					};
 				};
-				janitor: Folder & {
-					src: ModuleScript & {
-						Promise: ModuleScript;
-					};
-				};
-				rain: Folder & {
-					src: ModuleScript;
-				};
-				["raycast-hitbox"]: Folder & {
-					src: ModuleScript & {
-						HitboxCaster: ModuleScript;
-						GoodSignal: ModuleScript;
-						VisualizerCache: ModuleScript;
-						Solvers: Folder & {
-							Vector3: ModuleScript;
-							Attachment: ModuleScript;
-							LinkAttachments: ModuleScript;
-							Bone: ModuleScript;
+				["mixamorig:RightUpLeg"]: Bone & {
+					["mixamorig:RightLeg"]: Bone & {
+						["mixamorig:RightFoot"]: Bone & {
+							["mixamorig:RightToeBase"]: Bone;
 						};
 					};
 				};
-				types: Folder & {
-					include: Folder & {
-						generated: Folder;
+				["mixamorig:Spine"]: Bone & {
+					["mixamorig:Spine1"]: Bone & {
+						["mixamorig:Spine2"]: Bone & {
+							["mixamorig:RightShoulder"]: Bone & {
+								["mixamorig:RightArm"]: Bone & {
+									["mixamorig:RightForeArm"]: Bone & {
+										["mixamorig:RightHand"]: Bone & {
+											RightAttachBone: Bone;
+										};
+									};
+								};
+							};
+							["mixamorig:Neck"]: Bone & {
+								["mixamorig:Head"]: Bone;
+							};
+							["mixamorig:LeftShoulder"]: Bone & {
+								["mixamorig:LeftArm"]: Bone & {
+									["mixamorig:LeftForeArm"]: Bone & {
+										["mixamorig:LeftHand"]: Bone & {
+											LeftAttachBone: Bone;
+										};
+									};
+								};
+							};
+						};
 					};
 				};
+			};
+		};
+		AnimSaves: ObjectValue;
+	};
+	TS: Folder & {
+		module: ModuleScript;
+		NumberSequence: ModuleScript;
+		Ability: ModuleScript;
+		Recipes: Folder & {
+			Recipe: ModuleScript;
+			HammerRecipes: ModuleScript;
+		};
+		HashCode: ModuleScript;
+		Item: ModuleScript;
+		InventoryData: ModuleScript;
+		Array: ModuleScript;
+		Bezier: ModuleScript;
+		AbilityManager: ModuleScript;
+	};
+	Tools: Folder & {
+		Hammer: Model & {
+			RootPart: Part & {
+				Mesh: SpecialMesh;
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Build: RemoteEvent;
+			};
+		};
+		["Wooden Water Bucket"]: Model & {
+			Events: Folder & {
+				Build: RemoteEvent;
+			};
+			RootPart: MeshPart & {
+				Attachment: Attachment;
+			};
+		};
+		Shovel: Model & {
+			MeshPart: MeshPart & {
+				SurfaceAppearance: SurfaceAppearance;
+			};
+			RootPart: MeshPart & {
+				SurfaceAppearance: SurfaceAppearance;
+				Attachment: Attachment;
+				WeldConstraint: WeldConstraint;
+			};
+			Events: Folder & {
+				Dig: RemoteEvent;
+				Swing: RemoteEvent;
+			};
+		};
+		Axe: Model & {
+			RootPart: Part & {
+				AlternativeHan2d: Attachment;
+				Attachment: Attachment;
+				Mesh: SpecialMesh;
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
+		Flint: Model & {
+			RootPart: MeshPart & {
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
+		Sword: Model & {
+			SurfaceAppearance: SurfaceAppearance;
+			Events: Folder & {
+				Hit: RemoteEvent;
+				Swing: RemoteEvent;
+			};
+			RootPart: Part & {
+				Attachment: Attachment;
+				Mesh: SpecialMesh;
+			};
+		};
+		Rock: Model & {
+			RootPart: MeshPart & {
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
+		Spear: Model & {
+			RootPart: MeshPart & {
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+				Throw: RemoteEvent;
+				Hit: RemoteEvent;
+				PrepareThrow: RemoteEvent;
+				ThrowStop: RemoteEvent;
 			};
 		};
 	};
