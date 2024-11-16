@@ -17,6 +17,7 @@ export class MeleeSwing extends SwingAbility {
         raycastHitbox.RaycastParams = this.params;
 
         this.swingConnection = raycastHitbox.OnHit.Connect((part, humanoid) => {
+            if(humanoid?.Health === 0) return
             this.item.invokeEvent("Hit", humanoid)
             this.raycastHitbox.HitStop()
         })

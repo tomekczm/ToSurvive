@@ -1,7 +1,6 @@
 import { Workspace } from "@rbxts/services"
 const connections = new Map<Instance, Instance>();
 
-// move this outside eventually.
 export function connectElements(from: Instance, to: Instance) {
     connections.set(from, to);
 }

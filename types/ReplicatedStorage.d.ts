@@ -417,6 +417,9 @@ interface ReplicatedStorage extends Instance {
 			Swing: Animation;
 			Hold: Animation;
 		};
+		Lantern: Folder & {
+			Hold: Animation;
+		};
 		Sword: Folder & {
 			Swing2: Animation;
 			Swing: Animation;
@@ -446,6 +449,7 @@ interface ReplicatedStorage extends Instance {
 		["Wooden Water Bucket"]: Model & {
 			RootPart: MeshPart & {
 				PickUp: ProximityPrompt;
+				Boiling: Sound;
 				WashRock: ProximityPrompt;
 				ParticleEmitter: ParticleEmitter;
 			};
@@ -529,6 +533,66 @@ interface ReplicatedStorage extends Instance {
 		AbilityManager: ModuleScript;
 	};
 	Tools: Folder & {
+		Rock: Model & {
+			RootPart: MeshPart & {
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
+		Axe: Model & {
+			RootPart: Part & {
+				AlternativeHan2d: Attachment;
+				Attachment: Attachment;
+				Mesh: SpecialMesh;
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+			};
+		};
+		Lantern: Model & {
+			RootPart: MeshPart & {
+				Attachment: Attachment;
+				WeldConstraint: WeldConstraint;
+			};
+			["Cube.030"]: MeshPart & {
+				PointLight: PointLight;
+			};
+		};
+		Sword: Model & {
+			SurfaceAppearance: SurfaceAppearance;
+			Events: Folder & {
+				Hit: RemoteEvent;
+				Swing: RemoteEvent;
+			};
+			RootPart: Part & {
+				Attachment: Attachment;
+				Mesh: SpecialMesh;
+			};
+		};
+		Spear: Model & {
+			RootPart: MeshPart & {
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
+				Throw: RemoteEvent;
+				Hit: RemoteEvent;
+				PrepareThrow: RemoteEvent;
+				ThrowStop: RemoteEvent;
+			};
+		};
 		Hammer: Model & {
 			RootPart: Part & {
 				Mesh: SpecialMesh;
@@ -536,6 +600,19 @@ interface ReplicatedStorage extends Instance {
 			};
 			Events: Folder & {
 				Build: RemoteEvent;
+			};
+		};
+		Flint: Model & {
+			RootPart: MeshPart & {
+				HitPoint: Attachment & {
+					Sound: Sound & {
+						Modifier: PitchShiftSoundEffect;
+					};
+				};
+				Attachment: Attachment;
+			};
+			Events: Folder & {
+				Swing: RemoteEvent;
 			};
 		};
 		["Wooden Water Bucket"]: Model & {
@@ -558,70 +635,6 @@ interface ReplicatedStorage extends Instance {
 			Events: Folder & {
 				Dig: RemoteEvent;
 				Swing: RemoteEvent;
-			};
-		};
-		Axe: Model & {
-			RootPart: Part & {
-				AlternativeHan2d: Attachment;
-				Attachment: Attachment;
-				Mesh: SpecialMesh;
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
-		Flint: Model & {
-			RootPart: MeshPart & {
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
-		Sword: Model & {
-			SurfaceAppearance: SurfaceAppearance;
-			Events: Folder & {
-				Hit: RemoteEvent;
-				Swing: RemoteEvent;
-			};
-			RootPart: Part & {
-				Attachment: Attachment;
-				Mesh: SpecialMesh;
-			};
-		};
-		Rock: Model & {
-			RootPart: MeshPart & {
-				HitPoint: Attachment & {
-					Sound: Sound & {
-						Modifier: PitchShiftSoundEffect;
-					};
-				};
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-			};
-		};
-		Spear: Model & {
-			RootPart: MeshPart & {
-				Attachment: Attachment;
-			};
-			Events: Folder & {
-				Swing: RemoteEvent;
-				Throw: RemoteEvent;
-				Hit: RemoteEvent;
-				PrepareThrow: RemoteEvent;
-				ThrowStop: RemoteEvent;
 			};
 		};
 	};

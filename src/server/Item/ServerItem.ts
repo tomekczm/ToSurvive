@@ -78,12 +78,14 @@ export class ServerItem<T extends Instance = Instance> extends Item<T> {
 
         this.rigid.Attachment0 = this.selfAttachment
         this.rigid.Attachment1 = attach2
+        this.abilityManager.callAbilityEvent("onEquip");
     }
 
     unequip() {
         this.equipped = false;
         this.equipAnimationLoaded?.Stop()
         this.item.Parent = this.getOwnership()?.stoarge
+        this.abilityManager.callAbilityEvent("onUnequip");
     }
 
     invokeEvent(name: string, ...args: unknown[]) {

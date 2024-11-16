@@ -1,6 +1,7 @@
 import { Players, ReplicatedStorage, Workspace } from "@rbxts/services";
 import { AxeItem } from "server/Item/Axe";
 import { HammerItem } from "server/Item/Hammer";
+import { LanternItem } from "server/Item/Lantern";
 import { RockItem } from "server/Item/Rock";
 import { ServerItem } from "server/Item/ServerItem";
 import { ShovelItem } from "server/Item/Shovel";
@@ -197,7 +198,8 @@ Players.PlayerAdded.Connect((player) => {
     inventory.setSlot(2, new SwordItem())
     inventory.setSlot(3, new AxeItem())
     inventory.setSlot(4, new RockItem().setQuantity(10))
-    inventory.setSlot(5, new WoodenWaterBucket())
+    inventory.setSlot(5, new WoodenWaterBucket().setCapacity(5))
     inventory.setSlot(6, new SpearItem())
     inventory.setSlot(7, new ShovelItem())
+    inventory.setSlot(8, new LanternItem())
 })

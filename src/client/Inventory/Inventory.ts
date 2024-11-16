@@ -213,6 +213,7 @@ UserInputService.InputEnded.Connect((input) => {
 
     if(typeOf(slotID) === "number" && slotID === draggingSlot) {
         equipSlot(slotID as number)
+        inventoryBackground.Visible = false
     }
 
     draggingSlot = undefined

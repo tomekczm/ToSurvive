@@ -10,7 +10,7 @@ class WoodenWaterBucketAbility extends Ability<WoodenWaterBucket> {
     constructor(item: WoodenWaterBucket, prefab: WaterBucket) {
         super(item);
         item.listenToEvent("Build", (target) => {
-           this.item.setQuantity(this.item.getQuantity() - 1)
+           this.item.consumeItem();
            const clone = prefab.Clone()
            clone.SetAttribute("Capacity", this.item.getCapacity())
            placeAndConnect(target, clone)
@@ -35,6 +35,7 @@ export class WoodenWaterBucket extends ServerItem<Constraint> {
 
     setCapacity(number: number) {
         this.item.SetAttribute("Capacity", number)
+        return this;
     }
 
     getCapacity() {

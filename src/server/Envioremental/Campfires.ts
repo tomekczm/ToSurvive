@@ -53,9 +53,19 @@ function waterBucketOnCampfireTick(bucket: Bucket, dt: number) {
     }
 
     const smokeEmitter = bucket.RootPart.ParticleEmitter
+    const boiling = bucket.RootPart.Boiling
 
     if(smokeEmitter.Enabled !== isBoiling) {
         smokeEmitter.Enabled = isBoiling
+    }
+
+    if(boiling.IsPlaying !== isBoiling) {
+        print(boiling.IsPlaying !== isBoiling)
+        if(!boiling.IsPlaying) {
+            boiling.Play();
+        } else {
+            boiling.Stop();
+        }
     }
 }
 

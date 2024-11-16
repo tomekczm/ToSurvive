@@ -95,8 +95,10 @@ interface ServerStorage extends Instance {
 		Soul: Model & {
 			SoulFragment: Part & {
 				PickUp: ProximityPrompt;
+				Value: ObjectValue;
 				ParticleEmitter: ParticleEmitter;
 			};
+			Value: ObjectValue;
 		};
 		Flowers: Model & {
 			Top: MeshPart & {
@@ -119,7 +121,6 @@ interface ServerStorage extends Instance {
 				PickUp: ProximityPrompt;
 			};
 		};
-		Campfire: Model;
 		SmallRocks: Folder & {
 			SmallRock2: Model & {
 				BasePart: MeshPart & {
