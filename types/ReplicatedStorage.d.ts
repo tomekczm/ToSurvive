@@ -1,4 +1,5 @@
 interface ReplicatedStorage extends Instance {
+	Aurora: Folder;
 	Animations: Folder & {
 		Climbing: Animation;
 		Idle: Animation;
@@ -394,11 +395,11 @@ interface ReplicatedStorage extends Instance {
 	};
 	Events: Folder & {
 		Inventory: Folder & {
-			SwapSlots: RemoteEvent;
-			SetSlot: RemoteEvent;
 			QuantityChanged: RemoteEvent;
+			SetSlot: RemoteEvent;
+			SwapSlots: RemoteEvent;
 			ForceUnequipMainSlot: RemoteEvent;
-			EquipSlot: RemoteFunction;
+			EquipSlot: RemoteEvent;
 		};
 		CamShake: RemoteEvent;
 		CreateItem: RemoteEvent;

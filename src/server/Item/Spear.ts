@@ -46,6 +46,5 @@ export class SpearItem extends ServerItem<Constraint> {
     unequip(): void {
         this.throwAnimation?.Stop()
         this.throwStop()
-        super.unequip()
     }
 }

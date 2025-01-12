@@ -2,21 +2,30 @@ import { Signal } from "@rbxts/beacon"
 import { Item } from "shared/Item"
 
 export class ClientItem<T extends Instance = Instance> extends Item<T> {
-    equipEvent = new Signal();
-    unequipEvent = new Signal();
+    equipAnimation?: Animation;
+    equipAnimationLoaded?: AnimationTrack;
 
     constructor(item: Instance) {
         super(item as T);
+        this.equipAnimation = this.fetchAnimation("Hold");
+        this.rigid = this.item.FindFirstChildWhichIsA("RigidConstraint") as RigidConstraint
+        assert(this.rigid)
     }
 
-    equip() {
-        this.equipEvent.Fire(undefined)
-        this.abilityManager.callAbilityEvent("onEquip");
+    equip(): void {
+        const character = this.getCharacter();
+        const animator = character["Humanoid"]["Animator"]
+        if(this.equipAnimation) {
+            this.equipAnimationLoaded = animator.LoadAnimation(this.equipAnimation)
+            this.equipAnimationLoaded.Priority = Enum.AnimationPriority.Action2
+            this.equipAnimationLoaded.Play()
+        }
+        super.equip()
     }
 
     unequip() {
-        this.unequipEvent.Fire(undefined)
-        this.abilityManager.callAbilityEvent("onUnequip");
+        this.equipAnimationLoaded?.Stop()
+        super.unequip()
     }
 
     getPosition() {

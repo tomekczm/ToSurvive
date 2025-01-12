@@ -92,14 +92,15 @@ function equipSlot(number: number) {
     delay = true
     task.delay(0.1, () => { delay = false })
     equippedItem?.unequip()
-    const item = equipPacket.InvokeServer(number) as Model | undefined
-    if(item === undefined) {
+    const item = inventory.get(number)
+    if(item === undefined || item === equippedItem) {
+        equipPacket.FireServer(undefined)
         equippedItem = undefined
         return
     }
-    const itemClass = getItemFromInstance(item)
-    itemClass?.equip()
-    equippedItem = itemClass
+    equipPacket.FireServer(item.item)
+    item?.equip()
+    equippedItem = item
 }
 
 function getSlotUnderMouse(input: InputObject) {

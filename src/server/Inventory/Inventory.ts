@@ -10,6 +10,7 @@ import { SwordItem } from "server/Item/Sword";
 import { WoodenWaterBucket } from "server/Item/WoodenWaterBucket";
 import { Item } from "shared/Item";
 import { Recipe } from "shared/Recipes/Recipe";
+import { TwoWayMap } from "shared/TwoWayMap";
 
 const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
@@ -112,17 +113,22 @@ export class Inventory {
         return false
     }
 
-    equipSlot(index: number) {
+
+    unequip() {
         if(this.equippedSlot !== undefined) {
             const prevItem = this.getSlot(this.equippedSlot)
             if(prevItem) {
                 prevItem.unequip()
 
-                const isSameSlot = this.equippedSlot === index 
                 this.equippedSlot = undefined
-                if(isSameSlot) return undefined
             }
         }
+    }
+
+    equipSlot(index: number) {
+        this.unequip()
+        const isSameSlot = this.equippedSlot === index 
+        if(isSameSlot) return undefined
 
         this.equippedSlot = index
 
@@ -173,10 +179,20 @@ export class Inventory {
     }
 }
 
-equipPacket.OnServerInvoke = ((player, slot) => {
+equipPacket.OnServerEvent.Connect((player, item) => {
+    
     const inventory = Inventory.getInventory(player);
-    assert(typeOf(slot) === "number" && inventory)
-    return inventory.equipSlot(slot as number)?.item
+
+    assert(inventory)
+    let slot: number | undefined
+    for (const [key, value] of inventory.itemMap) {
+        if(value.item === item) {
+            slot = key
+        }
+    }
+    
+    if(slot) 
+        inventory.equipSlot(slot as number)
 })
 
 SwapSlot.OnServerEvent.Connect((player, index1, index2) => {

@@ -13,6 +13,7 @@ import { LanternItem } from "./Lantern";
 
 const asMap = new Map<string, (item: Instance) => ClientItem>();
 const toolMap = new Map<Instance, ClientItem>()
+const slotMap = new Map<number, Instance>()
 
 export function getItemFromInstance(instance: Instance) {
     return toolMap.get(instance)
