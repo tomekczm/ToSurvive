@@ -9,16 +9,14 @@ const mouse = player.GetMouse()
 
 let isShiftlockOn = false
 let isOffsetIn = false
-let tweenConnection: Tween | undefined
 
 
 const value = new Instance("Vector3Value")
-let mouseUpdate: RBXScriptConnection | undefined
 
 value.Changed.Connect(() => {
     currentShiftlock = value.Value
-    if(value.Value.Magnitude === 0)  {
-        mouseUpdate?.Disconnect()
+    if(value.Value.Magnitude === 0) {
+        shiftlock.Fire(false)
         return
     }
     shiftlock.Fire(true, value.Value)
@@ -26,20 +24,14 @@ value.Changed.Connect(() => {
 
 let currentShiftlock: Vector3 = new Vector3(0,0,0)
 function setShiftlock(vector: Vector3 = new Vector3(0,0,0)) {
-    mouseUpdate?.Disconnect()
     value.Value = currentShiftlock
-    const magnitude = vector.sub(currentShiftlock).Magnitude / 2
-    const tweenInfo = new TweenInfo(magnitude)
+    const magnitude = vector.sub(currentShiftlock).Magnitude / 10
+    const tweenInfo = new TweenInfo(magnitude, Enum.EasingStyle.Quad, 
+	Enum.EasingDirection.InOut)
     const tween = TweenService.Create(value, tweenInfo, {
         Value: vector,
     })
     tween.Play()
-    if(vector.Magnitude === 0) {
-        mouseUpdate = RunService.RenderStepped.Connect(() => {
-            UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-            GameSettings.RotationType = Enum.RotationType.MovementRelative
-        })
-    }
 }
 
 function resetShiftlock() {
