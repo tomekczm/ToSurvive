@@ -193,6 +193,8 @@ equipPacket.OnServerEvent.Connect((player, item) => {
     
     if(slot) 
         inventory.equipSlot(slot as number)
+    else
+        inventory.unequip()
 })
 
 SwapSlot.OnServerEvent.Connect((player, index1, index2) => {

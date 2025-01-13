@@ -346,6 +346,7 @@ for(const i of $range(1, HOTBAR_SLOTS)) {
 }
 
 forceUnequipPacket.OnClientEvent.Connect(() => {
+    equipPacket.FireServer(undefined)
     equippedItem?.unequip()
     equippedItem = undefined
 })
