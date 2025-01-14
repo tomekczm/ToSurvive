@@ -4,14 +4,14 @@ import { Recipe } from "shared/Recipes/Recipe"
 import { Item } from "shared/Item";
 import { ClientItem } from "client/Item/ClientItem";
 import { SetProximity } from "client/ProximityPrompts";
+import { InputBeganEvent } from "./EventInterfaces";
 
 const localPlayer = Players.LocalPlayer
 const mouse = localPlayer.GetMouse()
 const playerGui = localPlayer.WaitForChild("PlayerGui") as PlayerGui
 
 
-export abstract class BuildAbility extends Ability<ClientItem> {
-    connection: RBXScriptConnection | undefined;
+export abstract class BuildAbility extends Ability<ClientItem> implements InputBeganEvent {
     buildConnection: RBXScriptConnection | undefined;
     dragConnection: RBXScriptConnection | undefined;
 
@@ -33,13 +33,30 @@ export abstract class BuildAbility extends Ability<ClientItem> {
 
     constructor(item: ClientItem) {
         super(item)
-        item.equipEvent.Connect(() => this.equip())
-        item.unequipEvent.Connect(() => {
-            this.setHiglights(false)
-            this.connection?.Disconnect()
-            this.connection = undefined
-            this.restart()
-        })
+    }
+
+    onEquip() {
+        this.setHiglights(true)
+        this.snapping = false
+    }
+
+    onUnequip() {
+        this.setHiglights(false)
+        this.restart()
+    }
+
+    inputBegan(input: InputObject): void {
+        if(input.KeyCode === Enum.KeyCode.R) {
+            this.offset = this.offset.mul(CFrame.Angles(0,math.rad(15),0))
+        }
+
+        if(input.KeyCode === Enum.KeyCode.T) {
+            this.offset = this.offset.mul(CFrame.Angles(math.rad(15),0,0))
+        }
+
+        if(input.KeyCode === Enum.KeyCode.Z) {
+            this.snapping = !this.snapping
+        }
     }
 
     startBuilding(instance: Model) {
@@ -96,21 +113,4 @@ export abstract class BuildAbility extends Ability<ClientItem> {
         this.position = (IsAttachedPart) ? ray.Instance : finalPosition
     }
 
-    equip() {
-        this.setHiglights(true)
-        this.snapping = false
-        this.connection = UserInputService.InputBegan.Connect((input) => {
-            if(input.KeyCode === Enum.KeyCode.R) {
-                this.offset = this.offset.mul(CFrame.Angles(0,math.rad(15),0))
-            }
-
-            if(input.KeyCode === Enum.KeyCode.T) {
-                this.offset = this.offset.mul(CFrame.Angles(math.rad(15),0,0))
-            }
-
-            if(input.KeyCode === Enum.KeyCode.Z) {
-                this.snapping = !this.snapping
-            }
-        })
-    }
 }

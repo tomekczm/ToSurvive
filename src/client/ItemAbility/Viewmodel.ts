@@ -35,29 +35,14 @@ export class Viewmodel extends Ability<ClientItem> {
             .add(cframe.ZVector.mul(this.offset.Z)) 
     }
 
-    onStart(): void {
-        this.clone = this.item.item.Clone();
+    onUnequip() {
+        this.clone.Parent = ReplicatedStorage
+        this.connection?.Disconnect()
+        viewmodel.Parent = ReplicatedStorage
+    }
 
-        this.offsetChanged()
-        this.clone.GetAttributeChangedSignal("ViewportOffset").Connect(() => {
-            this.offsetChanged()
-        })
-
-        this.clone.FindFirstAncestorWhichIsA("RigidConstraint")?.Destroy()
-        this.rigid = new Instance("RigidConstraint")
-        this.rigid.Parent = this.clone;
-        this.item.unequipEvent.Connect(() => {
-            this.clone.Parent = ReplicatedStorage
-            this.connection?.Disconnect()
-            viewmodel.Parent = ReplicatedStorage
-
-            //task.delay(60, () => {
-            //    this.animation?.Stop();
-            //})
-        })
-
-        this.item.equipEvent.Connect(() => {
-            this.clone.Parent = viewmodel
+    onEquip() {
+        this.clone.Parent = viewmodel
             const attach = viewmodel["HumanoidRootPart"]["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:RightShoulder"]["mixamorig:RightArm"]["mixamorig:RightForeArm"]["mixamorig:RightHand"]["RightAttachBone"]
             
             const rootPart = this.clone.FindFirstChild("RootPart")
@@ -100,6 +85,18 @@ export class Viewmodel extends Ability<ClientItem> {
             
                 viewmodel.PivotTo(cframe);
             })
+    }
+
+    onStart(): void {
+        this.clone = this.item.item.Clone();
+
+        this.offsetChanged()
+        this.clone.GetAttributeChangedSignal("ViewportOffset").Connect(() => {
+            this.offsetChanged()
         })
+
+        this.clone.FindFirstAncestorWhichIsA("RigidConstraint")?.Destroy()
+        this.rigid = new Instance("RigidConstraint")
+        this.rigid.Parent = this.clone;
     }
 }

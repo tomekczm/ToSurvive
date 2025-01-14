@@ -68,36 +68,36 @@ UserInputService.InputChanged.Connect((input) => {
 })
 
 export class CraftAndBuildAbility extends BuildAbility {
-    selectionConnection: RBXScriptConnection | undefined;
-    onStart(): void {
-        this.item.equipEvent.Connect(() => {
-            buldGui.Visible = true
-            this.selectionConnection = UserInputService.InputBegan.Connect((input) => {
+    inputBegan(input: InputObject): void {
+        if(input.KeyCode === Enum.KeyCode.X) {
+            this.restart()
+        }
 
-                if(input.KeyCode === Enum.KeyCode.X) {
-                    this.restart()
-                }
+        if(input.UserInputType !== Enum.UserInputType.MouseButton1)
+            return
+    
+        const recipe = getRecipeFromInputObject(input)
+        if(!recipe) {
+            if(this.currentRecipe)
+                this.buildEvent.FireServer(reverseLookup.get(this.currentRecipe), this.position)
 
-                if(input.UserInputType !== Enum.UserInputType.MouseButton1)
-                    return
-            
-                const recipe = getRecipeFromInputObject(input)
-                if(!recipe) {
-                    if(this.currentRecipe)
-                        this.buildEvent.FireServer(reverseLookup.get(this.currentRecipe), this.position)
-    
-                    return
-                }
-    
-                this.restart()
-    
-                this.startBuilding(recipe.result)
-                this.currentRecipe = recipe;
-            })
-        })
-        this.item.unequipEvent.Connect(() => {
-            buldGui.Visible = false
-            this.selectionConnection?.Disconnect();
-        })
+            return
+        }
+
+        this.restart()
+
+        this.startBuilding(recipe.result)
+        this.currentRecipe = recipe;
+        super.inputBegan(input)
+    }
+
+    onEquip(): void {
+        buldGui.Visible = true
+        super.onEquip();
+    }
+
+    onUnequip(): void {
+        buldGui.Visible = false
+        super.onUnequip()
     }
 }

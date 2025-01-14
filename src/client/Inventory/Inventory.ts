@@ -181,9 +181,28 @@ function highlightSlot(input: InputObject) {
 
 }
 
+/* tool inputs */
+UserInputService.InputBegan.Connect((...args: unknown[]) => {
+    if(equippedItem !== undefined) {
+        equippedItem.abilityManager.callAbilityEvent("inputBegan", ...args)
+    }
+})
+
+UserInputService.InputEnded.Connect((...args: unknown[]) => {
+    if(equippedItem !== undefined) {
+         equippedItem.abilityManager.callAbilityEvent("inputEnded", ...args)
+    }
+})
+
+UserInputService.InputChanged.Connect((...args: unknown[]) => {
+    if(equippedItem !== undefined) {
+        equippedItem.abilityManager.callAbilityEvent("inputChanged", ...args)
+    }
+})
+
+
 // Dragging begin
 UserInputService.InputBegan.Connect((input) => {
-
     highlightSlot(input)
 
     if(input.UserInputType !== Enum.UserInputType.MouseButton1)

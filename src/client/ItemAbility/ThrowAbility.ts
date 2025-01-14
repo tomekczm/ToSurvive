@@ -10,18 +10,18 @@ target.Parent = Workspace.Terrain
 
 import "../VFX/MousePointer"
 import { isInFirstPerson } from "client/FirstPersonMode";
+import { setShiftlock } from "./RotateAbility";
+import { InputBeganEvent, InputEndedEvent } from "./EventInterfaces";
 
 const info = new TweenInfo(1)
 
 type Mode = "RightAttach" | "TorsoAttach"
-export class ThrowAbility extends Ability<ClientItem> {
+export class ThrowAbility extends Ability<ClientItem> implements InputBeganEvent, InputEndedEvent {
     private event: RBXScriptConnection | undefined
 
     hasSecoundaryHand: boolean = false;
     private primaryControl!: IKControl;
     humanoid: Humanoid | undefined;
-    private inputEnded!: RBXScriptConnection;
-    private inputBegan!: RBXScriptConnection;
     enabled = false;
 
     enablePrimaryControl() {
@@ -32,7 +32,7 @@ export class ThrowAbility extends Ability<ClientItem> {
         this.primaryControl.Enabled = false
     }
 
-    enable() {
+    enable(isUnequipping: boolean = false) {
         this.enabled = true;
         const instance = this.item.item
         instance.SetAttribute("IsAiming", true)
@@ -44,7 +44,7 @@ export class ThrowAbility extends Ability<ClientItem> {
         if(!character) return
         const IKControl = character.FindFirstChild("RightAttach") as IKControl
         this.primaryControl = IKControl  
-        this.tweenCamera(false)  
+        this.tweenCamera(false, isUnequipping)  
 
         //this.primaryControl.SmoothTime = 0.15
 
@@ -62,7 +62,7 @@ export class ThrowAbility extends Ability<ClientItem> {
         })
     }
 
-    tweenCamera(enabled: boolean) {
+    tweenCamera(enabled: boolean, isUnequipping: boolean = false) {
         const tweenCFrame = (enabled) ? new Vector3(2.5,0,0) : new Vector3(2,0,0)
         const fov = (enabled) ? 70 : 30;
         const weight = (enabled) ? 1 : 0
@@ -80,14 +80,8 @@ export class ThrowAbility extends Ability<ClientItem> {
             ).Play()
         }
 
-        if(this.humanoid && !isInFirstPerson()) {
-            TweenService.Create(
-                this.humanoid,
-                info,
-                {
-                    CameraOffset: tweenCFrame
-                }
-            ).Play()
+        if(this.humanoid && !isInFirstPerson() && !isUnequipping) {
+            setShiftlock(tweenCFrame, info)
         }
         const camera = Workspace.CurrentCamera
         if(camera) {
@@ -101,39 +95,40 @@ export class ThrowAbility extends Ability<ClientItem> {
         }
     }
 
-    disable() {
+    disable(isUnequpping = false) {
         this.enabled = false;
         const instance = this.item.item
         instance.SetAttribute("IsAiming", false)
 
         UserInputService.MouseDeltaSensitivity = 1
-        this.tweenCamera(true)
+        this.tweenCamera(true, isUnequpping)
         this.item.invokeEvent("ThrowStop")
+    }
+
+    onUnequip() {
+        this.event?.Disconnect()
+        this.disable(true)
+    }
+
+    onEquip() {
+        const itself = this.item.item as Model
+        this.humanoid = Players.LocalPlayer.Character?.FindFirstChild("Humanoid") as Humanoid
     }
 
     constructor(item: ClientItem) {
         super(item);
-
-        const itself = this.item.item as Model
-        item.equipEvent.Connect(() => {
-            this.humanoid = Players.LocalPlayer.Character?.FindFirstChild("Humanoid") as Humanoid
-            this.inputBegan = UserInputService.InputBegan.Connect((input) => {
-                if(input.UserInputType === Enum.UserInputType.MouseButton2)
-                    this.enable()
-                if(input.UserInputType === Enum.UserInputType.MouseButton1 && this.enabled)
-                    this.item.invokeEvent("Throw", itself.GetPivot().Position,mouse.Hit)
-            })
-            this.inputEnded = UserInputService.InputEnded.Connect((input) => {
-                if(input.UserInputType === Enum.UserInputType.MouseButton2)
-                    this.disable()
-            })
-        })
-
-        item.unequipEvent.Connect(() => {
-            this.event?.Disconnect()
+    }
+    
+    inputEnded(input: InputObject): void {
+        if(input.UserInputType === Enum.UserInputType.MouseButton2)
             this.disable()
-            this.inputBegan.Disconnect()
-            this.inputEnded.Disconnect()
-        })
+    }
+
+    inputBegan(input: InputObject): void {
+        const itself = this.item.item as Model
+        if(input.UserInputType === Enum.UserInputType.MouseButton2)
+            this.enable()
+        if(input.UserInputType === Enum.UserInputType.MouseButton1 && this.enabled)
+            this.item.invokeEvent("Throw", itself.GetPivot().Position,mouse.Hit)
     }
 }

@@ -17,33 +17,33 @@ export class SwingAbility extends Ability<ClientItem<Model>> {
 
     onNoLongerSwinging() {}
 
-    onStart(): void {
-        super.onStart()
-
-        this.item.unequipEvent.Connect(() => {
-            this.connection?.Disconnect()
-            this.connectionAttribute?.Disconnect()
+    onEquip() {
+        const physicalItem = this.item.item
+        const instance = this.item.item;
+        this.connection = Players.LocalPlayer.GetMouse().Button1Down.Connect(() => {
+            if(instance.GetAttribute("IsAiming")) return
+            this.localSwing()
+            this.item.invokeEvent("Swing")
         })
-
-        this.item.equipEvent.Connect(() => {
-            const physicalItem = this.item.item
-            const instance = this.item.item;
-            this.connection = Players.LocalPlayer.GetMouse().Button1Down.Connect(() => {
-                if(instance.GetAttribute("IsAiming")) return
+        this.connectionAttribute = physicalItem.GetAttributeChangedSignal("SwingDelay").Connect(() => {
+            if(instance.GetAttribute("IsAiming")) return
+            if(this.canSwing()) {
                 this.localSwing()
                 this.item.invokeEvent("Swing")
-            })
-            this.connectionAttribute = physicalItem.GetAttributeChangedSignal("SwingDelay").Connect(() => {
-                if(instance.GetAttribute("IsAiming")) return
-                if(this.canSwing()) {
-                    this.localSwing()
-                    this.item.invokeEvent("Swing")
-                } else {
-                    if(!this.item.item.GetAttribute("SwingDelay")) {
-                        this.onNoLongerSwinging()
-                    }
+            } else {
+                if(!this.item.item.GetAttribute("SwingDelay")) {
+                    this.onNoLongerSwinging()
                 }
-            })
+            }
         })
+    }
+
+    onUnequip() {
+        this.connection?.Disconnect()
+        this.connectionAttribute?.Disconnect()
+    }
+
+    onStart(): void {
+        super.onStart()
     }
 }

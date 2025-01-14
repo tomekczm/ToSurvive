@@ -1,3 +1,11 @@
+let gato = "\n"
+gato += "  ／l、             \n"
+gato += "（ﾟ､ ｡ ７         \n"
+gato += "  l  ~ヽ       \n"
+gato +="  じしf_,)ノ"
+print(gato)
+
+
 import "./Notifications"
 import "./Item/ItemRegistrar"
 import "./Inventory/Inventory"
