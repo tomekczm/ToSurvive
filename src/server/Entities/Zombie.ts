@@ -5,13 +5,14 @@ import { sample } from "shared/Array";
 import { addEntity } from "./Entities";
 import { Soul } from "./Soul";
 import { Janitor } from "@rbxts/janitor";
+import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox";
 
 const Animations = ReplicatedStorage.Animations.Zombie
 const model = ServerStorage.Models.ZombieModel
 
 const WAKE_UP = Animations.StandUp
 const IDLE = Animations.Idle
-const WALK = ReplicatedStorage.Animations.Walking
+const WALK = Animations.Walk
 
 const flag = Workspace.Flag
 
@@ -33,35 +34,28 @@ CollectionService.GetInstanceAddedSignal("Zombie").Connect((_model) => {
 
 type ZombieModel = ServerStorage["Models"]["ZombieModel"]
 export class Zombie {
-    private model: ZombieModel // ZombieModel model;
-    private wakeUpAnimation: AnimationTrack;
-    private idleAnimation: AnimationTrack;
-    private walkAnimation: AnimationTrack;
-
-    private janitor = new Janitor();
-
-    private wasAttacking = false;
-    private damage = 10
-    private ATTACK_LENGTH = 5;
-    private attackTimePassed = 0;
-    attacker: Model | undefined
-
-    private kicks: AnimationTrack[] = []
-    private punches: AnimationTrack[] = []
-
-    
 
     state = (dt: number) => this.defaultState(dt)
-    humanoid: Animator;
-    target?: Model;
-    goal: Vector3 | undefined;
-    ikControl: IKControl;
-    targetHumanoid: Humanoid | undefined;
 
-    death() {
+    model: ZombieModel
+    animations: AnimationTrack[] = []
+    walkAnimation: AnimationTrack;
+    ikControl: IKControl;
+    target: Model;
+
+    private hitbox: HitboxObject
+
+    canAttack = true
+    item: Model | undefined;
+    rigidConstraint: RigidConstraint | undefined;
+
+    stateConnection: RBXScriptConnection;
+
+    onDeath() {
         new Soul(this.model.GetPivot().Position)
         const noob = Ragdoll.Clone()
 
+        this.stateConnection.Disconnect()
         noob.PivotTo(
             this.model.HumanoidRootPart.CFrame
         )
@@ -69,6 +63,7 @@ export class Zombie {
         noob.Parent = Workspace
 
         this.ikControl.Enabled = false
+        this.rigidConstraint?.Destroy()
 
         this.model.GetChildren().forEach((instance) => {
             if(instance.IsA("IKControl")) {
@@ -81,161 +76,186 @@ export class Zombie {
         ragdollTarget.Value = noob
         ragdollTarget.Parent = this.model
         CollectionService.AddTag(this.model, "Ragdoll")
-        this.janitor.Cleanup()
         task.delay(25, () => {
             this.model.Destroy()
             noob.Destroy()
         })
     }
 
-    defaultState(dt: number) {
-        const target = flag.GetPivot().Position
-        this.ikControl.Enabled = false;
-        this.ikControl.Target = undefined;
-        this.target = flag;
-        this.setTarget(target)
-        //this.ikControl.Target = target.
+    attackFlag() {
+        this.canAttack = false;
+        const animation = sample(this.animations)
+        animation.Play()
+        animation.Ended.Once(() => {
+            this.canAttack = true
+        })
+        damageFlag(10);
+        hurtHighlight(flag)
     }
 
-    targetPlayerState(dt: number) {
-        if(this.targetHumanoid?.Health === 0) {
+    attackPlayer() {
+        this.canAttack = false;
+        const animation = sample(this.animations)
+        this.hitbox.HitStart(animation.Length);
+        this.hitbox.Visualizer = true
+        animation.Play()
+        animation.Looped = false
+        animation.Ended.Once(() => {
+            this.canAttack = true
+        })
+    }
+
+    attackPlayerState(dt: number) {
+        const distance = this.getDistanceTo()
+        print(this.canAttack)
+        if(distance <= 5 && this.canAttack) {
+            this.attackPlayer()
+        }
+        if(distance >= 100) {
+            this.setTarget(flag)
             this.state = (dt) => { this.defaultState(dt) }
         }
-        if(this.target) {
-            const playerPivot = this.target.GetPivot().Position
-            const distance = this.getDistanceTo(playerPivot)
-            if(distance >= 30) {
-                this.state = (dt) => { this.defaultState(dt) }
-                return
-            }
-            this.setTarget(playerPivot)
-        }
+        this.goThowardsTarget()
     }
 
-    attackedByPlayer(_character: unknown) {
-        const character = _character as ZombieModel
-        this.state = (dt) => this.targetPlayerState(dt)
-        this.target = character
-        this.targetHumanoid = character.FindFirstChildOfClass("Humanoid")
-        this.ikControl.Target = character.HumanoidRootPart["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:Neck"]["mixamorig:Head"]
-    }
-
-    getDistanceTo(position: Vector3) {
+    getDistanceTo(position: Vector3 = this.target.GetPivot().Position) {
         return (position.sub(this.model.GetPivot().Position)).Magnitude
     }
 
-    setTarget(target: Vector3) {
+    defaultState(dt: number) {
+
+        const distance = this.getDistanceTo()
+        if(distance <= 5 && this.canAttack) {
+            this.attackFlag();
+        }
+
+        this.ikControl.Enabled = false;
+        this.ikControl.Target = undefined;
+        //this.ikControl.Target = target.
+        this.goThowardsTarget()
+    }
+
+    setTarget(target: Model) {
+        this.target = target;
+    }
+
+    goThowardsTarget() {
+        const distance = this.getDistanceTo()
         const humanoid = this.model.Humanoid
-        this.goal = target
-        const distance = this.getDistanceTo(this.goal);
 
         if(distance <= 2) {
             this.walkAnimation.Stop();
             humanoid.MoveTo(this.model.HumanoidRootPart.Position)
-
-            const humanoidTarget = this.target?.FindFirstChild("Humanoid") as Humanoid
-
-            if(!this.wasAttacking) {
-                const anims = [...this.kicks, ...this.punches]
-                const anim = sample(anims)
-                anim.Play()
-                this.wasAttacking = true
-
-                task.delay(anim.Length / 2, () => {
-                    const player = Players.GetPlayerFromCharacter(this.target)
-                    if(player) {
-                        ReplicatedStorage.Events.CamShake.FireClient(player)
-                    }
-                    if(humanoidTarget && this.target) {
-                        humanoidTarget.TakeDamage(10)
-                    }
-                    if(this.target) {
-                        hurtHighlight(this.target)
-                    }
-                })
-
-                task.delay(anim.Length, () => {
-                    this.wasAttacking = false
-                })
-            }
-            return
+            return;
         }
 
+        const goal = this.target.GetPivot()
+        humanoid.MoveTo(goal.Position)
         if(!this.walkAnimation.IsPlaying)
-            this.walkAnimation.Play();  
-
-
-        //print(target)
-        humanoid.MoveTo(target)
+            this.walkAnimation.Play()
     }
 
 
-    resetTarget() {
-        if(this.walkAnimation.IsPlaying)
-            this.walkAnimation.Stop();
+    attackedByPlayer(player: Model | undefined) {
+
+        if(!player) return
+
+        const character = player as ZombieModel
+        this.state = (dt: number) => this.attackPlayerState(dt);
+        this.setTarget(player)
+        //this.ikControl.Enabled = true;
+        //this.ikControl.Target = character.HumanoidRootPart["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:Neck"]["mixamorig:Head"];
+        this.goThowardsTarget()
+    }
+
+    private initAnimations() {
+        if(!this.item) {
+            this.loadAnimations(KICK)
+            this.loadAnimations(PUNCH)
+            return;
+        }
+
+        const anims = ReplicatedStorage.ItemAnimations.FindFirstChild(this.item.Name)
+        const swings = [ anims!.FindFirstChild("Swing"), anims!.FindFirstChild("Swing2") ] as Instance[]
+        this.loadAnimations(swings)
+
+        const idle = anims!.FindFirstChild("Hold") as Animation
+        const humanoid = this.model.Humanoid.Animator
+        if(idle) {
+            const priority = humanoid.LoadAnimation(idle)
+            priority.Priority = Enum.AnimationPriority.Action2
+            priority.Play()
+        }
+    }
+
+    private loadAnimations(instance: Instance[]) {
+        const humanoid = this.model.Humanoid.Animator
+        instance.forEach((animation) => {
+            if(!animation.IsA("Animation")) return
+            const loaded = humanoid.LoadAnimation(animation)
+            loaded.Priority = Enum.AnimationPriority.Action3
+            this.animations.push(loaded)
+        })
+    }
+
+    addItem(toAdd: Model) {
+        const item = toAdd.Clone()
+        this.item = item
+        const rigid = new Instance("RigidConstraint")
+        const attach2 = this.model["HumanoidRootPart"]["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:RightShoulder"]["mixamorig:RightArm"]["mixamorig:RightForeArm"]["mixamorig:RightHand"]["RightAttachBone"]
+        rigid.Attachment0 = this.item.FindFirstChild("RootPart")?.FindFirstChild("Attachment") as Attachment
+        rigid.Attachment1 = attach2
+        rigid.Parent = this.item
+        this.item.Parent = this.model
+        this.rigidConstraint = rigid
     }
 
     constructor(position: Vector3) {
 
-        this.model = model.Clone()
+        this.model = model.Clone();
         this.model.PivotTo(new CFrame(position))
-        addEntity(this.model, this)
         this.model.Parent = Workspace
 
-        const humanoidRootPart = this.model.FindFirstChild("HumanoidRootPart") as BasePart
-        const humanoid = this.model.Humanoid.Animator
-        this.humanoid = humanoid
+        this.addItem(ReplicatedStorage.Tools.Sword)
 
-        entities.push(this)
         this.ikControl = this.model.IKControl
-        KICK.forEach((animation) => {
-            if(!animation.IsA("Animation")) return
-            const loaded = humanoid.LoadAnimation(animation)
-            loaded.Priority = Enum.AnimationPriority.Action
-            this.kicks.push(
-                loaded
-            )
+
+        addEntity(this.model, this)
+        entities.push(this)
+
+        const humanoid = this.model.Humanoid
+        const animator = humanoid.Animator
+        const hitboxContainer = (this.item) ? this.item : this.model
+        this.hitbox = new RaycastHitbox(hitboxContainer)
+        this.hitbox.OnHit.Connect((_, humanoid) => {
+            const player = Players.GetPlayerFromCharacter(this.target)
+            if(humanoid === this.model.Humanoid) return
+            if(player) {
+                ReplicatedStorage.Events.CamShake.FireClient(player)
+            }
+            if(humanoid && this.target) {
+                humanoid.TakeDamage(10)
+            }
+            if(this.target) {
+                hurtHighlight(this.target)
+            }
         })
 
-        PUNCH.forEach((animation) => {
-            if(!animation.IsA("Animation")) return
-            const loaded = humanoid.LoadAnimation(animation)
-            loaded.Priority = Enum.AnimationPriority.Action
-            this.punches.push(
-                loaded
-            )
-        })
-
-        this.wakeUpAnimation = humanoid.LoadAnimation(WAKE_UP)
-        this.wakeUpAnimation.Looped = false
-        this.idleAnimation = humanoid.LoadAnimation(IDLE)
-        this.walkAnimation = humanoid.LoadAnimation(WALK)
-
-        //controllerManager.BaseMoveSpeed = 0
-
-        //this.walkAnimation.GetMarkerReachedSignal("StepStart").Connect(() => {
-        //    humanoidRootPart.ApplyImpulse(controllerManager.MovingDirection.mul(250))
-        //})
-
-        this.wakeUpAnimation.Play()
-
-
-        const died = this.model.Humanoid.Died.Connect(() => {
-            this.humanoid.GetPlayingAnimationTracks().forEach((track) => {
+        humanoid.Died.Once(() => {
+            animator.GetPlayingAnimationTracks().forEach((track) => {
                 track.Stop(0)
             })
             this.state = () => {}
-            this.death()
+            this.onDeath()
         })
-        this.janitor.Add(died, "Disconnect")
 
-        const wakeUpConnection = this.wakeUpAnimation.Stopped.Once(() => {
-            this.idleAnimation.Play()
-            const heartbeat = RunService.Heartbeat.Connect((dt) => {
-                this.state(dt)
-            })
-            this.janitor.Add(heartbeat, "Disconnect")
+        this.initAnimations()
+
+        this.target = flag;
+        this.walkAnimation = animator.LoadAnimation(WALK)
+
+        this.stateConnection = RunService.Heartbeat.Connect((dt) => {
+            this.state(dt)
         })
-        this.janitor.Add(wakeUpConnection, "Disconnect")
     }
 }

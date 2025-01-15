@@ -5,6 +5,12 @@ import { Players } from "@rbxts/services";
 export class MeleeSwing extends SwingAbility {
     swingConnection!: RBXScriptConnection;
     params!: RaycastParams;
+
+    onUnequip(): void {
+        this.raycastHitbox.HitStop();
+        super.onUnequip();
+    }
+
     onStart(): void {
         const part = this.item.item.FindFirstChild("RootPart") as BasePart
         const raycastHitbox = new RaycastHitbox(part);
