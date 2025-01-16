@@ -52,6 +52,13 @@ export class Throwable implements IZombieWeapon {
         this.meleeSecondary = new MeleeWeapon(zombie, model)
     }
 
+    stateUpdated(state: string): void {
+        if(state === "defaultState") {
+            this.prepareThrow?.Stop()
+        }
+    }
+    
+
     throwAway() {
         this.model.Parent = ServerStorage
         this.isThrown = true
@@ -98,6 +105,7 @@ export class Throwable implements IZombieWeapon {
     }
 
     attackFlag(): void {
+        this.prepareThrow?.Stop()
         this.meleeSecondary.attackFlag()
     }
 }

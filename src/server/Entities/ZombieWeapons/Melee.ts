@@ -48,6 +48,8 @@ export class MeleeWeapon implements IZombieWeapon {
             }
         })
     }
+    
+    stateUpdated(state: string): void {}
 
     private initDefaultAnimations() {
         this.loadAnimations(KICK)

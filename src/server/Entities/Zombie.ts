@@ -100,9 +100,16 @@ export class Zombie {
         this.attackPlayer(dt)
         if(distance >= 100 || humanoid?.Health === 0) {
             this.setTarget(flag)
-            this.state = (dt) => { this.defaultState(dt) }
+            this.setState("defaultState")
         }
         this.goThowardsTarget()
+    }
+
+    setState(state: string) {
+        const cb = (this as unknown as Map<string, (arg0: unknown, arg1: number) => void>).get(state)
+        assert(cb)
+        this.item.stateUpdated(state)
+        this.state = (dt) => { cb(this, dt) }
     }
 
     getDistanceTo(position: Vector3 = this.target.GetPivot().Position) {
@@ -148,7 +155,7 @@ export class Zombie {
         if(!player) return
 
         const character = player as ZombieModel
-        this.state = (dt: number) => this.attackPlayerState(dt);
+        this.setState("attackPlayerState")
         this.setTarget(player)
         //this.ikControl.Enabled = true;
         //this.ikControl.Target = character.HumanoidRootPart["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:Neck"]["mixamorig:Head"];
