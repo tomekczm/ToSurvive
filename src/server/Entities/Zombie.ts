@@ -6,6 +6,9 @@ import { addEntity } from "./Entities";
 import { Soul } from "./Soul";
 import { Janitor } from "@rbxts/janitor";
 import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox";
+import { MeleeWeapon } from "./ZombieWeapons/Melee";
+import { IZombieWeapon } from "./ZombieWeapons/IZombieWeapon";
+import { Throwable, ThrowableBuilder } from "./ZombieWeapons/Throwable";
 
 const Animations = ReplicatedStorage.Animations.Zombie
 const model = ServerStorage.Models.ZombieModel
@@ -43,10 +46,10 @@ export class Zombie {
     ikControl: IKControl;
     target: Model;
 
-    private hitbox: HitboxObject
+    isProjectile = false
 
     canAttack = true
-    item: Model | undefined;
+    item!: IZombieWeapon;
     rigidConstraint: RigidConstraint | undefined;
 
     stateConnection: RBXScriptConnection;
@@ -82,36 +85,20 @@ export class Zombie {
         })
     }
 
-    attackFlag() {
+    attackFlag(dt: number) {
         this.canAttack = false;
-        const animation = sample(this.animations)
-        animation.Play()
-        animation.Ended.Once(() => {
-            this.canAttack = true
-        })
-        damageFlag(10);
-        hurtHighlight(flag)
+        this.item.attackFlag()
     }
 
-    attackPlayer() {
-        this.canAttack = false;
-        const animation = sample(this.animations)
-        this.hitbox.HitStart(animation.Length);
-        this.hitbox.Visualizer = true
-        animation.Play()
-        animation.Looped = false
-        animation.Ended.Once(() => {
-            this.canAttack = true
-        })
+    attackPlayer(dt: number) {
+        this.item.attackPlayer(dt)
     }
 
     attackPlayerState(dt: number) {
         const distance = this.getDistanceTo()
-        print(this.canAttack)
-        if(distance <= 5 && this.canAttack) {
-            this.attackPlayer()
-        }
-        if(distance >= 100) {
+        const humanoid = this.target.FindFirstChildOfClass("Humanoid")
+        this.attackPlayer(dt)
+        if(distance >= 100 || humanoid?.Health === 0) {
             this.setTarget(flag)
             this.state = (dt) => { this.defaultState(dt) }
         }
@@ -126,7 +113,7 @@ export class Zombie {
 
         const distance = this.getDistanceTo()
         if(distance <= 5 && this.canAttack) {
-            this.attackFlag();
+            this.attackFlag(dt);
         }
 
         this.ikControl.Enabled = false;
@@ -168,46 +155,8 @@ export class Zombie {
         this.goThowardsTarget()
     }
 
-    private initAnimations() {
-        if(!this.item) {
-            this.loadAnimations(KICK)
-            this.loadAnimations(PUNCH)
-            return;
-        }
-
-        const anims = ReplicatedStorage.ItemAnimations.FindFirstChild(this.item.Name)
-        const swings = [ anims!.FindFirstChild("Swing"), anims!.FindFirstChild("Swing2") ] as Instance[]
-        this.loadAnimations(swings)
-
-        const idle = anims!.FindFirstChild("Hold") as Animation
-        const humanoid = this.model.Humanoid.Animator
-        if(idle) {
-            const priority = humanoid.LoadAnimation(idle)
-            priority.Priority = Enum.AnimationPriority.Action2
-            priority.Play()
-        }
-    }
-
-    private loadAnimations(instance: Instance[]) {
-        const humanoid = this.model.Humanoid.Animator
-        instance.forEach((animation) => {
-            if(!animation.IsA("Animation")) return
-            const loaded = humanoid.LoadAnimation(animation)
-            loaded.Priority = Enum.AnimationPriority.Action3
-            this.animations.push(loaded)
-        })
-    }
-
-    addItem(toAdd: Model) {
-        const item = toAdd.Clone()
+    addItem(item: IZombieWeapon) {
         this.item = item
-        const rigid = new Instance("RigidConstraint")
-        const attach2 = this.model["HumanoidRootPart"]["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:RightShoulder"]["mixamorig:RightArm"]["mixamorig:RightForeArm"]["mixamorig:RightHand"]["RightAttachBone"]
-        rigid.Attachment0 = this.item.FindFirstChild("RootPart")?.FindFirstChild("Attachment") as Attachment
-        rigid.Attachment1 = attach2
-        rigid.Parent = this.item
-        this.item.Parent = this.model
-        this.rigidConstraint = rigid
     }
 
     constructor(position: Vector3) {
@@ -216,7 +165,12 @@ export class Zombie {
         this.model.PivotTo(new CFrame(position))
         this.model.Parent = Workspace
 
-        this.addItem(ReplicatedStorage.Tools.Sword)
+        //this.addItem(new MeleeWeapon(this, ReplicatedStorage.Tools.Sword.Clone()))
+
+        this.addItem(new Throwable(
+            this, ReplicatedStorage.Tools.Spear.Clone(),
+            true
+        ))
 
         this.ikControl = this.model.IKControl
 
@@ -225,21 +179,6 @@ export class Zombie {
 
         const humanoid = this.model.Humanoid
         const animator = humanoid.Animator
-        const hitboxContainer = (this.item) ? this.item : this.model
-        this.hitbox = new RaycastHitbox(hitboxContainer)
-        this.hitbox.OnHit.Connect((_, humanoid) => {
-            const player = Players.GetPlayerFromCharacter(this.target)
-            if(humanoid === this.model.Humanoid) return
-            if(player) {
-                ReplicatedStorage.Events.CamShake.FireClient(player)
-            }
-            if(humanoid && this.target) {
-                humanoid.TakeDamage(10)
-            }
-            if(this.target) {
-                hurtHighlight(this.target)
-            }
-        })
 
         humanoid.Died.Once(() => {
             animator.GetPlayingAnimationTracks().forEach((track) => {
@@ -248,8 +187,6 @@ export class Zombie {
             this.state = () => {}
             this.onDeath()
         })
-
-        this.initAnimations()
 
         this.target = flag;
         this.walkAnimation = animator.LoadAnimation(WALK)

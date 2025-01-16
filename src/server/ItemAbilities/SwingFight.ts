@@ -18,7 +18,11 @@ interface Constriant extends Model {
 }
 
 export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
-
+    knockback: number
+    constructor(item: ServerItem<Constriant>, knockback = 2500) {
+        super(item)
+        this.knockback = knockback;
+    }
 
     onStart(): void {
         this.item.listenToEvent("Hit", (_humanoid) => {
@@ -47,7 +51,11 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
                 //Debris.AddItem(vectorForce, 0.05)
 
             hurtHighlight(parent)
+            //const root = parent.HumanoidRootPart
+            //const ownerRoot = this.item.getOwnership()?.player.Character?.FindFirstChild("HumanoidRootPart") as BasePart // big ugly
 
+            //const impulse = root.Position.sub(ownerRoot.Position).Unit.mul(this.knockback).add(new Vector3(0, this.knockback/100, 0))
+            //root.ApplyImpulse(impulse)
             const entity = getEntity(parent)
             const player = this.item.getOwnership()?.player
             if(entity && player)
