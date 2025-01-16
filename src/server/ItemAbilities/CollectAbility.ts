@@ -58,37 +58,10 @@ export class CollectAbility extends SwingAbility<ServerItem<Constriant>> {
             parent.SetAttribute("Health", 100)
             parent.SetAttribute("HealthPoints", healthPoints - 1)
 
-            const position = new Vector3(
-                rng.NextNumber(-5 ,5),
-                rng.NextNumber(10, 15), // 10
-                rng.NextNumber(-5 ,5)
-            ).add(this.hitPoint.WorldPosition)
-
-            const ray = Workspace.Raycast(
-                position,
-                new Vector3(0,-100,0),
-            )
-
-            const params = new RaycastParams()
-            params.AddToFilter(CollectionService.GetTagged("Tree"))
-            params.AddToFilter(CollectionService.GetTagged("DroppedItem"))
-            const players = Players.GetPlayers()
-
-            for(const player of players) {
-                if(player.Character) params.AddToFilter(player!.Character)
-            }
-
-
-            if(ray) {
-                const woodenLog = ServerStorage.Models["Wooden Log"].Clone()
-                woodenLog.Parent = Workspace
-                woodenLog.SetAttribute("StartPos", this.hitPoint.WorldPosition)
-                woodenLog.PivotTo(new CFrame(ray.Position))
-                registerCollectableItem(
-                    woodenLog,
-                    () => { return new SwordItem() }
-                )
-            }
+            task.spawn(async () => {
+                const { Inventory } = await import("server/Inventory/Inventory")
+                Inventory.dropItem(this.hitPoint.WorldPosition, ServerStorage.Models["Wooden Log"])
+            })
             
             break
         }

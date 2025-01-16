@@ -23,6 +23,7 @@ Workspace.GetPropertyChangedSignal("GlobalWind").Connect(() => {
 })
 
 let connection: RBXScriptConnection | undefined
+const clouds = Workspace.Terrain.WaitForChild("Clouds") as Clouds;
 
 Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
     const weather = Workspace.GetAttribute("Weather")
@@ -57,16 +58,9 @@ Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
         
         tween.Play()
 
-        const cloudTween = TweenService.Create(
-            Workspace.Terrain.WaitForChild("Clouds") as Clouds,
-            new TweenInfo(10),
-            {
-                Cover: math.random(677, 1000) / 1000
-            }
-        )
-
-        cloudTween.Play()
-        cloudTween.Completed.Wait()
+        clouds.SetAttribute("Cover", math.random(677, 1000) / 1000)
+        
+        task.wait(10)
         
         tween.Play()
         
@@ -93,15 +87,7 @@ Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
         )
         
         tween.Play()
-        const cloudTween = TweenService.Create(
-            Workspace.Terrain.WaitForChild("Clouds") as Clouds,
-            new TweenInfo(10),
-            {
-                Cover: math.random(0, 677) / 1000
-            }
-        )
-
-        cloudTween.Play()
-        cloudTween.Completed.Wait()
+        clouds.SetAttribute("Cover", math.random(0, 677) / 1000)
+        task.wait(10)
     }
 })

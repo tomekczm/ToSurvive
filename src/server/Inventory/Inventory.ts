@@ -1,4 +1,4 @@
-import { Players, ReplicatedStorage, Workspace } from "@rbxts/services";
+import { CollectionService, Players, ReplicatedStorage, Workspace } from "@rbxts/services";
 import { AxeItem } from "server/Item/Axe";
 import { HammerItem } from "server/Item/Hammer";
 import { LanternItem } from "server/Item/Lantern";
@@ -11,6 +11,7 @@ import { WoodenWaterBucket } from "server/Item/WoodenWaterBucket";
 import { Item } from "shared/Item";
 import { Recipe } from "shared/Recipes/Recipe";
 import { TwoWayMap } from "shared/TwoWayMap";
+import { registerCollectableItem } from "server/Inventory/DroppedItems"
 
 const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
@@ -21,6 +22,8 @@ const forceUnequipPacket = packets.ForceUnequipMainSlot
 const map = new Map<Player, Inventory>()
 
 const MAX_SLOTS = Workspace.GetAttribute("MAX_SLOTS") as number
+
+const rng = new Random()
 
 export class Inventory {
     itemMap = new Map<number, ServerItem>()
@@ -176,6 +179,40 @@ export class Inventory {
             this.consumeItem(name, requirement.quantity)
         }
         return true
+    }
+
+    static dropItem(at: Vector3, item: Model) {
+        const position = new Vector3(
+            rng.NextNumber(-5, 5),
+            rng.NextNumber(10, 15), // 10
+            rng.NextNumber(-5, 5)
+        ).add(at)
+    
+        const ray = Workspace.Raycast(
+            position,
+            new Vector3(0, -100, 0),
+        )
+    
+        const params = new RaycastParams()
+        params.AddToFilter(CollectionService.GetTagged("Tree"))
+        params.AddToFilter(CollectionService.GetTagged("DroppedItem"))
+        const players = Players.GetPlayers()
+    
+        for (const player of players) {
+            if (player.Character) params.AddToFilter(player!.Character)
+        }
+    
+    
+        if (ray) {
+            const woodenLog = item.Clone()
+            woodenLog.Parent = Workspace
+            woodenLog.SetAttribute("StartPos", at)
+            woodenLog.PivotTo(new CFrame(ray.Position))
+            registerCollectableItem(
+                woodenLog,
+                () => { return new SwordItem() }
+            )
+        }
     }
 }
 

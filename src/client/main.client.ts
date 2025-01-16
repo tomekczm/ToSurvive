@@ -18,5 +18,7 @@ import "./VFX/Crows"
 import "./VFX/Ragdoll"
 import "./VFX/Walking"
 import "./VFX/Soul"
+import "./VFX/ProjectileDissapear"
+import "./VFX/Weather"
 
 import "./UI/Tree"

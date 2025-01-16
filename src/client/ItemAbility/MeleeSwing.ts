@@ -27,6 +27,7 @@ export class MeleeSwing extends SwingAbility {
             this.item.invokeEvent("Hit", humanoid)
             this.raycastHitbox.HitStop()
         })
+        
         super.onStart()
     }
 

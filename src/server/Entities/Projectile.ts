@@ -1,4 +1,4 @@
-import { RunService, TweenService, Workspace } from "@rbxts/services"
+import { CollectionService, RunService, TweenService, Workspace } from "@rbxts/services"
 import { Caster, PartCache, HighFidelityBehavior, ActiveCast, CastBehavior } from "@rbxts/nextcast";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
 import { hurtHighlight } from "server/VFX";
@@ -64,11 +64,8 @@ NextCastCaster.RayHit.Connect(async (cast, result, b, c) => {
         )
         return;
     } 
-    task.delay(3, () => {
-        TweenService.Create(c, new TweenInfo(1), {
-            Transparency: 1
-        }).Play()
-        task.wait(1)
+    CollectionService.AddTag(c, "ProjectileDissapearVFX")
+    task.delay(4, () => {
         c.Destroy()
     })
 })

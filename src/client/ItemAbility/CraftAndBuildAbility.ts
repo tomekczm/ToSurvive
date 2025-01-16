@@ -69,6 +69,7 @@ UserInputService.InputChanged.Connect((input) => {
 
 export class CraftAndBuildAbility extends BuildAbility {
     inputBegan(input: InputObject): void {
+        super.inputBegan(input)
         if(input.KeyCode === Enum.KeyCode.X) {
             this.restart()
         }
@@ -88,7 +89,6 @@ export class CraftAndBuildAbility extends BuildAbility {
 
         this.startBuilding(recipe.result)
         this.currentRecipe = recipe;
-        super.inputBegan(input)
     }
 
     onEquip(): void {

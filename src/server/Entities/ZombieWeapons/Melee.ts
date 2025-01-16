@@ -28,6 +28,11 @@ export class MeleeWeapon implements IZombieWeapon {
                 this.item.Parent = zombie.model
                 this.rigidConstraint = rigid
             }
+            const humanoid = zombie.model.Humanoid
+            humanoid.Died.Once(() => {
+                weapon.Destroy()
+            })
+            
             this.initAnimations()
         } else {
             this.initDefaultAnimations()
