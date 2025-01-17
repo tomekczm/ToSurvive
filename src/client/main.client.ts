@@ -20,5 +20,6 @@ import "./VFX/Walking"
 import "./VFX/Soul"
 import "./VFX/ProjectileDissapear"
 import "./VFX/Weather"
+import "./VFX/Ores"
 
 import "./UI/Tree"

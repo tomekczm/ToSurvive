@@ -47,11 +47,13 @@ class ShovelClient extends SwingAbility {
             const color = (isInRange) ? BrickColor.Green() : BrickColor.Red();
             this.sphere.BrickColor = color;
         })
+        super.onEquip()
     }
 
     onUnequip() {
         this.sphere.Parent = undefined
         this.render?.Disconnect()
+        super.onUnequip()
     }
 }
 

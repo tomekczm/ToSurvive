@@ -116,18 +116,21 @@ interface ServerStorage extends Instance {
 		Spear: MeshPart & {
 			PickUp: ProximityPrompt;
 		};
+		["Wooden Log"]: Model & {
+			WoodenLog: Part & {
+				PickUp: ProximityPrompt;
+			};
+		};
 		Cat: Model & {
 			HumanoidRootPart: Part & {
 				LeftEye: Attachment & {
 					ParticleEmitter: ParticleEmitter;
 				};
+				["Turkish Man Yelling Meow meme"]: Sound;
+				["Cat Meowing Sounds"]: Sound;
 				ParticleEmitter: ParticleEmitter;
-				Meows: Folder & {
-					Meow: Sound;
-					["Turkish Man Yelling Meow meme"]: Sound;
-					["Cat Meowing Sounds"]: Sound;
-					["Meow 3"]: Sound;
-				};
+				Meow: Sound;
+				["Meow 3"]: Sound;
 				Mesh: SpecialMesh;
 				RightEye: Attachment & {
 					ParticleEmitter: ParticleEmitter;
@@ -135,9 +138,9 @@ interface ServerStorage extends Instance {
 			};
 			Humanoid: Humanoid;
 		};
-		["Wooden Log"]: Model & {
-			WoodenLog: Part & {
-				PickUp: ProximityPrompt;
+		Ores: Folder & {
+			Coal: Model & {
+				Core: MeshPart;
 			};
 		};
 		SmallRocks: Folder & {

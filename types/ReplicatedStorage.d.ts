@@ -264,6 +264,11 @@ interface ReplicatedStorage extends Instance {
 			};
 		};
 	};
+	Ores: Folder & {
+		Coal: Model & {
+			Core: MeshPart;
+		};
+	};
 	Prefabs: Folder & {
 		Crow: Model & {
 			GEO_RedtailHawk_01: MeshPart & {
@@ -518,21 +523,6 @@ interface ReplicatedStorage extends Instance {
 		};
 		AnimSaves: ObjectValue;
 	};
-	TS: Folder & {
-		module: ModuleScript;
-		NumberSequence: ModuleScript;
-		Ability: ModuleScript;
-		Recipes: Folder & {
-			Recipe: ModuleScript;
-			HammerRecipes: ModuleScript;
-		};
-		HashCode: ModuleScript;
-		Item: ModuleScript;
-		InventoryData: ModuleScript;
-		Array: ModuleScript;
-		Bezier: ModuleScript;
-		AbilityManager: ModuleScript;
-	};
 	Tools: Folder & {
 		Rock: Model & {
 			RootPart: MeshPart & {
@@ -638,5 +628,21 @@ interface ReplicatedStorage extends Instance {
 				Swing: RemoteEvent;
 			};
 		};
+	};
+	TS: Folder & {
+		module: ModuleScript;
+		NumberSequence: ModuleScript;
+		Ability: ModuleScript;
+		Recipes: Folder & {
+			Recipe: ModuleScript;
+			HammerRecipes: ModuleScript;
+		};
+		HashCode: ModuleScript;
+		Item: ModuleScript;
+		TwoWayMap: ModuleScript;
+		InventoryData: ModuleScript;
+		Array: ModuleScript;
+		Bezier: ModuleScript;
+		AbilityManager: ModuleScript;
 	};
 }

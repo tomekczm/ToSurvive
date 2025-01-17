@@ -1,4 +1,4 @@
-import { Players, ServerStorage, TweenService, Workspace } from "@rbxts/services"
+import { CollectionService, Players, ServerStorage, TweenService, Workspace } from "@rbxts/services"
 import { evalTerrainSequence } from "shared/NumberSequence"
 import { Plains } from "./Biomes/Plains"
 import { Snow } from "./Biomes/Snow"
@@ -7,6 +7,7 @@ import { Rock } from "./Biomes/Rocky"
 import { hashCode } from "shared/HashCode"
 import { Muddy } from "./Biomes/Muddy"
 import { Sandy2 } from "./Biomes/Sandy"
+import { GenericBiome } from "./GenericBiome"
 
 const GeneratorData = ServerStorage.WaitForChild("TerrainGeneratorData") as Folder
 const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
@@ -21,6 +22,8 @@ const propHolder = Workspace.WaitForChild("Props") as Folder
 
 const UNDER_LAYER_DEPTH = 20; // Depth for the under layer
 const UNDER_LAYER_MATERIAL = Enum.Material.Rock; // Material for the under layer
+
+const Ores = Workspace.Ores
 
 const biomes: Biome[] = [
     new Plains(),
@@ -132,7 +135,8 @@ export function getData(x: number, z: number) {
     return {
         height: noise,
         material: material,
-        prop: closestBiome.getProp(x + 360, z + 360)
+        prop: closestBiome.getProp(x + 360, z + 360),
+        biome: closestBiome
     }
 }
 
@@ -151,7 +155,8 @@ function generateChunk(origin: CFrame) {
             let {
                 height,
                 material,
-                prop
+                prop,
+                biome
             } = getData(realX, realZ)
 
             //task.wait()
@@ -183,6 +188,18 @@ function generateChunk(origin: CFrame) {
                 prop.Parent = propHolder
             }
 
+            if(biome instanceof GenericBiome) {
+                biome.ores.forEach((ore) => {
+                    const procentage = RNG.NextNumber(0, 100)
+                    if(ore.procentage < procentage) return
+                    const top = math.min(ore.top, pos.Y - 5)
+                    const position = RNG.NextNumber(ore.low, top)
+                    const attachment = new Instance("Vector3Value")
+                    attachment.Value = new Vector3(pos.X, position, pos.Z)
+                    attachment.Parent = Ores
+                })
+            }
+            
             const underLayerSize = new Vector3(CELL_SIZE, UNDER_LAYER_DEPTH * 5, CELL_SIZE);
             const underLayerPos = pos.add(new Vector3(0, -(UNDER_LAYER_DEPTH * 5) / 2, 0));
             Workspace.Terrain.FillBlock(underLayerPos, underLayerSize, UNDER_LAYER_MATERIAL);

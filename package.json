@@ -23,6 +23,7 @@
     "@rbxts/geom": "^1.1.20",
     "@rbxts/janitor": "^1.17.0-ts.1",
     "@rbxts/nextcast": "^0.1.1-debug",
+    "@rbxts/octo-tree": "^0.3.1",
     "@rbxts/rain": "^1.0.4",
     "@rbxts/raycast-hitbox": "^4.0.1-ts.1",
     "@rbxts/services": "^1.5.4"

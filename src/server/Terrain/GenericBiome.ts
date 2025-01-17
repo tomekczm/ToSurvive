@@ -1,12 +1,17 @@
-import { Workspace } from "@rbxts/services";
+import { ServerStorage, Workspace } from "@rbxts/services";
 import { BiomeProp } from "./BiomeProp";
 import { Biome } from "./Main";
+import { Ore } from "./Ores/Ore";
 
 export abstract class GenericBiome implements Biome {
     abstract vector: Vector2;
     abstract props: BiomeProp[]
     abstract density: number;
     private random = new Random()
+
+    ores = [
+        new Ore(100, -100, 10, "Coal")
+    ]
 
     abstract getMaterial(x: number, y: number): Enum.Material;
     
