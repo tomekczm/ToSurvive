@@ -17,3 +17,8 @@ import "./TimeOfDay"
 import "./Envioremental/Weather"
 import "./Terrain/Structures/Village"
 import { Zombie } from "./Entities/Zombie";
+import { Cat } from "./Entities/Cat";
+for(let i = 0; i < 20; i++) {
+    new Cat(new Vector3(0, 100, 0))
+    task.wait(1)
+}

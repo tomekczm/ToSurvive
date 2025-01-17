@@ -204,6 +204,6 @@ function createWalls() {
 }
 
 task.delay(5, () => {
-    createVillage(new Vector3(250, 100, 0), 8)
-    createWalls()
+    //createVillage(new Vector3(250, 100, 0), 8)
+    //createWalls()
 })
