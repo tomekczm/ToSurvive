@@ -2,6 +2,11 @@ import { CollectionService, Players, RunService, Workspace } from "@rbxts/servic
 
 const mouse = Players.LocalPlayer.GetMouse()
 
+const highlight = new Instance("Highlight")
+highlight.OutlineTransparency = 0;
+highlight.FillTransparency = 1;
+highlight.Parent = Players.LocalPlayer.WaitForChild("PlayerGui")
+
 export function SetPrompts(name: string, state: boolean) {
     const prompts = CollectionService.GetTagged(name)
     for(const prompt of prompts) {
@@ -25,6 +30,7 @@ RunService.RenderStepped.Connect(() => {
         for (const prompt of currentPrompts) {
             prompt.Enabled = false;
         }
+        highlight.Adornee = undefined;
         currentPrompts.clear();
         return;
     }
@@ -37,10 +43,12 @@ RunService.RenderStepped.Connect(() => {
             prompt.Enabled = false;
         }
         currentPrompts.clear();
-        if(!model) return;
+        if(!model) {
+            highlight.Adornee = undefined;
+            return
+        };
     }
     prevModel = model
-
     // Iterate over the model's descendants
     for (const descendant of model.GetDescendants()) {
         if (!descendant.IsA("ProximityPrompt")) continue
@@ -48,6 +56,7 @@ RunService.RenderStepped.Connect(() => {
             // Enable prompt if valid and not already active
         if(isEnabled) {
             if (!currentPrompts.has(descendant)) {
+                highlight.Adornee = model;
                 descendant.Enabled = true;
                 currentPrompts.add(descendant);
             }

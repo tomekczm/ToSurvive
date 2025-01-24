@@ -9,6 +9,7 @@ import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox";
 import { MeleeWeapon } from "./ZombieWeapons/Melee";
 import { IZombieWeapon } from "./ZombieWeapons/IZombieWeapon";
 import { Throwable, ThrowableBuilder } from "./ZombieWeapons/Throwable";
+import { InteractsWithPlayer } from "./InteractsWithPlayer";
 
 const Animations = ReplicatedStorage.Animations.Zombie
 const model = ServerStorage.Models.ZombieModel
@@ -36,7 +37,7 @@ CollectionService.GetInstanceAddedSignal("Zombie").Connect((_model) => {
 })
 
 type ZombieModel = ServerStorage["Models"]["ZombieModel"]
-export class Zombie {
+export class Zombie implements InteractsWithPlayer {
 
     state = (dt: number) => this.defaultState(dt)
 

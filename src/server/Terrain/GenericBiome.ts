@@ -16,6 +16,7 @@ export abstract class GenericBiome implements Biome {
     abstract getMaterial(x: number, y: number): Enum.Material;
     
     getProp(x: number, y: number): Model | undefined {
+        if(this.props.size() === 0) return undefined
         const num = this.random.NextInteger(0, 1000) / 1000;
         if(num >= this.density) return;
 

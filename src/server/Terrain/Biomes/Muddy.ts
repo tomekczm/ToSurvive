@@ -1,6 +1,11 @@
+import { BiomeProp } from "../BiomeProp";
+import { GenericBiome } from "../GenericBiome";
 import { Biome } from "../Main";
+import { Ore } from "../Ores/Ore";
 
-export class Muddy implements Biome {
+export class Muddy extends GenericBiome {
+    props = [];
+    density = 0;
     getProp(x: number, y: number): Model | undefined {
         return undefined;
     }

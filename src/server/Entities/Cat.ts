@@ -1,11 +1,12 @@
 import { RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { sample, sampleAlternative } from "shared/Array";
+import { ANIMAL_RNG, AnimalEntity } from "./Animal";
 
-const CAT_MODEL = ServerStorage.Models.WaitForChild("Cat") as Model
+const CAT_MODEL = ServerStorage.Models.WaitForChild("Cat") as CAT
 
 type CAT = ServerStorage["Models"]["Cat"]
 
-const RNG = new Random()
+const RNG = ANIMAL_RNG
 
 const catTextures = [
     "http://www.roblox.com/asset/?id=13333189485",
@@ -38,33 +39,13 @@ export function biasedRandomInt(low: number, high: number, exponent = 2): number
     return math.floor(xBiased * (high - low + 1)) + low
 }
 
-export class Cat {
-    stateConnection!: RBXScriptConnection;
-    state: (dt: number) => void;
-
+export class Cat extends AnimalEntity<CAT> {
     meowSounds: Sound[] = []
 
-    timeAlive: number = 0;
-    entity: CAT;
-    localOffset: number;
-    crazyness: number;
     zoomies: thread;
     zoomies2: thread;
     meows: thread;
     images: thread;
-
-    defaultState(dt: number) {
-        this.timeAlive += dt / this.crazyness;
-        const position = this.entity.GetPivot().Position
-        const noise = (math.noise(this.timeAlive + this.localOffset) + 1) * 360
-        
-        this.entity.PivotTo(
-            new CFrame(position).mul(CFrame.Angles(0, math.rad(noise), 0))
-        )
-        const pivot = this.entity.GetPivot()
-        const humanoid = this.entity.Humanoid
-        humanoid.MoveTo(pivot.mul(pivot.LookVector.mul(10)))
-    }
 
     meow() {
         const meow = sampleAlternative(RNG, this.meowSounds)
@@ -72,7 +53,9 @@ export class Cat {
     }
 
     constructor(position: Vector3) {
-        const model = CAT_MODEL.Clone()
+        super(CAT_MODEL.Clone(), RNG.NextNumber(1, 10));
+        this.weirdMode = true;
+        const model = this.entity
         model.Parent = Workspace
         model.PivotTo(new CFrame(position))
 
@@ -129,8 +112,6 @@ export class Cat {
         humanoidRootPart.Mesh.VertexColor = new Vector3(
             color.R, color.G, color.B
         )
-        this.localOffset = RNG.NextNumber(10, 100)
-        this.crazyness = RNG.NextNumber(1, 10)
 
         const heteroChromia = RNG.NextInteger(1, 2) === 1;
         
@@ -156,13 +137,6 @@ export class Cat {
             if(child.IsA("Sound")) {
                 this.meowSounds.push(child)
             }
-        })
-
-        this.state = (dt) => { this.defaultState(dt) }
-        task.defer(() => {
-            this.stateConnection = RunService.Heartbeat.Connect((dt) => {
-                this.state(dt)
-            })
         })
     }
 }

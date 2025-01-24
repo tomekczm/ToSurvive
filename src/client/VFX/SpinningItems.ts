@@ -1,15 +1,24 @@
 import { CollectionService, RunService } from "@rbxts/services";
+import { SetProximity } from "client/ProximityPrompts";
 import { quadraticBezier } from "shared/Bezier";
 
 CollectionService.GetInstanceAddedSignal("DroppedItem").Connect((instance) => {
     if(instance.IsA("Model")) {
         let timePassed = 0
 
+        const descendants = instance.GetDescendants()
+
+        descendants.forEach((descendant) => {
+            if(descendant.Name !== "PickUp") return
+            if(!descendant.IsA("ProximityPrompt")) return
+            descendant.Enabled = false
+            SetProximity(descendant, true)
+        })
         const start = instance.GetAttribute("StartPos") as Vector3
         const endPoint = instance.GetPivot().Position
         const midPoint = start.Lerp(endPoint, 0.5).add(new Vector3(0,3,0))
 
-        let offset = CFrame.Angles(0,0,0)
+        let offset = CFrame.Angles(0,math.random(0, 360),0)
 
         const connection = RunService.RenderStepped.Connect((dt) => {
             if(!instance) return connection.Disconnect()

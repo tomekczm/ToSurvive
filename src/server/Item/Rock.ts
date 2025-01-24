@@ -1,7 +1,7 @@
 import { CollectionService, ProximityPromptService, ReplicatedStorage, TweenService } from "@rbxts/services";
 import { CollectAbility } from "server/ItemAbilities/CollectAbility";
 import { ServerItem } from "./ServerItem";
-import { FlintItem } from "./Flint";
+import { FlintItem } from "./GenericItems";
 
 const rng = new Random()
 

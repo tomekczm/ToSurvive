@@ -9,10 +9,10 @@ print(gato)
 import "./Notifications"
 import "./Item/ItemRegistrar"
 import "./Inventory/Inventory"
-import "./SpinningItems"
 import "./Weather/Wind"
 import "./CamShake"
 
+import "./VFX/SpinningItems"
 import "./VFX/HurtHighlight"
 import "./VFX/Crows"
 import "./VFX/Ragdoll"

@@ -5,6 +5,7 @@ import { SwordItem } from "server/Item/Sword"
 import type { AxeItem } from "server/Item/Axe"
 import type { ServerItem } from "server/Item/ServerItem"
 import { Modifier } from "typescript"
+import { WoodenLogItem } from "server/Item/GenericItems"
 
 const rng = new Random()
 
@@ -60,7 +61,12 @@ export class CollectAbility extends SwingAbility<ServerItem<Constriant>> {
 
             task.spawn(async () => {
                 const { Inventory } = await import("server/Inventory/Inventory")
-                Inventory.dropItem(this.hitPoint.WorldPosition, ServerStorage.Models["Wooden Log"])
+                const item = Inventory.dropItem(this.hitPoint.WorldPosition, ServerStorage.DroppedItems["Wooden Log"])
+                if(!item) return
+                registerCollectableItem(
+                    item,
+                    () => { return new WoodenLogItem() }
+                )
             })
             
             break

@@ -1,9 +1,13 @@
 import { sample } from "shared/Array";
 import type { Biome } from "../Main";
 import { ServerStorage } from "@rbxts/services";
+import { GenericBiome } from "../GenericBiome";
+import { BiomeProp } from "../BiomeProp";
 
 
-export class Desert implements Biome {
+export class Desert extends GenericBiome {
+    props = [];
+    density = 0;
     getProp(x: number, y: number): Model | undefined {
         return undefined;
     }

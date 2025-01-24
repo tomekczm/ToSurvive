@@ -116,11 +116,6 @@ interface ServerStorage extends Instance {
 		Spear: MeshPart & {
 			PickUp: ProximityPrompt;
 		};
-		["Wooden Log"]: Model & {
-			WoodenLog: Part & {
-				PickUp: ProximityPrompt;
-			};
-		};
 		Cat: Model & {
 			HumanoidRootPart: Part & {
 				LeftEye: Attachment & {
@@ -138,10 +133,8 @@ interface ServerStorage extends Instance {
 			};
 			Humanoid: Humanoid;
 		};
-		Ores: Folder & {
-			Coal: Model & {
-				Core: MeshPart;
-			};
+		Desert: Folder & {
+			SandRock: Model;
 		};
 		SmallRocks: Folder & {
 			SmallRock2: Model & {
@@ -245,8 +238,27 @@ interface ServerStorage extends Instance {
 				Rig2Motor6D: Motor6D;
 			};
 		};
-		Desert: Folder & {
-			SandRock: Model;
+		Cow: Model & {
+			HumanoidRootPart: MeshPart;
+			Humanoid: Humanoid;
+		};
+	};
+	TerrainGeneratorData: Folder;
+	DroppedItems: Folder & {
+		Meat: Model & {
+			["Meat "]: MeshPart & {
+				PickUp: ProximityPrompt;
+			};
+		};
+		["Wooden Log"]: Model & {
+			WoodenLog: Part & {
+				PickUp: ProximityPrompt;
+			};
+		};
+	};
+	RBX_ANIMSAVES: Model & {
+		Crow: ObjectValue & {
+			["Imported Animation Clip"]: KeyframeSequence;
 		};
 	};
 	Structures: Folder & {
@@ -1189,10 +1201,4 @@ interface ServerStorage extends Instance {
 			};
 		};
 	};
-	RBX_ANIMSAVES: Model & {
-		Crow: ObjectValue & {
-			["Imported Animation Clip"]: KeyframeSequence;
-		};
-	};
-	TerrainGeneratorData: Folder;
 }

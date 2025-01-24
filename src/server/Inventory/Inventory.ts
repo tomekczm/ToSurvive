@@ -12,6 +12,7 @@ import { Item } from "shared/Item";
 import { Recipe } from "shared/Recipes/Recipe";
 import { TwoWayMap } from "shared/TwoWayMap";
 import { registerCollectableItem } from "server/Inventory/DroppedItems"
+import { RawMeatItem, WoodenLogItem } from "server/Item/GenericItems";
 
 const packets = ReplicatedStorage.Events.Inventory
 const equipPacket = packets.EquipSlot
@@ -205,13 +206,13 @@ export class Inventory {
     
         if (ray) {
             const woodenLog = item.Clone()
-            woodenLog.Parent = Workspace
+            CollectionService.AddTag(woodenLog, "DroppedItem")
             woodenLog.SetAttribute("StartPos", at)
             woodenLog.PivotTo(new CFrame(ray.Position))
-            registerCollectableItem(
-                woodenLog,
-                () => { return new SwordItem() }
-            )
+            task.spawn(() => {
+                woodenLog.Parent = Workspace
+            })
+            return woodenLog
         }
     }
 }
@@ -257,4 +258,6 @@ Players.PlayerAdded.Connect((player) => {
     inventory.setSlot(6, new SpearItem())
     inventory.setSlot(7, new ShovelItem())
     inventory.setSlot(8, new LanternItem())
+    inventory.setSlot(9, new RawMeatItem().setQuantity(100))
+    inventory.setSlot(10, new WoodenLogItem().setQuantity(100))
 })

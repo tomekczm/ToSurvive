@@ -58,7 +58,7 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
             //root.ApplyImpulse(impulse)
             const entity = getEntity(parent)
             const player = this.item.getOwnership()?.player
-            if(entity && player)
+            if(entity && humanoid.Health !== 0 && player)
                 entity.attackedByPlayer(player.Character)
         })
         super.onStart();

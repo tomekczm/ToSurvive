@@ -26,6 +26,7 @@
     "@rbxts/octo-tree": "^0.3.1",
     "@rbxts/rain": "^1.0.4",
     "@rbxts/raycast-hitbox": "^4.0.1-ts.1",
-    "@rbxts/services": "^1.5.4"
+    "@rbxts/services": "^1.5.4",
+    "rbxts-transform-debug": "^2.2.0"
   }
 }

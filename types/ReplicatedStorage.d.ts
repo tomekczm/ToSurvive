@@ -67,6 +67,9 @@ interface ReplicatedStorage extends Instance {
 				["compiler-types"]: Folder & {
 					types: Folder;
 				};
+				["octo-tree"]: Folder & {
+					out: ModuleScript;
+				};
 				["camera-shaker"]: Folder & {
 					CameraShaker: ModuleScript & {
 						CameraShakeInstance: ModuleScript;
@@ -606,10 +609,18 @@ interface ReplicatedStorage extends Instance {
 				Swing: RemoteEvent;
 			};
 		};
+		["Wooden Log"]: Model & {
+			RootPart: Part;
+		};
 		["Wooden Water Bucket"]: Model & {
 			Events: Folder & {
 				Build: RemoteEvent;
 			};
+			RootPart: MeshPart & {
+				Attachment: Attachment;
+			};
+		};
+		Meat: Model & {
 			RootPart: MeshPart & {
 				Attachment: Attachment;
 			};
