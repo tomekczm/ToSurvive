@@ -1,7 +1,7 @@
 import { CollectionService, RunService, TweenService, Workspace } from "@rbxts/services"
 import { Caster, PartCache, HighFidelityBehavior, ActiveCast, CastBehavior } from "@rbxts/nextcast";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
-import { hurtHighlight } from "server/VFX";
+import { hurtHighlight } from "shared/VFX";
 import { getEntity } from "./Entities";
 import type { SetProximity } from "client/ProximityPrompts";
 

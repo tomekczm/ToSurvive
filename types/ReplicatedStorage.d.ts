@@ -271,6 +271,12 @@ interface ReplicatedStorage extends Instance {
 		Coal: Model & {
 			Core: MeshPart;
 		};
+		Treasure: Model & {
+			Chest: Part & {
+				Mesh: SpecialMesh;
+				Weld: Weld;
+			};
+		};
 	};
 	Prefabs: Folder & {
 		Crow: Model & {
@@ -610,7 +616,9 @@ interface ReplicatedStorage extends Instance {
 			};
 		};
 		["Wooden Log"]: Model & {
-			RootPart: Part;
+			RootPart: Part & {
+				Attachment: Attachment;
+			};
 		};
 		["Wooden Water Bucket"]: Model & {
 			Events: Folder & {

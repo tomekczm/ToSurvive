@@ -189,13 +189,16 @@ function generateChunk(origin: CFrame) {
 
             if(biome instanceof GenericBiome) {
                 biome.ores.forEach((ore) => {
-                    const procentage = RNG.NextNumber(0, 100)
-                    if(ore.procentage < procentage) return
-                    const top = math.min(ore.top, pos.Y - 5)
-                    const position = RNG.NextNumber(ore.low, top)
-                    const attachment = new Instance("Vector3Value")
-                    attachment.Value = new Vector3(pos.X, position, pos.Z)
-                    attachment.Parent = Ores
+                    while(true) {
+                        const procentage = RNG.NextNumber(0, 100)
+                        if(ore.procentage < procentage) break
+                        const top = math.min(ore.top, pos.Y - 5)
+                        const position = RNG.NextNumber(ore.low, top)
+                        const attachment = new Instance("Vector3Value")
+                        attachment.Name = ore.name
+                        attachment.Value = new Vector3(pos.X, position, pos.Z)
+                        attachment.Parent = Ores
+                    }
                 })
             }
             

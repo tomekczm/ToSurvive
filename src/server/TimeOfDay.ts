@@ -38,7 +38,7 @@ RunService.Heartbeat.Connect((dt) => {
     }
 })
 
-new Zombie(new Vector3(-200, 100 ,0))
+new Zombie(new Vector3(0, 150 ,0))
 
 function randomSpawn() {
     while(true) {

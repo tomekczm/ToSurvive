@@ -1,8 +1,10 @@
-import { Players, RunService, ServerStorage, Workspace } from "@rbxts/services";
+import { CollectionService, Players, RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { ClientItem } from "./ClientItem";
 import { SwingAbility } from "client/ItemAbility/SwingAbility";
 import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
+import { hurtHighlight } from "shared/VFX";
+import { ImpulseProximity } from "client/ProximityPrompts";
 
 const mouse = Players.LocalPlayer.GetMouse()
 
@@ -35,7 +37,17 @@ class ShovelClient extends SwingAbility {
 
     localSwing(): void {
         const mouseHit = this.getMouseHit()
-        if(!mouseHit || !this.allowedMaterials.has(mouseHit.Material)) return
+        if(!mouseHit) return
+
+        const instance = mouseHit.Instance
+        const model = instance.FindFirstAncestorOfClass("Model");
+
+        if(model && CollectionService.HasTag(model, "Ore")) {
+            ImpulseProximity()
+            return;
+        }
+
+        if(!this.allowedMaterials.has(mouseHit.Material)) return;
         this.item.invokeEvent("Dig", mouseHit.Position)
         super.localSwing();
     }
@@ -62,13 +74,20 @@ class ShovelClient extends SwingAbility {
     }
 
     onEquip() {
-        this.sphere.Parent = Workspace
         this.render = RunService.RenderStepped.Connect((dt) => {
             const raycast = this.getMouseHit()
             if(!raycast) return
             const ballPosition = raycast.Position
             const rayMaterial = raycast.Material
+            const instance = raycast.Instance
+            const model = instance.FindFirstAncestorOfClass("Model");
 
+            if(model && CollectionService.HasTag(model, "Ore")) {
+                this.sphere.Parent = undefined;
+                return;
+            }
+
+            this.sphere.Parent = Workspace
             this.sphere.Position = ballPosition
             
             const itemPosition = this.item.getPosition()

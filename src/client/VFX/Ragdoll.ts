@@ -1,4 +1,4 @@
-import { CollectionService, RunService, TweenService } from "@rbxts/services";
+import { CollectionService, RunService, TweenService, Workspace } from "@rbxts/services";
 
 const info = new TweenInfo(2)
 const transparency = {
@@ -65,3 +65,51 @@ CollectionService.GetInstanceAddedSignal("Ragdoll").Connect((_instance) => {
     })
 
 })
+// looks BAD without constraints
+/*
+const ROPE_LENGTH = 2.75;
+function buildConnection(base: Bone, to: Bone) {
+    const model = base.FindFirstAncestorOfClass("Model")!
+    const part = new Instance("Part")
+    part.Size = new Vector3(1,1,1)
+    const attachment = new Instance("Attachment")
+    attachment.Parent = part
+
+    part.CFrame = to.WorldCFrame
+
+    const rope = new Instance("RopeConstraint")
+    rope.Attachment1 = attachment
+    rope.Attachment0 = base
+    rope.Length = ROPE_LENGTH
+    rope.Parent = part
+
+    const constraint = new Instance("IKControl")
+    constraint.Type = Enum.IKControlType.Position
+    constraint.ChainRoot = base;
+    constraint.EndEffector = to
+    constraint.Target = attachment
+    part.Parent = model
+    constraint.Parent = model 
+    constraint.Name = `${base.Name}->${to.Name}`
+}
+
+CollectionService.GetInstanceAddedSignal("Ragdoll").Connect((_instance) => {
+    const preInstance = _instance as ServerStorage["Models"]["ZombieModel"]
+    const instance = preInstance.Clone();
+    CollectionService.RemoveTag(instance, "Ragdoll")
+    preInstance.Destroy()
+    instance.Parent = Workspace
+    instance.Humanoid.SetStateEnabled(Enum.HumanoidStateType.Physics, true)
+    const hips = instance.HumanoidRootPart["mixamorig:Hips"]
+    const spine = hips["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]
+    const leftArmBase = spine["mixamorig:LeftShoulder"]
+    const rightArmBase= spine["mixamorig:RightShoulder"]
+
+    const leftAttachBone = leftArmBase["mixamorig:LeftArm"]["mixamorig:LeftForeArm"]
+                            ["mixamorig:LeftHand"]["LeftAttachBone"]
+    const rightAttachBone = rightArmBase["mixamorig:RightArm"]["mixamorig:RightForeArm"]
+                            ["mixamorig:RightHand"]["RightAttachBone"]
+    buildConnection(rightArmBase, rightAttachBone)
+    buildConnection(leftArmBase, leftAttachBone)
+})
+    */

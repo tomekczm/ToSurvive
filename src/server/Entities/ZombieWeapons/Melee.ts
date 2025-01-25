@@ -1,7 +1,7 @@
 import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox"
 import type { Zombie } from "../Zombie"
 import { Players, ReplicatedStorage, Workspace } from "@rbxts/services"
-import { hurtHighlight } from "server/VFX"
+import { hurtHighlight } from "shared/VFX"
 import { sample } from "shared/Array"
 import { damageFlag } from "server/Flag"
 import { IZombieWeapon } from "./IZombieWeapon"

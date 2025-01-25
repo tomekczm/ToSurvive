@@ -10,7 +10,8 @@ export abstract class GenericBiome implements Biome {
     private random = new Random()
 
     ores = [
-        new Ore(100, -100, 10, "Coal")
+        new Ore(100, -100, 25, "Coal"),
+        new Ore(100, -100, 1, "Treasure")
     ]
 
     abstract getMaterial(x: number, y: number): Enum.Material;

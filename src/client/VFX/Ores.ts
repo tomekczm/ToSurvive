@@ -5,10 +5,14 @@ const oresFolder = Workspace.Ores
 const camera = Workspace!.CurrentCamera
 
 interface OreData {
-    isFullfilled: boolean
+    isFullfilled: boolean,
+    name: string
 }
 
-const coalOre = ReplicatedStorage.Ores.Coal
+const models = ReplicatedStorage.Ores
+const modelLookup = new Map<string, Model>()
+modelLookup.set("Coal", models.Coal)
+modelLookup.set("Treasure", models.Treasure)
 
 const RNG = new Random()
 
@@ -26,7 +30,7 @@ const octTree = new Octree<OreData>() // this should be faST!!!!!
 
 function foundOre(_ore: Instance) {
     if (!_ore.IsA("Vector3Value")) return
-    octTree.CreateNode(_ore.Value, { isFullfilled: false })
+    octTree.CreateNode(_ore.Value, { isFullfilled: false, name: _ore.Name })
 }
 
 oresFolder.GetChildren().forEach((child) => {
@@ -54,7 +58,9 @@ function update() {
         if (ore.Object.isFullfilled)
             continue
         ore.Object.isFullfilled = true
-        const clone = coalOre.Clone()
+        const model = modelLookup.get(ore.Object.name)
+        if(!model) return
+        const clone = model.Clone()
 
         const rX = math.rad(RNG.NextNumber(0, 360))
         const rY = math.rad(RNG.NextNumber(0, 360))

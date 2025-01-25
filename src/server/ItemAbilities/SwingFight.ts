@@ -6,7 +6,7 @@ import type { AxeItem } from "server/Item/Axe"
 import type { ServerItem } from "server/Item/ServerItem"
 import { Modifier } from "typescript"
 import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox"
-import { hurtHighlight } from "server/VFX"
+import { hurtHighlight } from "shared/VFX"
 import { getEntity } from "server/Entities/Entities"
 
 const rng = new Random()

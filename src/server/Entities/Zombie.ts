@@ -1,6 +1,6 @@
 import { CollectionService, Players, ReplicatedStorage, RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { damageFlag, getFlagHealth } from "server/Flag";
-import { hurtHighlight } from "server/VFX";
+import { hurtHighlight } from "shared/VFX";
 import { sample } from "shared/Array";
 import { addEntity } from "./Entities";
 import { Soul } from "./Soul";

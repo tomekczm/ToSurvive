@@ -1,11 +1,18 @@
 import { CollectionService, Players, RunService, Workspace } from "@rbxts/services"
+import { hurtHighlight } from "./VFX/HurtHighlight";
 
 const mouse = Players.LocalPlayer.GetMouse()
 
 const highlight = new Instance("Highlight")
+highlight.DepthMode = Enum.HighlightDepthMode.Occluded
 highlight.OutlineTransparency = 0;
 highlight.FillTransparency = 1;
+highlight.FillColor = new Color3(1,0,0)
 highlight.Parent = Players.LocalPlayer.WaitForChild("PlayerGui")
+
+export function ImpulseProximity() {
+    hurtHighlight(highlight)
+}
 
 export function SetPrompts(name: string, state: boolean) {
     const prompts = CollectionService.GetTagged(name)
@@ -49,6 +56,10 @@ RunService.RenderStepped.Connect(() => {
         };
     }
     prevModel = model
+    if(model.GetAttribute("Highlight")) {
+        highlight.Adornee = model;
+        return
+    }
     // Iterate over the model's descendants
     for (const descendant of model.GetDescendants()) {
         if (!descendant.IsA("ProximityPrompt")) continue
