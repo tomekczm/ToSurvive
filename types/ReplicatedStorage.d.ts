@@ -273,12 +273,19 @@ interface ReplicatedStorage extends Instance {
 		};
 		Treasure: Model & {
 			Chest: Part & {
-				Mesh: SpecialMesh;
+				PointLight: PointLight;
 				Weld: Weld;
+				Mesh: SpecialMesh;
 			};
 		};
 	};
 	Prefabs: Folder & {
+		Slot: ImageLabel & {
+			UICorner: UICorner;
+			UIStroke: UIStroke;
+			UIGradient: UIGradient;
+			Quantity: TextLabel;
+		};
 		Crow: Model & {
 			GEO_RedtailHawk_01: MeshPart & {
 				Root: Bone & {
@@ -393,18 +400,18 @@ interface ReplicatedStorage extends Instance {
 				Animator: Animator;
 			};
 		};
-		SnowVFX: Part & {
-			Snowfall: ParticleEmitter;
+		SlotFrame: Frame & {
+			UICorner: UICorner;
+			UIStroke: UIStroke;
+			UIGradient: UIGradient;
+			Quantity: TextLabel;
 		};
 		CrowFlight: Folder & {
 			FlyNormal: Animation;
 			FlyPatterned: Animation;
 		};
-		Slot: ImageLabel & {
-			UICorner: UICorner;
-			UIStroke: UIStroke;
-			UIGradient: UIGradient;
-			Quantity: TextLabel;
+		SnowVFX: Part & {
+			Snowfall: ParticleEmitter;
 		};
 	};
 	Events: Folder & {
@@ -657,11 +664,12 @@ interface ReplicatedStorage extends Instance {
 			HammerRecipes: ModuleScript;
 		};
 		HashCode: ModuleScript;
+		Bezier: ModuleScript;
 		Item: ModuleScript;
 		TwoWayMap: ModuleScript;
 		InventoryData: ModuleScript;
 		Array: ModuleScript;
-		Bezier: ModuleScript;
+		VFX: ModuleScript;
 		AbilityManager: ModuleScript;
 	};
 }

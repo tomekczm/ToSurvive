@@ -2,6 +2,7 @@ import { Players, ReplicatedStorage, RunService, StarterPlayer, UserInputService
 import { onCharacterAdded } from "client/Events/OnCharacterAdded";
 import { ClientItem } from "client/Item/ClientItem"
 import { getItemFromInstance } from "client/Item/ItemRegistrar";
+import { slotMap } from "client/VFX/ChestMenu";
 import { Item } from "shared/Item";
 
 type SlotGui = ReplicatedStorage["Prefabs"]["Slot"] 
@@ -106,9 +107,13 @@ function equipSlot(number: number) {
 function getSlotUnderMouse(input: InputObject) {
     const { X, Y } = input.Position;
     const elements = playerGui.GetGuiObjectsAtPosition(X, Y)
-    
 
     for (const i of elements) {
+        const chestItem = slotMap.get(i)
+        if(chestItem) {
+            return chestItem
+        }
+
         const slotID = i.GetAttribute("SlotID") as number | undefined
         if(slotID !== undefined) {
             return slotID
@@ -128,7 +133,7 @@ UserInputService.InputChanged.Connect((input) => {
 
     const slotID = getSlotUnderMouse(input)
     if(slotID) {
-        const item = inventory.get(slotID)
+        const item = (slotID instanceof Item) ? slotID :  inventory.get(slotID)
         itemHover(item)
         return
     } else {
@@ -209,7 +214,7 @@ UserInputService.InputBegan.Connect((input) => {
         return
 
     const slotID = getSlotUnderMouse(input)
-    if(slotID) {
+    if(slotID && typeIs(slotID, "number")) {
         const item = inventory.get(slotID)
         if(!item) return
         draggingGui.Image = item.getThumbnail();
@@ -283,7 +288,7 @@ function loadAnimationPreview(item: Item | undefined) {
     itemClone.Parent = clone
 }
 
-function itemHover(item: ClientItem | undefined) {
+function itemHover(item: Item | undefined) {
     loadAnimationPreview(item)
     if(!item) {
         hoverGui.Visible = false
@@ -364,8 +369,12 @@ for(const i of $range(1, HOTBAR_SLOTS)) {
     hotbarGuiLookup.set(i, clone)
 }
 
-forceUnequipPacket.OnClientEvent.Connect(() => {
+export function unequipCurrentItem() {
     equipPacket.FireServer(undefined)
     equippedItem?.unequip()
     equippedItem = undefined
+}
+
+forceUnequipPacket.OnClientEvent.Connect(() => {
+    unequipCurrentItem()
 })

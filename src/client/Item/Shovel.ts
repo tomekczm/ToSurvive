@@ -1,12 +1,23 @@
-import { CollectionService, Players, RunService, ServerStorage, Workspace } from "@rbxts/services";
+import { CollectionService, Players, RunService, ServerStorage, SoundService, Workspace } from "@rbxts/services";
 import { ClientItem } from "./ClientItem";
 import { SwingAbility } from "client/ItemAbility/SwingAbility";
 import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { hurtHighlight } from "shared/VFX";
 import { ImpulseProximity } from "client/ProximityPrompts";
+import { openChest } from "client/VFX/ChestMenu";
+import { PlaySound } from "shared/Sound";
 
 const mouse = Players.LocalPlayer.GetMouse()
+const DigSoundEffect = SoundService.SoundGroup.Dig
+
+const WORLD_HEIGHT = 90;
+
+let chestOpened = false
+
+const soundsForOre = new Map<string, Sound>()
+soundsForOre.set("Coal", SoundService.SoundGroup.OreDig)
+soundsForOre.set("Treasure", SoundService.SoundGroup.WoodChestHit)
 
 // A lot of functions are not verified on server please dont forget to fix these when releasing
 // Im too lazy to do it rn
@@ -43,11 +54,24 @@ class ShovelClient extends SwingAbility {
         const model = instance.FindFirstAncestorOfClass("Model");
 
         if(model && CollectionService.HasTag(model, "Ore")) {
+            if(model.Name === "Treasure" && !chestOpened) {
+                warn("Dont leave this in")
+                chestOpened = true
+                task.spawn(async () => {
+                    openChest()
+                    const { unequipCurrentItem } = await import("client/Inventory/Inventory");
+                    unequipCurrentItem()
+                })
+            }
+            const sound = soundsForOre.get(model.Name)
+            if(sound) 
+                PlaySound(sound, 0.75, 1.25)
             ImpulseProximity()
             return;
         }
 
-        if(!this.allowedMaterials.has(mouseHit.Material)) return;
+        if(!this.allowedMaterials.has(mouseHit.Material) || !this.isInWorldBounds(mouseHit.Position)) return;
+        PlaySound(DigSoundEffect, 0.75, 1.25)
         this.item.invokeEvent("Dig", mouseHit.Position)
         super.localSwing();
     }
@@ -73,6 +97,11 @@ class ShovelClient extends SwingAbility {
         return raycast
     }
 
+    isInWorldBounds(position: Vector3) {
+        const DIG_PEREMITER = this.digSize / 2
+        return position.Y > -(WORLD_HEIGHT - DIG_PEREMITER)
+    }
+
     onEquip() {
         this.render = RunService.RenderStepped.Connect((dt) => {
             const raycast = this.getMouseHit()
@@ -81,8 +110,8 @@ class ShovelClient extends SwingAbility {
             const rayMaterial = raycast.Material
             const instance = raycast.Instance
             const model = instance.FindFirstAncestorOfClass("Model");
-
-            if(model && CollectionService.HasTag(model, "Ore")) {
+            if(model && CollectionService.HasTag(model, "Ore") || 
+                !this.isInWorldBounds(ballPosition)) {
                 this.sphere.Parent = undefined;
                 return;
             }
