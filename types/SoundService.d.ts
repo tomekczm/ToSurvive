@@ -1,9 +1,10 @@
 interface SoundService extends Instance {
 	SoundGroup: SoundGroup & {
-		StruckGold: Sound;
-		Dig: Sound;
 		WoodChestHit: Sound;
 		OreDig: Sound;
+		Dig: Sound;
+		Grab: Sound;
+		StruckGold: Sound;
 	};
 	Wind: Sound;
 	Damaged: SoundGroup & {

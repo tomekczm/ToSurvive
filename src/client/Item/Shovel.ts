@@ -5,8 +5,8 @@ import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { hurtHighlight } from "shared/VFX";
 import { ImpulseProximity } from "client/ProximityPrompts";
-import { openChest } from "client/VFX/ChestMenu";
 import { PlaySound } from "shared/Sound";
+import { ores } from "client/VFX/Ores";
 
 const mouse = Players.LocalPlayer.GetMouse()
 const DigSoundEffect = SoundService.SoundGroup.Dig
@@ -54,18 +54,12 @@ class ShovelClient extends SwingAbility {
         const model = instance.FindFirstAncestorOfClass("Model");
 
         if(model && CollectionService.HasTag(model, "Ore")) {
-            if(model.Name === "Treasure" && !chestOpened) {
-                warn("Dont leave this in")
-                chestOpened = true
-                task.spawn(async () => {
-                    openChest()
-                    const { unequipCurrentItem } = await import("client/Inventory/Inventory");
-                    unequipCurrentItem()
-                })
-            }
             const sound = soundsForOre.get(model.Name)
             if(sound) 
                 PlaySound(sound, 0.75, 1.25)
+
+            const serverObject = ores.get(model)?.serverObject
+            this.item.invokeEvent("Dig", serverObject)
             ImpulseProximity()
             return;
         }

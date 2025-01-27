@@ -21,5 +21,6 @@ import "./VFX/Soul"
 import "./VFX/ProjectileDissapear"
 import "./VFX/Weather"
 import "./VFX/Ores"
+import "./VFX/ChestMenu"
 
 import "./UI/Tree"

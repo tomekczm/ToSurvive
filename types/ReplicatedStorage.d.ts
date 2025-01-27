@@ -268,14 +268,27 @@ interface ReplicatedStorage extends Instance {
 		};
 	};
 	Ores: Folder & {
-		Coal: Model & {
-			Core: MeshPart;
-		};
 		Treasure: Model & {
 			Chest: Part & {
 				PointLight: PointLight;
 				Weld: Weld;
 				Mesh: SpecialMesh;
+			};
+		};
+		Coal: Model & {
+			Core: MeshPart;
+		};
+		Bomb: Model & {
+			Handle: Part & {
+				["Bomb Explosion 1"]: Sound;
+				Smoke: Attachment & {
+					Smoke: ParticleEmitter;
+				};
+				["Bomb Fuse"]: Sound;
+				EndPoint: Attachment;
+				Attachment: Attachment;
+				Mesh: SpecialMesh;
+				MiddlePoint: Attachment;
 			};
 		};
 	};
@@ -417,6 +430,7 @@ interface ReplicatedStorage extends Instance {
 	Events: Folder & {
 		Inventory: Folder & {
 			QuantityChanged: RemoteEvent;
+			OpenChest: RemoteEvent;
 			SetSlot: RemoteEvent;
 			SwapSlots: RemoteEvent;
 			ForceUnequipMainSlot: RemoteEvent;
@@ -664,6 +678,7 @@ interface ReplicatedStorage extends Instance {
 			HammerRecipes: ModuleScript;
 		};
 		HashCode: ModuleScript;
+		Sound: ModuleScript;
 		Bezier: ModuleScript;
 		Item: ModuleScript;
 		TwoWayMap: ModuleScript;

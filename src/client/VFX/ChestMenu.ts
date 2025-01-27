@@ -1,6 +1,8 @@
-import { Lighting, Players, ReplicatedStorage, RunService, SoundService, TweenService } from "@rbxts/services";
+import { Lighting, Players, ReplicatedStorage, RunService, SoundService, TweenService, UserInputService } from "@rbxts/services";
 import { Item } from "shared/Item";
 import { PlaySound } from "shared/Sound";
+
+const OpenChestEvent = ReplicatedStorage.Events.Inventory.OpenChest
 
 const blur = new Instance("BlurEffect")
 const correction = new Instance("ColorCorrectionEffect")
@@ -23,6 +25,9 @@ const correctionEnableTween = TweenService.Create(
         //Contrast: 1
      }
 )
+
+const modalButton = new Instance("TextButton")
+modalButton.Modal = true
 
 const screenGui = new Instance("ScreenGui")
 screenGui.Name = "ChestGui"
@@ -134,13 +139,16 @@ function popupItem(item: Item, otherVectors: Vector2[]) {
 
     const scale = slotFrame.Resizer
     const background = slotFrame.Background
+    let isOver = false;
     background.MouseEnter.Connect(() => {
+        isOver = true
         TweenService.Create(
             scale, hoverPopout, { Scale: 1.5 }
         ).Play()
     })
 
     background.MouseLeave.Connect(() => {
+        isOver = false
         TweenService.Create(
             scale, hoverPopout, { Scale: 1.25 }
         ).Play()
@@ -167,7 +175,7 @@ function popupItem(item: Item, otherVectors: Vector2[]) {
 
     let isCompleted = false
     const rotation = goal.Rotation
-    RunService.RenderStepped.Connect((dt) => {
+    const connection = RunService.RenderStepped.Connect((dt) => {
         if (isCompleted) {
             const delta = rotation * (dt / SLOT_TWEEN.Time)
             toRotate.Rotation += delta
@@ -178,14 +186,33 @@ function popupItem(item: Item, otherVectors: Vector2[]) {
     tween.Completed.Once(() => {
         isCompleted = true
     })
+
+    const inputConnection = UserInputService.InputBegan.Connect((input) => {
+        if(input.UserInputType === Enum.UserInputType.MouseButton1 && isOver) {
+            slotMap.delete(slotFrame.Background) // i thought this would get gced :(
+            slotFrame.Destroy()
+            // will i have to do this with other maps?
+            // crap (family friendly)
+            isOver = false
+            PlaySound(SoundService.SoundGroup.Grab, 0.75, 1.25)
+            connection.Disconnect()
+            inputConnection.Disconnect()
+            if(slotMap.size() === 0) {
+                modalButton.Parent = undefined
+                blur.Size = 0
+                correction.TintColor = new Color3(1,1,1)
+                correction.Saturation = 0
+            }
+        }
+    })
 }
 
-export function openChest() {
-    task.wait(3)
+function openChest() {
     const sword = new Item(ReplicatedStorage.Tools.Sword.Clone())
     const items = [ sword, sword, sword,sword, sword, sword ]
     const otherVectors: Vector2[] = []
 
+    modalButton.Parent = screenGui
     blurEnableTween.Play()
     correctionEnableTween.Play()
 
@@ -197,3 +224,9 @@ export function openChest() {
         })
     }
 }
+
+OpenChestEvent.OnClientEvent.Connect(async () => {
+    const { unequipCurrentItem } = await import("client/Inventory/Inventory");
+    unequipCurrentItem()
+    openChest()
+})
