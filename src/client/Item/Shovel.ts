@@ -26,7 +26,7 @@ class ShovelClient extends SwingAbility {
     allowedMaterials = new Set<Enum.Material>();
     sphere!: Part
     render: RBXScriptConnection | undefined
-    range = this.item.getAttribute("Range", 20)
+    range = this.item.getAttribute<number>("Range")
     digSize = this.item.getAttribute("DigSize", 2)
 
     addMaterial(material: Enum.Material) {
@@ -69,6 +69,7 @@ class ShovelClient extends SwingAbility {
         this.item.invokeEvent("Dig", mouseHit.Position)
         super.localSwing();
     }
+    
     
     getMouseHit() {
         const camera = Workspace!.CurrentCamera!
@@ -141,5 +142,18 @@ export class ShovelItem extends ClientItem<Constraint> {
                                     .addMaterial(Enum.Material.Rock));
         this.abilityManager.add(new RotateAbility(this))
         this.abilityManager.add(new PointAtAbility(this, "TorsoAttach"))
+    }
+    getDescription(): string {
+        return "Basics of the basics."
+    }
+    getExtendedDescription(): string {
+        const range = this.getAttribute<number>("Range")
+        const digSize = this.getAttribute<number>("DigSize")
+        const hardness = this.getAttribute<number>("Hardness")
+        return `${this.getDescription()}\n\n` +
+                `<b>Hardness: ${hardness}HU\n` +
+                `Range: ${range} studs\n` +
+                `Dig Size: ${digSize} studs^2</b>\n\n` +
+                this.createHintText("Tip: Zombies do not interact with terrain on plot")
     }
 }

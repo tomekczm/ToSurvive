@@ -68,4 +68,14 @@ export class RockItem extends ClientItem<Constraint> {
         this.abilityManager.add(new WashRockAbility(this, pointAtAbility))
         this.abilityManager.add(new FirecampFuel(this))
     }
+
+    getDescription(): string {
+        return `I once had a rock i named him John.`
+    }
+
+    getExtendedDescription(): string {
+        return `${this.getDescription()}\n\n` +
+            `${this.createHintText("Tip: Rip John 2017-2024")}\n` +
+            `${this.createHintText("Tip 2: Wash the rock in water")}`
+    }
 }

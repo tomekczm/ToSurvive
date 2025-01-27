@@ -79,7 +79,10 @@ export class Item<T extends Instance = Instance> {
     }
 
     getAttribute<T>(name: string, _default?: T) {
-        return (this.item.GetAttribute(name) ?? _default) as T
+        const val = this.item.GetAttribute(name)
+        if(val) return val as T
+        this.item.SetAttribute(name, _default as AttributeValue | undefined)
+        return _default as T
     }
 
     getName(): string {

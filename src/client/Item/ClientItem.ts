@@ -5,6 +5,10 @@ export class ClientItem<T extends Instance = Instance> extends Item<T> {
     equipAnimation?: Animation;
     equipAnimationLoaded?: AnimationTrack;
 
+    createHintText(text: string) {
+        return `<font transparency="0.5">${text}</font>`
+    }
+
     constructor(item: Instance) {
         super(item as T);
         this.equipAnimation = this.fetchAnimation("Hold");
@@ -33,6 +37,10 @@ export class ClientItem<T extends Instance = Instance> extends Item<T> {
             throw error("Attachment not found")
         }
         return this.selfAttachment.WorldPosition;
+    }
+
+    getExtendedDescription() {
+        return this.getDescription()
     }
 
     invokeEvent(name: string, ...args: unknown[]) {

@@ -28,6 +28,12 @@ export class WoodenWaterBucket extends ClientItem<Constraint> {
         const roundedUpCapacity = tostring(math.floor(capacity * 10) / 10)
         const procentage = tostring(math.floor((capacity / maxCapacity) * 1000) / 10)
 
-        return `Place the bucket during rain to fill it up \n${roundedUpCapacity}/${maxCapacity}L (${procentage}%)`
+        return `The most basic water stoarge item\n${roundedUpCapacity}/${maxCapacity}L (${procentage}%)`
+    }
+
+    getExtendedDescription(): string {
+        return `${this.getDescription()}\n\n` +
+                `<b>Fillup speed: 0.1L/S</b>\n\n` + // random number i made up
+                `${this.createHintText("Place it during the rain for it to fill up")}` 
     }
 }

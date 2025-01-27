@@ -56,7 +56,7 @@ export class Zombie implements InteractsWithPlayer {
     stateConnection: RBXScriptConnection;
 
     onDeath() {
-        new Soul(this.model.GetPivot().Position)
+        //new Soul(this.model.GetPivot().Position)
         const noob = Ragdoll.Clone()
 
         this.stateConnection.Disconnect()

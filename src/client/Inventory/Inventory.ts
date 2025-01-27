@@ -288,13 +288,32 @@ function loadAnimationPreview(item: Item | undefined) {
     itemClone.Parent = clone
 }
 
+let hoveredItem: Item | undefined;
+UserInputService.InputBegan.Connect((input) => {
+    const isLeftShift = input.KeyCode === Enum.KeyCode.LeftShift
+    const isClientItem = hoveredItem instanceof ClientItem
+    if(isLeftShift && isClientItem && hoveredItem) {
+        hoverDescription.Text = (hoveredItem as ClientItem).getExtendedDescription() // why the frick do i have to cast here?
+    }
+})
+
+UserInputService.InputEnded.Connect((input) => {
+    const isLeftShift = input.KeyCode === Enum.KeyCode.LeftShift
+    if(isLeftShift && hoveredItem) {
+        hoverDescription.Text = hoveredItem.getDescription()
+    }
+})
+
 function itemHover(item: Item | undefined) {
     loadAnimationPreview(item)
     if(!item) {
         hoverGui.Visible = false
+        hoveredItem = undefined
         return
     }
+
     hoverGui.Visible = true
+    hoveredItem = item
     hoverTitle.Text = item.getName()
     hoverDescription.Text = item.getDescription()
     const { X, Y } = UserInputService.GetMouseLocation()

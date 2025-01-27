@@ -108,7 +108,9 @@ export class MeleeWeapon implements IZombieWeapon {
         animation.Ended.Once(() => {
             this.zombie.canAttack = true
         })
-        damageFlag(10);
+        let damage = 10;
+        this.zombie.model.Humanoid.Health -= damage
+        damageFlag(damage);
         hurtHighlight(Workspace.Flag)
     }
 }

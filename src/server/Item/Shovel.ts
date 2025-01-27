@@ -14,13 +14,12 @@ OresHealthLookup.set("Coal", 50)
 OresHealthLookup.set("Bomb", 1)
 
 function openTreasure(player: Player) {
-    OpenChestEvent.FireClient(player)
-
     const tool = ReplicatedStorage.Tools.Sword.Clone()
     const chestContainer = new Instance("Model")
 
     tool.Parent = chestContainer;  
     chestContainer.Parent = player
+    OpenChestEvent.FireClient(player, chestContainer)
 }
 
 let bombRadius = 10;
@@ -31,6 +30,7 @@ function explodeBomb(bombPosition: Vector3Value) {
 
 class ShovelSwing extends SwingAbility {
     range = this.item.getAttribute("Range", 20)
+    hardness = this.item.getAttribute("Hardness", 25)
 
     digRocks(position: Vector3) {
         const itemPosition = this.item.getPosition()
@@ -43,7 +43,7 @@ class ShovelSwing extends SwingAbility {
 
     digOre(instance: Vector3Value) {
         let health = OresHealth.get(instance) ?? OresHealthLookup.get(instance.Name)!
-        health = math.max(0, health - 25)
+        health = math.max(0, health - this.hardness)
         if(health === 0) {
             OresHealth.delete(instance)
             const player = this.item.getOwnership()?.player
