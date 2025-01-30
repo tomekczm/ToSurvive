@@ -113,4 +113,25 @@ export class MeleeWeapon implements IZombieWeapon {
         damageFlag(damage);
         hurtHighlight(Workspace.Flag)
     }
+
+    attackBuilding() {
+        const animation = sample(this.animations)
+        animation.Play()
+        animation.Ended.Once(() => {
+            this.zombie.canAttack = true
+        })
+        let damage = 10;
+        
+        const health = this.zombie.target.GetAttribute("Health") as number
+
+        if(health) {
+            const newHealth = math.max(health-damage, 0)
+            if(newHealth === 0) {
+                this.zombie.target.Destroy()
+            }
+            this.zombie.target.SetAttribute("Health", newHealth)
+        }
+
+        hurtHighlight(this.zombie.target)
+    }
 }

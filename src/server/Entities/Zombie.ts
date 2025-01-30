@@ -36,6 +36,10 @@ CollectionService.GetInstanceAddedSignal("Zombie").Connect((_model) => {
     }
 })
 
+const params = new OverlapParams()
+params.FilterType = Enum.RaycastFilterType.Include
+params.FilterDescendantsInstances = [Workspace.PlayerBuilding]
+
 type ZombieModel = ServerStorage["Models"]["ZombieModel"]
 export class Zombie implements InteractsWithPlayer {
 
@@ -52,6 +56,7 @@ export class Zombie implements InteractsWithPlayer {
     canAttack = true
     item!: IZombieWeapon;
     rigidConstraint: RigidConstraint | undefined;
+    nextCheckTimer: number = 0
 
     stateConnection: RBXScriptConnection;
 
@@ -91,11 +96,19 @@ export class Zombie implements InteractsWithPlayer {
         this.item.attackFlag()
     }
 
+    attackBuilding(dt: number) {
+        if(this.canAttack) {
+            this.canAttack = false;
+            this.item.attackBuilding()
+        }
+    }
+
     attackPlayer(dt: number) {
         this.item.attackPlayer(dt)
     }
 
     attackPlayerState(dt: number) {
+        this.nextCheckTimer += dt;
         const distance = this.getDistanceTo()
         const humanoid = this.target.FindFirstChildOfClass("Humanoid")
         this.attackPlayer(dt)
@@ -126,8 +139,16 @@ export class Zombie implements InteractsWithPlayer {
 
         this.ikControl.Enabled = false;
         this.ikControl.Target = undefined;
-        //this.ikControl.Target = target.
+        this.nextCheckTimer += dt;
         this.goThowardsTarget()
+    }
+
+    attackBuildingState(dt: number) {
+        if(!this.target.IsDescendantOf(Workspace)) {
+            this.setTarget(Workspace.Flag)
+            this.setState("defaultState")
+        }
+        this.attackBuilding(dt)
     }
 
     setTarget(target: Model) {
@@ -144,8 +165,27 @@ export class Zombie implements InteractsWithPlayer {
             return;
         }
 
+        if(this.nextCheckTimer >= 1) {
+            const raycast = Workspace.GetPartBoundsInBox(
+                this.model.GetPivot(),
+                this.model.GetExtentsSize().mul(1.1), params
+            )
+            for(let part of raycast) {
+                const model = part.FindFirstAncestorOfClass("Model")
+                if(model) {
+                    humanoid.MoveTo(this.model.HumanoidRootPart.Position)
+                    this.setState("attackBuildingState")
+                    this.setTarget(model)
+                    return;
+                }
+            }
+            this.nextCheckTimer = 0;
+        }
+
         const goal = this.target.GetPivot()
         humanoid.MoveTo(goal.Position)
+
+
         if(!this.walkAnimation.IsPlaying)
             this.walkAnimation.Play()
     }

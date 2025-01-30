@@ -6,6 +6,7 @@ import { recipes, reverseLookup } from "shared/Recipes/HammerRecipes";
 import { Recipe } from "shared/Recipes/Recipe"
 import { Item } from "shared/Item";
 import { BuildAbility } from "./BuildAbility";
+import { addKeyHint } from "client/UI/KeyHint";
 
 const localPlayer = Players.LocalPlayer
 const mouse = localPlayer.GetMouse()
@@ -31,6 +32,9 @@ const Events = ReplicatedStorage.Events.Building
 */
 recipes.forEach((recipe, index) => {
     const clone = ReplicatedStorage.Prefabs.Slot.Clone() as unknown as ImageLabel;
+    const sizeConstraint = new Instance("UIScale")
+    sizeConstraint.Name = "Scaler"
+    sizeConstraint.Parent = clone
     clone.Parent = buldGui
     clone.Image = recipe.result.GetAttribute("Thumbnail") as string ?? ""
     guiRecipeLookup.set(clone, recipe)
@@ -52,6 +56,7 @@ UserInputService.InputChanged.Connect((input) => {
         return
 
     const recipe = getRecipeFromInputObject(input)
+
     if(!recipe) return recipeDrag.Visible = false
 
     const { X, Y } = UserInputService.GetMouseLocation()
@@ -59,19 +64,32 @@ UserInputService.InputChanged.Connect((input) => {
     recipeDrag.Visible = true
     recipeDrag.Position = UDim2.fromOffset(X, Y) 
 
-    let text = "Requirements:\n"
+    let text = `<b>${recipe.result.Name}</b>`
+    text += "\n\nRequirements:\n"
 
     for(const requirement of recipe.requirements) {
         text += requirement.item.getName() + " x" + requirement.quantity + "\n"
     }
+    text = text.sub(0, text.size()-1)
     recipeDrag.Description.Text = text
 })
 
 export class CraftAndBuildAbility extends BuildAbility {
+    private changeItem: ImageLabel | undefined;
+
+    openRecipeMenu() {
+        this.restart()
+        buldGui.Visible = true
+    }
+
     inputBegan(input: InputObject): void {
         super.inputBegan(input)
         if(input.KeyCode === Enum.KeyCode.X) {
             this.restart()
+        }
+
+        if(input.KeyCode === Enum.KeyCode.C) {
+            this.openRecipeMenu();
         }
 
         if(input.UserInputType !== Enum.UserInputType.MouseButton1)
@@ -87,17 +105,20 @@ export class CraftAndBuildAbility extends BuildAbility {
 
         this.restart()
 
+        buldGui.Visible = false
         this.startBuilding(recipe.result)
         this.currentRecipe = recipe;
     }
 
     onEquip(): void {
-        buldGui.Visible = true
+        this.changeItem = addKeyHint("C", "Change Building")
+        this.openRecipeMenu()
         super.onEquip();
     }
 
     onUnequip(): void {
         buldGui.Visible = false
+        this.changeItem?.Destroy()
         super.onUnequip()
     }
 }

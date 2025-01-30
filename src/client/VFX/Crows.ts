@@ -11,6 +11,7 @@ function spawn() {
 
     const crowContainer = new Instance("Model")
     crowContainer.Parent = Workspace
+    crowContainer.Name = "CrowContainer"
     const ogSpawn = new CFrame(new Vector3(x, 300, y), new Vector3(0, 300 ,0))
     for(let i = 0; i < 10; i++) {
         const clone = crow.Clone()
@@ -41,7 +42,7 @@ function spawn() {
 
 task.spawn(() => {
     while(true) {
-        task.wait(math.random(10, 120))
+        task.wait(math.random(30, 40))
         spawn()
     }
 })

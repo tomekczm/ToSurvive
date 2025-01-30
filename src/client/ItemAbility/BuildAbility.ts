@@ -5,6 +5,7 @@ import { Item } from "shared/Item";
 import { ClientItem } from "client/Item/ClientItem";
 import { SetProximity } from "client/ProximityPrompts";
 import { InputBeganEvent } from "./EventInterfaces";
+import { addKeyHint } from "client/UI/KeyHint";
 
 const localPlayer = Players.LocalPlayer
 const mouse = localPlayer.GetMouse()
@@ -16,11 +17,11 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
     dragConnection: RBXScriptConnection | undefined;
 
     snapping = false
-    offset = new CFrame()
     buildEvent = this.item.fetchEvent("Build")
     dragged: Model | undefined;
     position: CFrame | BasePart | undefined;
     currentRecipe: Recipe<Item<Instance>, Model> | undefined;
+    private snappingHint: ImageLabel | undefined;
 
     setHiglights(mode: boolean) {
         const highlights = CollectionService.GetTagged("BuildingHighlight")
@@ -36,6 +37,7 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
     }
 
     onEquip() {
+        this.snappingHint = addKeyHint("Z", "Toggle snapping")
         this.setHiglights(true)
         this.snapping = false
     }
@@ -43,17 +45,10 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
     onUnequip() {
         this.setHiglights(false)
         this.restart()
+        this.snappingHint?.Destroy()
     }
 
     inputBegan(input: InputObject): void {
-        if(input.KeyCode === Enum.KeyCode.R) {
-            this.offset = this.offset.mul(CFrame.Angles(0,math.rad(15),0))
-        }
-
-        if(input.KeyCode === Enum.KeyCode.T) {
-            this.offset = this.offset.mul(CFrame.Angles(math.rad(15),0,0))
-        }
-
         if(input.KeyCode === Enum.KeyCode.Z) {
             this.snapping = !this.snapping
         }
@@ -76,7 +71,6 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
     restart() {
         this.dragConnection?.Disconnect()
         this.currentRecipe = undefined;
-        this.offset = new CFrame()
         this.dragged?.Destroy()
     }
 
@@ -87,16 +81,25 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
         params.RespectCanCollide = true
         params.AddToFilter(this.dragged)
         const character = localPlayer.Character
-        if(character)
-            params.AddToFilter(character)
+        if(!character) return
+        
+        params.AddToFilter(character)
 
         const camera = Workspace.CurrentCamera
         if(!camera) return
 
 		const unitRay = camera.ScreenPointToRay(mousePos.X, mousePos.Y)
+
+        const pivot = character.GetPivot()
+
+        const RAY_RANGE = 5;
+        const vector = pivot.LookVector.mul(RAY_RANGE)
+        const firstRay = Workspace.Raycast(pivot.Position, vector, params)
+        const positionFront = (firstRay) ? firstRay.Position : pivot.Position.add(vector);
+        const secondRay = Workspace.Raycast(positionFront, new Vector3(0, -30, 0), params)
+        if(!secondRay) return
 		const ray = Workspace.Raycast(unitRay.Origin, unitRay.Direction.mul(500), params)
         if(!ray) return
-
         for(const descendant of this.dragged.GetDescendants()) {
             if(!descendant.IsA("BasePart")) continue
             descendant.CanCollide = false
@@ -104,10 +107,12 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
         }
 
         const IsAttachedPart = ray.Instance.Name === "BuildingAttach"
-        
-        const position = (IsAttachedPart) ? ray.Instance.Position : ray.Position;
+        const position = (IsAttachedPart) ? ray.Instance.GetPivot().Position : (this.snapping) ? ray.Position : secondRay.Position;
 
-        const finalPosition = (!this.snapping) ? new CFrame(position).mul(this.offset) : new CFrame(position, position.add(ray.Normal)).mul(this.offset)
+        const rotation = character?.GetPivot().Rotation!
+        const _rotationOffset = this.dragged.GetAttribute("RotationOffset") as Vector3 ?? new Vector3(-90,0,0)
+        const rotationOffset = CFrame.Angles(math.rad(_rotationOffset.X), math.rad(_rotationOffset.Y), math.rad(_rotationOffset.Z))
+        const finalPosition = (!this.snapping) ? new CFrame(position).mul(rotation) : new CFrame(position, position.add(ray.Normal)).mul(rotationOffset)
 
         this.dragged.PivotTo(finalPosition)
         this.position = (IsAttachedPart) ? ray.Instance : finalPosition

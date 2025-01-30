@@ -315,7 +315,11 @@ function itemHover(item: Item | undefined) {
     hoverGui.Visible = true
     hoveredItem = item
     hoverTitle.Text = item.getName()
-    hoverDescription.Text = item.getDescription()
+    if(item instanceof ClientItem && UserInputService.IsKeyDown(Enum.KeyCode.LeftShift)) {
+        hoverDescription.Text = item.getExtendedDescription()
+    } else {
+        hoverDescription.Text = item.getDescription()
+    }
     const { X, Y } = UserInputService.GetMouseLocation()
     hoverGui.Position = UDim2.fromOffset(X, Y) 
 }

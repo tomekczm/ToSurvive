@@ -1,4 +1,4 @@
-import { CollectionService, RunService, TweenService, Workspace } from "@rbxts/services"
+import { CollectionService, Players, ReplicatedStorage, RunService, TweenService, Workspace } from "@rbxts/services"
 import { Caster, PartCache, HighFidelityBehavior, ActiveCast, CastBehavior } from "@rbxts/nextcast";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
 import { hurtHighlight } from "shared/VFX";
@@ -40,6 +40,9 @@ NextCastCaster.RayHit.Connect(async (cast, result, b, c) => {
         humanoid.TakeDamage(damage)
         hurtHighlight(parent as Model)
         const zombie = getEntity(parent)
+        const player = Players.GetPlayerFromCharacter(parent)
+        if(player)
+            ReplicatedStorage.Events.CamShake.FireClient(player)
         if(origin)
             zombie?.attackedByPlayer(origin)
     }

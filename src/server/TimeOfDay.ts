@@ -3,7 +3,7 @@ import { Zombie } from "./Entities/Zombie";
 
 const RANDOM_SPAWNER = new Random();
 
-const size = 300;
+const size = 150;
 const peremiter = 4 * size;
 
 function getBorderPosition(index: number) {

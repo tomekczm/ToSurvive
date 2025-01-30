@@ -13,6 +13,7 @@ export class SelfBuildAbility extends BuildAbility implements InputBeganEvent {
     }
     
     inputBegan(input: InputObject): void {
+        super.inputBegan(input)
         if(input.UserInputType !== Enum.UserInputType.MouseButton1) return
         this.buildEvent.FireServer(this.position)
     }

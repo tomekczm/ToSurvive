@@ -18,7 +18,7 @@ export function placeAndConnect(_target: unknown, _clone: unknown) {
     const position = (isInstance) ? target.GetPivot() : target
 
     clone.PivotTo(position)
-    clone.Parent = Workspace
+    clone.Parent = Workspace.PlayerBuilding
 
     if(!isInstance)
         return

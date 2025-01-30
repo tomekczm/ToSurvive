@@ -293,6 +293,10 @@ interface ReplicatedStorage extends Instance {
 		};
 	};
 	Prefabs: Folder & {
+		KeyHint: ImageLabel & {
+			Key: TextLabel;
+			Content: TextLabel;
+		};
 		Slot: ImageLabel & {
 			UICorner: UICorner;
 			UIStroke: UIStroke;

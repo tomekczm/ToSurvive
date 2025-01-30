@@ -22,7 +22,7 @@ function openTreasure(player: Player) {
     OpenChestEvent.FireClient(player, chestContainer)
 }
 
-let bombRadius = 10;
+let bombRadius = 15;
 
 function explodeBomb(bombPosition: Vector3Value) {
     Workspace.Terrain.FillBall(bombPosition.Value, bombRadius, Enum.Material.Air)

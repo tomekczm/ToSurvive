@@ -1,6 +1,6 @@
 interface Workspace extends Model {
 	Script: Script;
-	Ores: Folder;
+	PlayerBuilding: Folder;
 	Flag: Model & {
 		Union: UnionOperation;
 		Part1: Part & {
@@ -14,22 +14,22 @@ interface Workspace extends Model {
 			Attachment: Attachment;
 		};
 	};
-	Characters: Folder;
+	Camera: Camera;
 	SpawnLocation: SpawnLocation & {
 		Decal: Decal;
 	};
 	Props: Folder;
 	slash: Sound;
-	Camera: Camera;
+	PointLight: PointLight;
 	["sword slash"]: Sound;
-	Model: Model;
+	Ores: Folder;
+	Characters: Folder;
 	Snow: Folder & {
 		snow_bloom: BloomEffect;
 		snow_blur: BlurEffect;
 		snow_sk: Sky;
 		snow_cc: ColorCorrectionEffect;
 	};
-	VectorForce: VectorForce;
 	NoRay: Folder & {
 		Base: Part;
 	};

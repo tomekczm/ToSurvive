@@ -53,7 +53,7 @@ export class Throwable implements IZombieWeapon {
     }
 
     stateUpdated(state: string): void {
-        if(state === "defaultState") {
+        if(state === "defaultState" || state === "attackBuildingState") {
             this.prepareThrow?.Stop()
         }
     }
@@ -70,6 +70,13 @@ export class Throwable implements IZombieWeapon {
             this.model.Parent = this.zombie.model
             this.isThrown = false;
         })
+    }
+
+    attackBuilding(): void {
+        if(this.isThrown) {
+            return this.handMelee?.attackBuilding()
+       }
+        return this.meleeSecondary.attackBuilding();
     }
 
     attackPlayer(dt: number): void {
@@ -95,7 +102,7 @@ export class Throwable implements IZombieWeapon {
             if(!this.prepareThrow?.IsPlaying) {
                 this.prepareThrow?.Play()
             }
-            print(this.cookingTime)
+            
             if(this.cookingTime >= 5) {
                 if(this.thrownAwayOnUse) {
                     this.throwAway()
