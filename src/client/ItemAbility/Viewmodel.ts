@@ -8,8 +8,20 @@ const viewmodel = ReplicatedStorage.Viewmodel.Clone()
 viewmodel.Parent = ReplicatedStorage
 
 const animator = viewmodel.AnimationController.Animator
+export const VIEWMODEL_ANIMATOR = animator
 
 const animations = ReplicatedStorage.Animations
+
+//DEBUG STATEMENTS
+let isInFreeCam = false
+warn("DEBUG MODE ON")
+UserInputService.InputBegan.Connect(() => {
+    if(UserInputService.IsKeyDown(Enum.KeyCode.P)) {
+        isInFreeCam = !isInFreeCam
+        print(`FREECAM: ${(isInFreeCam) ? "On" : "Off" }`)
+    }
+})
+
 
 export class Viewmodel extends Ability<ClientItem> {
     connection: RBXScriptConnection | undefined;
@@ -18,6 +30,7 @@ export class Viewmodel extends Ability<ClientItem> {
     clone!: Instance;
     animation?: AnimationTrack;
     offset: Vector3 = new Vector3(0,0,0);
+    animator: Animator | undefined;
 
     fetchAnimation(name: string) {
         const itemName = this.item.item.Name
@@ -25,8 +38,12 @@ export class Viewmodel extends Ability<ClientItem> {
         return animationFolder?.FindFirstChild(name) as Animation
     }
 
+    loadAnimation(name: string) {
+        return animator.LoadAnimation(this.fetchAnimation(name))
+    }
+
     offsetChanged() {
-        this.offset = this.clone.GetAttribute("ViewportOffset") as Vector3 ?? 0
+        this.offset = this.clone.GetAttribute("ViewportOffset") as Vector3 ?? new Vector3(0,0,0)
     }
 
     getViewportOffset(cframe: CFrame) {
@@ -43,7 +60,7 @@ export class Viewmodel extends Ability<ClientItem> {
 
     onEquip() {
         this.clone.Parent = viewmodel
-            const attach = viewmodel["HumanoidRootPart"]["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:RightShoulder"]["mixamorig:RightArm"]["mixamorig:RightForeArm"]["mixamorig:RightHand"]["RightAttachBone"]
+        const attach = viewmodel["HumanoidRootPart"]["mixamorig:Hips"]["mixamorig:Spine"]["mixamorig:Spine1"]["mixamorig:Spine2"]["mixamorig:RightShoulder"]["mixamorig:RightArm"]["mixamorig:RightForeArm"]["mixamorig:RightHand"]["RightAttachBone"]
             
             const rootPart = this.clone.FindFirstChild("RootPart")
             const attachment = rootPart?.FindFirstChild("Attachment") as Attachment
@@ -54,14 +71,21 @@ export class Viewmodel extends Ability<ClientItem> {
                 e.Stop()
             })
 
+            this.animator = animator
             this.animation = animator.LoadAnimation(this.fetchAnimation("VM_Hold"))
             let time = 0;
             
             this.animation?.Play();
 
+            let lastCFrame: CFrame = Workspace.CurrentCamera!.CFrame
             this.connection = RunService.RenderStepped.Connect((dt) => {
                 time += dt;
-                let cframe = Workspace.CurrentCamera!.CFrame
+                let cframe = lastCFrame
+                if(!isInFreeCam) {
+                    cframe = Workspace.CurrentCamera!.CFrame
+                }
+                
+                lastCFrame = cframe
                 //const newPos = cframe.add(cframe.LookVector.mul(1).add(cframe.UpVector.mul(0)))
                 //const offsets = new CFrame(cframe.UpVector.mul(math.sin(time) * 0.1))
                 //cframe = newPos.mul(offsets)
@@ -72,7 +96,7 @@ export class Viewmodel extends Ability<ClientItem> {
 
                 const walkOffset = 
                     cframe.RightVector.mul(sinX) // Horizontal component
-                    .add(cframe.UpVector.mul(sinY)) // Vertical component, with phase shift
+                    .add(cframe.UpVector.mul(sinY))
     
 
                 if(isInFirstPerson()) {
@@ -81,7 +105,8 @@ export class Viewmodel extends Ability<ClientItem> {
                     viewmodel.Parent = ReplicatedStorage
                 }
         
-                cframe = cframe.add(walkOffset);
+                cframe = cframe.add(walkOffset)
+                cframe = cframe.add(this.getViewportOffset(cframe));
             
                 viewmodel.PivotTo(cframe);
             })
@@ -92,6 +117,7 @@ export class Viewmodel extends Ability<ClientItem> {
 
         this.offsetChanged()
         this.clone.GetAttributeChangedSignal("ViewportOffset").Connect(() => {
+            print("offset cha")
             this.offsetChanged()
         })
 

@@ -8,6 +8,7 @@ import { Modifier } from "typescript"
 import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox"
 import { hurtHighlight } from "shared/VFX"
 import { getEntity } from "server/Entities/Entities"
+import { KnockbackEntity } from "shared/Knockback"
 
 const rng = new Random()
 
@@ -51,15 +52,15 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
                 //Debris.AddItem(vectorForce, 0.05)
 
             hurtHighlight(parent)
-            //const root = parent.HumanoidRootPart
-            //const ownerRoot = this.item.getOwnership()?.player.Character?.FindFirstChild("HumanoidRootPart") as BasePart // big ugly
 
-            //const impulse = root.Position.sub(ownerRoot.Position).Unit.mul(this.knockback).add(new Vector3(0, this.knockback/100, 0))
-            //root.ApplyImpulse(impulse)
+            const owner = this.item.getOwnership()?.player
+
             const entity = getEntity(parent)
             const player = this.item.getOwnership()?.player
-            if(entity && humanoid.Health !== 0 && player)
+            if(entity && humanoid.Health !== 0 && player) {
+                KnockbackEntity(parent, player.Character!.GetPivot()!.Position, 250)
                 entity.attackedByPlayer(player.Character)
+            }
         })
         super.onStart();
     }

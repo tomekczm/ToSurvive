@@ -7,6 +7,8 @@ import { Recipe } from "shared/Recipes/Recipe"
 import { Item } from "shared/Item";
 import { BuildAbility } from "./BuildAbility";
 import { addKeyHint } from "client/UI/KeyHint";
+import { ClientItem } from "client/Item/ClientItem";
+import { VIEWMODEL_ANIMATOR, type Viewmodel } from "./Viewmodel";
 
 const localPlayer = Players.LocalPlayer
 const mouse = localPlayer.GetMouse()
@@ -77,6 +79,10 @@ UserInputService.InputChanged.Connect((input) => {
 export class CraftAndBuildAbility extends BuildAbility {
     private changeItem: ImageLabel | undefined;
 
+
+    buildAnimation: AnimationTrack | undefined
+    viewmodel: Viewmodel | undefined;
+
     openRecipeMenu() {
         this.restart()
         buldGui.Visible = true
@@ -97,8 +103,10 @@ export class CraftAndBuildAbility extends BuildAbility {
     
         const recipe = getRecipeFromInputObject(input)
         if(!recipe) {
-            if(this.currentRecipe)
+            if(this.currentRecipe) {
                 this.buildEvent.FireServer(reverseLookup.get(this.currentRecipe), this.position)
+                this.buildAnimation?.Play()
+            }
 
             return
         }
@@ -108,6 +116,12 @@ export class CraftAndBuildAbility extends BuildAbility {
         buldGui.Visible = false
         this.startBuilding(recipe.result)
         this.currentRecipe = recipe;
+    }
+
+    constructor(item: ClientItem, viewmodel?: Viewmodel) {
+        super(item);
+        this.viewmodel = viewmodel;
+        this.buildAnimation = this.viewmodel?.loadAnimation("VM_Build")
     }
 
     onEquip(): void {

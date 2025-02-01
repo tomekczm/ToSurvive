@@ -25,3 +25,6 @@ import "./VFX/ChestMenu"
 import "./VFX/FlagVFX"
 
 import "./UI/Tree"
+import "./UI/BasicHints"
+
+import "./Events/OnKnockback"

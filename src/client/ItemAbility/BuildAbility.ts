@@ -6,6 +6,7 @@ import { ClientItem } from "client/Item/ClientItem";
 import { SetProximity } from "client/ProximityPrompts";
 import { InputBeganEvent } from "./EventInterfaces";
 import { addKeyHint } from "client/UI/KeyHint";
+import { isInFirstPerson } from "client/FirstPersonMode";
 
 const localPlayer = Players.LocalPlayer
 const mouse = localPlayer.GetMouse()
@@ -92,7 +93,7 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
 
         const pivot = character.GetPivot()
 
-        const RAY_RANGE = 5;
+        const RAY_RANGE = isInFirstPerson() ? 10 : 5;
         const vector = pivot.LookVector.mul(RAY_RANGE)
         const firstRay = Workspace.Raycast(pivot.Position, vector, params)
         const positionFront = (firstRay) ? firstRay.Position : pivot.Position.add(vector);
@@ -103,7 +104,7 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
         for(const descendant of this.dragged.GetDescendants()) {
             if(!descendant.IsA("BasePart")) continue
             descendant.CanCollide = false
-            //descendant.Color = canPlace ? new Color3(0,1,0) : new Color3(1,0,0)
+            descendant.Transparency = 0.8
         }
 
         const IsAttachedPart = ray.Instance.Name === "BuildingAttach"

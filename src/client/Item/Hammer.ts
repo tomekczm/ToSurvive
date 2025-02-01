@@ -13,9 +13,10 @@ import { Viewmodel } from "client/ItemAbility/Viewmodel";
 export class HammerItem extends ClientItem<Constraint> {
     constructor(instance: Instance) {
         super(instance as Constraint)
-        this.abilityManager.add(new CraftAndBuildAbility(this))
+        const viewmodel = new Viewmodel(this)
+        this.abilityManager.add(new CraftAndBuildAbility(this, viewmodel))
         this.abilityManager.add(new RotateAbility(this))
         this.abilityManager.add(new PointAtAbility(this, "TorsoAttach"))
-        this.abilityManager.add(new Viewmodel(this))
+        this.abilityManager.add(viewmodel)
     }
 }

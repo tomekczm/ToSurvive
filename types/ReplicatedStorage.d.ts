@@ -445,6 +445,7 @@ interface ReplicatedStorage extends Instance {
 		Building: Folder & {
 			RecieveSerialized: RemoteEvent;
 		};
+		ApplyKnockback: RemoteEvent;
 	};
 	ItemAnimations: Folder & {
 		Rock: Folder & {
