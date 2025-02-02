@@ -10,9 +10,15 @@ interface ReplicatedStorage extends Instance {
 		Left: Animation;
 		Hammer: Folder & {
 			VM_Hold: Animation;
+			VM_Build: Animation;
 		};
 		WalkBackwards: Animation;
 		Walking: Animation;
+		Golem: Folder & {
+			Jump: Animation;
+			Idle: Animation;
+			Walk: Animation;
+		};
 		Zombie: Folder & {
 			Idle: Animation;
 			Kick: Folder & {
@@ -32,6 +38,9 @@ interface ReplicatedStorage extends Instance {
 		Promise: ModuleScript;
 		node_modules: Folder & {
 			["@rbxts"]: Folder & {
+				["octo-tree"]: Folder & {
+					out: ModuleScript;
+				};
 				["linked-lists"]: Folder & {
 					out: ModuleScript & {
 						classes: Folder & {
@@ -64,12 +73,13 @@ interface ReplicatedStorage extends Instance {
 				beacon: Folder & {
 					out: ModuleScript;
 				};
+				visualize: Folder & {
+					out: ModuleScript;
+				};
 				["compiler-types"]: Folder & {
 					types: Folder;
 				};
-				["octo-tree"]: Folder & {
-					out: ModuleScript;
-				};
+				["object-utils"]: ModuleScript;
 				["camera-shaker"]: Folder & {
 					CameraShaker: ModuleScript & {
 						CameraShakeInstance: ModuleScript;
@@ -676,6 +686,7 @@ interface ReplicatedStorage extends Instance {
 	};
 	TS: Folder & {
 		module: ModuleScript;
+		Knockback: ModuleScript;
 		NumberSequence: ModuleScript;
 		Ability: ModuleScript;
 		Recipes: Folder & {

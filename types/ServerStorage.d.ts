@@ -116,6 +116,87 @@ interface ServerStorage extends Instance {
 		Spear: MeshPart & {
 			PickUp: ProximityPrompt;
 		};
+		Golem: Model & {
+			ArmControl: IKControl;
+			Humanoid: Humanoid & {
+				Animator: Animator;
+			};
+			HumanoidRootPart: MeshPart & {
+				spine: Bone & {
+					["thigh.L"]: Bone & {
+						["shin.L"]: Bone & {
+							["foot.L"]: Bone & {
+								["toe.L"]: Bone;
+								["heel.02.L"]: Bone;
+							};
+						};
+					};
+					["pelvis.R"]: Bone;
+					["spine.001"]: Bone & {
+						["spine.002"]: Bone & {
+							["spine.003"]: Bone & {
+								["breast.L"]: Bone;
+								["spine.004"]: Bone & {
+									["spine.005"]: Bone & {
+										Head: Bone;
+									};
+								};
+								["shoulder.L"]: Bone & {
+									["upper_arm.L"]: Bone & {
+										["forearm.L"]: Bone & {
+											["forearm.L.001"]: Bone & {
+												["forearm.L.002"]: Bone;
+											};
+											["forearm.L.003"]: Bone & {
+												["forearm.L.004"]: Bone & {
+													["forearm.L.005"]: Bone;
+												};
+											};
+											["hand.L"]: Bone & {
+												["hand.L.001"]: Bone & {
+													["hand.L.002"]: Bone;
+												};
+											};
+										};
+									};
+								};
+								["breast.R"]: Bone;
+								["shoulder.R"]: Bone & {
+									["upper_arm.R"]: Bone & {
+										["forearm.R"]: Bone & {
+											["hand.R"]: Bone & {
+												["hand.R.003"]: Bone & {
+													["hand.R.004"]: Bone;
+												};
+												["hand.R.005"]: Bone & {
+													["hand.R.006"]: Bone & {
+														["hand.R.007"]: Bone;
+													};
+												};
+												["hand.R.001"]: Bone & {
+													["hand.R.002"]: Bone;
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+					["thigh.R"]: Bone & {
+						["shin.R"]: Bone & {
+							["foot.R"]: Bone & {
+								["heel.02.R"]: Bone;
+								["toe.R"]: Bone;
+							};
+						};
+					};
+					["pelvis.L"]: Bone;
+				};
+				SurfaceAppearance: SurfaceAppearance;
+			};
+			AnimSaves: ObjectValue;
+		};
 		Cat: Model & {
 			HumanoidRootPart: Part & {
 				LeftEye: Attachment & {
@@ -171,7 +252,19 @@ interface ServerStorage extends Instance {
 				Rig3Motor6D: Motor6D;
 			};
 			LeftAttach: IKControl;
+			IKControl: IKControl;
+			AnimSaves: ObjectValue;
+			LeftArm: MeshPart & {
+				Rig4Motor6D: Motor6D;
+			};
+			Torso: MeshPart & {
+				Rig5Motor6D: Motor6D;
+			};
+			RightLeg: MeshPart & {
+				Rig1Motor6D: Motor6D;
+			};
 			HumanoidRootPart: Part & {
+				Attachment: Attachment;
 				GroundSensor: ControllerPartSensor;
 				ClimbSensor: ControllerPartSensor;
 				BuoyancySensor: BuoyancySensor;
@@ -222,18 +315,6 @@ interface ServerStorage extends Instance {
 					};
 				};
 			};
-			IKControl: IKControl;
-			AnimSaves: ObjectValue;
-			LeftArm: MeshPart & {
-				Rig4Motor6D: Motor6D;
-			};
-			Torso: MeshPart & {
-				Rig5Motor6D: Motor6D;
-			};
-			RightLeg: MeshPart & {
-				Rig1Motor6D: Motor6D;
-			};
-			Collision: Part;
 			LeftLeg: MeshPart & {
 				Rig2Motor6D: Motor6D;
 			};
@@ -243,7 +324,6 @@ interface ServerStorage extends Instance {
 			Humanoid: Humanoid;
 		};
 	};
-	TerrainGeneratorData: Folder;
 	DroppedItems: Folder & {
 		Meat: Model & {
 			["Meat "]: MeshPart & {
@@ -256,9 +336,119 @@ interface ServerStorage extends Instance {
 			};
 		};
 	};
+	TerrainGeneratorData: Folder;
+	CoolSounds: Model & {
+		["Strong Blizzard Snowstorm Wind Loop"]: Sound;
+		["White Space 60"]: Sound;
+		Vlood: Part & {
+			Attachment: Attachment & {
+				ParticleEmitter: ParticleEmitter;
+			};
+		};
+		["Future City"]: Sound;
+		["Gods Wind Spooky Eerie 2 (SFX)"]: Sound;
+		["White Space (Novus Eden, Mvt. 2)"]: Sound;
+	};
 	RBX_ANIMSAVES: Model & {
 		Crow: ObjectValue & {
 			["Imported Animation Clip"]: KeyframeSequence;
+		};
+		uploads_files_2061247_Earth_Golem_FBX: ObjectValue & {
+			["Imported Animation Clip"]: KeyframeSequence & {
+				End: Keyframe & {
+					["pelvis.R_end"]: Pose;
+					["hand.R.004_end"]: Pose;
+					["toe.L_end"]: Pose;
+					["toe.R_end"]: Pose;
+					["heel.02.R_end"]: Pose;
+					["forearm.L.002_end"]: Pose;
+					metarig: Pose;
+					RootNode: Pose;
+					Head_end: Pose;
+					["breast.R_end"]: Pose;
+					["pelvis.L_end"]: Pose;
+					LOW_POLY1: Pose & {
+						spine: Pose & {
+							["thigh.L"]: Pose & {
+								["shin.L"]: Pose & {
+									["foot.L"]: Pose & {
+										["toe.L"]: Pose;
+										["heel.02.L"]: Pose;
+									};
+								};
+							};
+							["pelvis.R"]: Pose;
+							["spine.001"]: Pose & {
+								["spine.002"]: Pose & {
+									["spine.003"]: Pose & {
+										["breast.L"]: Pose;
+										["shoulder.L"]: Pose & {
+											["upper_arm.L"]: Pose & {
+												["forearm.L"]: Pose & {
+													["forearm.L.001"]: Pose & {
+														["forearm.L.002"]: Pose;
+													};
+													["forearm.L.003"]: Pose & {
+														["forearm.L.004"]: Pose & {
+															["forearm.L.005"]: Pose;
+														};
+													};
+													["hand.L"]: Pose & {
+														["hand.L.001"]: Pose & {
+															["hand.L.002"]: Pose;
+														};
+													};
+												};
+											};
+										};
+										["spine.004"]: Pose & {
+											["spine.005"]: Pose & {
+												Head: Pose;
+											};
+										};
+										["breast.R"]: Pose;
+										["shoulder.R"]: Pose & {
+											["upper_arm.R"]: Pose & {
+												["forearm.R"]: Pose & {
+													["hand.R"]: Pose & {
+														["hand.R.003"]: Pose & {
+															["hand.R.004"]: Pose;
+														};
+														["hand.R.005"]: Pose & {
+															["hand.R.006"]: Pose & {
+																["hand.R.007"]: Pose;
+															};
+														};
+														["hand.R.001"]: Pose & {
+															["hand.R.002"]: Pose;
+														};
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+							["pelvis.L"]: Pose;
+							["thigh.R"]: Pose & {
+								["shin.R"]: Pose & {
+									["foot.R"]: Pose & {
+										["heel.02.R"]: Pose;
+										["toe.R"]: Pose;
+									};
+								};
+							};
+						};
+					};
+					["breast.L_end"]: Pose;
+					["hand.L.002_end"]: Pose;
+					["hand.R.007_end"]: Pose;
+					["heel.02.L_end"]: Pose;
+					["hand.R.002_end"]: Pose;
+					["forearm.L.005_end"]: Pose;
+				};
+			};
+			["Automatic Save"]: KeyframeSequence;
 		};
 	};
 	Structures: Folder & {

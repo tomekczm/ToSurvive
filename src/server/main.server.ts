@@ -23,7 +23,9 @@ task.delay(3, () => {
 })
 
 import { CowAnimal } from "./Entities/Cow";
-new CowAnimal(new Vector3(0, 100, 0))
+import { Golem } from "./Entities/Golem";
+//new CowAnimal(new Vector3(0, 100, 0))
+new Golem(new Vector3(0, 100, 0)) 
 
 //for(let i = 0; i < 20; i++) {
 //    new Cat(new Vector3(0, 100, 0))

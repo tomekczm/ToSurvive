@@ -1,4 +1,4 @@
-import { CollectionService, Players, ReplicatedStorage, RunService, ServerStorage, Workspace } from "@rbxts/services";
+import { CollectionService, PathfindingService, Players, ReplicatedStorage, RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { damageFlag, getFlagHealth } from "server/Flag";
 import { hurtHighlight } from "shared/VFX";
 import { sample } from "shared/Array";
@@ -10,6 +10,7 @@ import { MeleeWeapon } from "./ZombieWeapons/Melee";
 import { IZombieWeapon } from "./ZombieWeapons/IZombieWeapon";
 import { Throwable, ThrowableBuilder } from "./ZombieWeapons/Throwable";
 import { InteractsWithPlayer } from "./InteractsWithPlayer";
+import { Visualize } from "@rbxts/visualize";
 
 const Animations = ReplicatedStorage.Animations.Zombie
 const model = ServerStorage.Models.ZombieModel
@@ -40,6 +41,8 @@ const params = new OverlapParams()
 params.FilterType = Enum.RaycastFilterType.Include
 params.FilterDescendantsInstances = [Workspace.PlayerBuilding]
 
+const PATHFIND_UPDATE_TRESHOLD = 1;
+
 type ZombieModel = ServerStorage["Models"]["ZombieModel"]
 export class Zombie implements InteractsWithPlayer {
 
@@ -59,6 +62,7 @@ export class Zombie implements InteractsWithPlayer {
     nextCheckTimer: number = 0
 
     stateConnection: RBXScriptConnection;
+    pathfinding: Path;
 
     onDeath() {
         //new Soul(this.model.GetPivot().Position)
@@ -112,11 +116,114 @@ export class Zombie implements InteractsWithPlayer {
         const distance = this.getDistanceTo()
         const humanoid = this.target.FindFirstChildOfClass("Humanoid")
         this.attackPlayer(dt)
-        if(distance >= 100 || humanoid?.Health === 0) {
+
+        const isCloseEnoughToFlag = this.isCloseEnoughToFlag()
+
+        if(
+            (distance >= 100 || humanoid?.Health === 0)
+            && isCloseEnoughToFlag
+        ) {
             this.setTarget(flag)
             this.setState("defaultState")
         }
-        this.goThowardsTarget()
+
+        if(isCloseEnoughToFlag) {
+            this.goThowardsTarget()
+        } else {
+            this.pathfindToTarget(dt)
+        }
+    }
+
+    nextPathfindUpdate = 0;
+    isInAStraightLine = false
+
+    pathfindToTarget(dt: number) {
+        const params = new RaycastParams()
+        params.AddToFilter(
+            this.model
+            //CollectionService.GetTagged("Zombie")
+        )
+
+        params.AddToFilter(
+            CollectionService.GetTagged("Building")
+        )
+
+        //print(this.isInAStraightLine)
+        if(this.isInAStraightLine) {
+            this.goThowardsTarget()
+        }
+
+        this.nextPathfindUpdate += dt;
+        if(this.nextPathfindUpdate < PATHFIND_UPDATE_TRESHOLD) {
+            return
+        }
+
+        const selfPivot = this.model!.GetPivot().Position
+        const target = this.target as unknown as StarterPlayer["StarterCharacter"]
+        const targetPivot = target.UpperTorso.GetPivot().Position 
+        const substraction = selfPivot.sub(targetPivot)
+        const distance = substraction.Magnitude
+
+
+        const result = Workspace.Raycast(
+            selfPivot, substraction.Unit.mul(-distance*2),
+            params
+        )
+        this.isInAStraightLine = false
+        if(result) {
+            const instance = result.Instance
+            if(instance.IsDescendantOf(this.target)) {
+                this.isInAStraightLine = true
+            }
+        }
+
+        this.nextPathfindUpdate = 0;
+        this.forcePathfind()
+    }
+
+    private forcePathfind() {
+        const path = this.pathfinding
+        try {
+            path.ComputeAsync(
+                this.model.GetPivot().Position,
+                this.target.GetPivot().Position
+            )
+            if(path.Status === Enum.PathStatus.Success)
+                this.activatePathfind()
+        } catch { this.isInAStraightLine = true }
+    }
+
+    private waypoints?: PathWaypoint[]
+    private nextWaypointIndex?: number
+    private reachedConnection?: RBXScriptConnection
+    private blockedConnection?: RBXScriptConnection
+
+    activatePathfind() {
+        const humanoid = this.model.Humanoid
+        const path = this.pathfinding
+        this.waypoints = path.GetWaypoints()
+
+        this.blockedConnection = path.Blocked.Connect((blockedWaypointIndex) => {
+            if (blockedWaypointIndex >= this.nextWaypointIndex!) {
+				this.blockedConnection?.Disconnect()
+				this.forcePathfind()
+            }
+        })
+
+        if(!this.reachedConnection) {
+			this.reachedConnection = humanoid.MoveToFinished.Connect((reached) => {
+				if(reached && this.nextWaypointIndex! < this.waypoints!.size()) {
+					this.nextWaypointIndex! += 1
+					humanoid.MoveTo(this.waypoints![this.nextWaypointIndex!].Position)
+                } else {
+					this.reachedConnection!.Disconnect()
+					this.blockedConnection!.Disconnect()
+				}
+            })
+        }
+
+        this.nextWaypointIndex = 2
+		humanoid.MoveTo(this.waypoints[this.nextWaypointIndex].Position)
     }
 
     setState(state: string) {
@@ -130,9 +237,44 @@ export class Zombie implements InteractsWithPlayer {
         return (position.sub(this.model.GetPivot().Position)).Magnitude
     }
 
+    findNearestPlayer() {
+        const players = Players.GetPlayers()
+        let nearestDistance = math.huge
+        let nearestPlayer: Player | undefined = undefined
+        for(const player of players) {
+            const pivot = player.Character?.GetPivot()
+
+            if(!pivot) continue
+            const distance = this.getDistanceTo(pivot.Position)
+            if(distance < nearestDistance) {
+                nearestDistance = distance
+                nearestPlayer = player
+            }
+        }
+        return nearestPlayer
+    }
+
+    isCloseEnoughToFlag() {
+        const distance = this.getDistanceTo(
+            Workspace.Flag.GetPivot().Position
+        )
+
+        // Too far away from base to care abt the flag
+        return (distance <= 290)
+    }
+
     defaultState(dt: number) {
 
         const distance = this.getDistanceTo()
+
+        // Too far away from base to care abt the flag
+        if(!this.isCloseEnoughToFlag()) {
+            const nearestPlayer = this.findNearestPlayer()
+            if(nearestPlayer) {
+                this.attackedByPlayer(nearestPlayer!.Character)
+            }
+        }
+
         if(distance <= 5 && this.canAttack) {
             this.attackFlag(dt);
         }
@@ -208,7 +350,9 @@ export class Zombie implements InteractsWithPlayer {
     }
 
     constructor(position: Vector3) {
-
+        this.pathfinding = PathfindingService.CreatePath({
+            AgentRadius: 4,
+        })
         this.model = model.Clone();
         this.model.PivotTo(new CFrame(position))
         this.model.Parent = Workspace
