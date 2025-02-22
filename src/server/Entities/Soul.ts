@@ -5,11 +5,10 @@ import { Entity } from "./Entity";
 import type { LanternItem } from "server/Item/Lantern";
 
 const directional = new Random();
-
-const Template = ServerStorage.Models.Soul
-
+const Template = ServerStorage.Models.Soul;
 const SPEED = 1;
 
+const UPDATE_INTERVAL = 5; // 1 second interval for position updates
 const halfFullRotation = CFrame.Angles(0, math.rad(180),0)
 
 // this whole thing probably is really inefficient network wise but
@@ -21,70 +20,51 @@ export class Soul extends Entity {
     soulModel: typeof Template;
 
     nextUpdate: thread | undefined = undefined
-    imaginaryPosition: CFrame | undefined
 
     targetTo: LanternItem | undefined
 
     public static registry = new Set<Soul>();
+
+    lastUpdateTime = 0;
+    calculatedPosition: CFrame | undefined;
 
     distanceTo(position: Vector3) {
         const pivot = this.soulModel.GetPivot().Position
         return pivot.sub(position).Magnitude
     }
 
-
-    update(treshold: number) {
-        if(!this.targetTo) return
-        const position = this.targetTo.getPosition()
-        const pivot = this.soulModel.GetPivot()
-
-        const distance = this.distanceTo(position)
-
-        const rotated = new CFrame(pivot.Position, position)
-        const lookVector = rotated.LookVector
-        const distanceToTravel = math.min(distance, SPEED * treshold)
-
-        const toTravel = lookVector.mul(distanceToTravel)
-
-        const newPosition = rotated.add(toTravel).mul(halfFullRotation);
-
-        this.soulModel.PivotTo(newPosition)
-
-        if(distance <= 1) {
-            this.soulModel.Destroy()
-            this.targetTo.inventory?.giveItem(this.giveSelf())
-        }
-    }
-
     targetState(dt: number) {
-        this.update(dt)
-        /*
         if(!this.targetTo) return
-        const position = this.targetTo.getPosition()
-        const pivot = this.soulModel.GetPivot()
+        if(!this.calculatedPosition) {
+            this.calculatedPosition = this.soulModel.GetPivot()
+        }
+        this.soulModel.SoulFragment.Value.Value = this.targetTo.item
 
-        const distance = this.distanceTo(position)
+        const position = this.targetTo.getPosition()
+        const pivot = this.calculatedPosition
+        const distance = this.calculatedPosition?.Position?.sub(position).Magnitude
+
+        if(!distance) return
 
         const rotated = new CFrame(pivot.Position, position)
         const lookVector = rotated.LookVector
         const distanceToTravel = math.min(distance, SPEED * dt)
-
         const toTravel = lookVector.mul(distanceToTravel)
-
         const newPosition = rotated.add(toTravel).mul(halfFullRotation);
+        
+        this.calculatedPosition = newPosition;
 
-        this.soulModel.PivotTo(newPosition)
+        // Only update model position every UPDATE_INTERVAL seconds
+        const now = tick();
+        if (now - this.lastUpdateTime >= UPDATE_INTERVAL) {
+            this.lastUpdateTime = now;
+            this.soulModel.SetAttribute("RealPosition", this.calculatedPosition);
+        }
 
         if(distance <= 1) {
             this.soulModel.Destroy()
             this.targetTo.inventory?.giveItem(this.giveSelf())
         }
-        */
-       //if(this.nextUpdate) return
-       //this.nextUpdate = task.delay(1, () => {
-       //     this.update(1)
-       //     this.nextUpdate = undefined
-       //})
     }
 
     giveSelf() {
@@ -92,6 +72,10 @@ export class Soul extends Entity {
     }
 
     defaultTick(dt: number) {
+        if(this.calculatedPosition) {
+            this.soulModel.PivotTo(this.calculatedPosition)
+            this.calculatedPosition = undefined;
+        }
         const pivot = this.soulModel.GetPivot();
         this.delta += dt;
         if(this.delta >= 1) {
@@ -101,8 +85,10 @@ export class Soul extends Entity {
         }
         const newDirection = this.oldDirection.Lerp(this.nextDirection, this.delta);
         const final = new CFrame(pivot.Position, pivot.Position.add(newDirection))
-        const reallyFInal = final.add(final.LookVector.mul(-dt))
-        this.soulModel.PivotTo(reallyFInal)
+        const reallyFinal = final.add(final.LookVector.mul(-dt))
+
+        // Only update model position every UPDATE_INTERVAL seconds
+        this.soulModel.PivotTo(reallyFinal);
     }
 
     constructor(position: Vector3) {
@@ -126,5 +112,6 @@ export class Soul extends Entity {
 
         this.setState("defaultTick")
         Soul.registry.add(this)
+        CollectionService.AddTag(SoulModel, "Soul")
     }
 }

@@ -65,7 +65,7 @@ export class Zombie implements InteractsWithPlayer {
     pathfinding: Path;
 
     onDeath() {
-        //new Soul(this.model.GetPivot().Position)
+        new Soul(this.model.GetPivot().Position)
         const noob = Ragdoll.Clone()
 
         this.stateConnection.Disconnect()
@@ -160,7 +160,7 @@ export class Zombie implements InteractsWithPlayer {
 
         const selfPivot = this.model!.GetPivot().Position
         const target = this.target as unknown as StarterPlayer["StarterCharacter"]
-        const targetPivot = target.UpperTorso.GetPivot().Position 
+        const targetPivot = target.Torso.GetPivot().Position 
         const substraction = selfPivot.sub(targetPivot)
         const distance = substraction.Magnitude
 

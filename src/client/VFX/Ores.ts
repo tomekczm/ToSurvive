@@ -181,7 +181,6 @@ RunService.RenderStepped.Connect((dt) => {
     const distance = (lastPositionUpdated.sub(newPos)).Magnitude
 
     if (distance >= SEARCH_RADIUS * 0.5) {
-        print("Update")
         update()
         lastPositionUpdated = newPos
     }

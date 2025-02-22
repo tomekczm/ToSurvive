@@ -8,7 +8,7 @@ export class LanternAbility extends Ability<LanternItem> {
     connection: RBXScriptConnection | undefined;
 
 
-    setTarget(soul: Soul) {
+    addTarget(soul: Soul) {
         soul.targetTo = this.item
         soul.setState("targetState")
     }
@@ -18,9 +18,8 @@ export class LanternAbility extends Ability<LanternItem> {
         for(const soul of Soul.registry) {
             if(soul.targetTo !== undefined) continue;
             const distance = soul.distanceTo(pivot)
-            print(distance)
             if(distance <= 20) {
-                this.setTarget(soul)
+                this.addTarget(soul)
             }
         }
     }

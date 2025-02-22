@@ -1,4 +1,4 @@
-import { Players, ReplicatedStorage, RunService, ServerStorage, UserInputService, Workspace } from "@rbxts/services";
+import { AssetService, CollectionService, Players, ReplicatedStorage, RunService, ServerStorage, UserInputService, Workspace } from "@rbxts/services";
 import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { Ability } from "shared/Ability";
@@ -9,6 +9,7 @@ import { BuildAbility } from "./BuildAbility";
 import { addKeyHint } from "client/UI/KeyHint";
 import { ClientItem } from "client/Item/ClientItem";
 import { VIEWMODEL_ANIMATOR, type Viewmodel } from "./Viewmodel";
+import Triangle from "client/Triangles/Triangle";
 
 const localPlayer = Players.LocalPlayer
 const mouse = localPlayer.GetMouse()
@@ -76,6 +77,69 @@ UserInputService.InputChanged.Connect((input) => {
     recipeDrag.Description.Text = text
 })
 
+let points: Vector3[] = []
+let triangulator: Triangle | undefined;
+
+CollectionService.GetInstanceAddedSignal("Wall").Connect((wall) => {
+    if(wall.IsDescendantOf(Workspace.PlayerBuilding)) {
+        print("Wall added")
+        for(const vertex of wall.GetDescendants()) {
+            if(!vertex.IsA("Attachment"))
+                continue
+            const position = vertex.WorldPosition
+            points.push(position)
+            print(points)
+        }
+        generateFloor()
+    }
+})
+
+let folder: Folder | undefined
+function generateFloor() {
+    if(folder)
+        folder.Destroy()
+    const part = new Instance("MeshPart")
+    const editableMesh = AssetService.CreateEditableMesh()
+    folder = new Instance("Folder")
+    folder.Parent = Workspace
+    part.Parent = folder
+    part.Name = "EditableMesh"
+    part.Anchored = true
+
+    // Create vertices folder if it doesn't exist
+    const verticesFolder = new Instance("Folder")
+    verticesFolder.Name = "Vertices"
+    verticesFolder.Parent = Workspace
+
+    // Create vertex parts for each point
+    points.forEach((point, index) => {
+        const vertex = new Instance("Part")
+        vertex.Name = `Vertex_${index}`
+        vertex.Position = point
+        vertex.Size = new Vector3(0.1, 0.1, 0.1) // Small marker
+        vertex.Anchored = true
+        vertex.Parent = verticesFolder
+    })
+
+    // Create and run triangulator
+    if (triangulator) {
+        triangulator.vertices.Destroy()
+    }
+    triangulator = new Triangle()
+    triangulator.createTriangleCallback((a, b, c, parent) => {
+        const [aIndex, bIndex, cIndex] = [
+            editableMesh.AddVertex(a),
+            editableMesh.AddVertex(b),
+            editableMesh.AddVertex(c)
+        ]
+        editableMesh.AddTriangle(aIndex, bIndex, cIndex)
+    })
+    triangulator.triangulate()
+
+    // Clean up vertices folder
+    verticesFolder.Destroy()
+}
+
 export class CraftAndBuildAbility extends BuildAbility {
     private changeItem: ImageLabel | undefined;
 
@@ -104,7 +168,7 @@ export class CraftAndBuildAbility extends BuildAbility {
         const recipe = getRecipeFromInputObject(input)
         if(!recipe) {
             if(this.currentRecipe) {
-                this.buildEvent.FireServer(reverseLookup.get(this.currentRecipe), this.position)
+                this.buildEvent.FireServer(reverseLookup.get(this.currentRecipe), this.goal)
                 this.buildAnimation?.Play()
             }
 

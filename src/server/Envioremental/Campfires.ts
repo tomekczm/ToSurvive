@@ -60,7 +60,6 @@ function waterBucketOnCampfireTick(bucket: Bucket, dt: number) {
     }
 
     if(boiling.IsPlaying !== isBoiling) {
-        print(boiling.IsPlaying !== isBoiling)
         if(!boiling.IsPlaying) {
             boiling.Play();
         } else {

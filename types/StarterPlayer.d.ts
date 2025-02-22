@@ -1,270 +1,81 @@
 interface StarterPlayer extends Instance {
 	StarterCharacter: Model & {
 		Humanoid: Humanoid & {
-			BodyTypeScale: NumberValue;
 			Animator: Animator;
-			BodyProportionScale: NumberValue;
-			BodyDepthScale: NumberValue;
-			BodyWidthScale: NumberValue;
-			HeadScale: NumberValue;
-			BodyHeightScale: NumberValue;
-		};
-		LeftFoot: MeshPart & {
-			LeftFootWrapTarget: WrapTarget;
-			OriginalSize: Vector3Value;
-			LeftAnkle: Motor6D;
-			AvatarPartScaleType: StringValue;
-			LeftAnkleRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftFootAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-		};
-		AnimSaves: ObjectValue;
-		RightHand: MeshPart & {
-			RightGripAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			OriginalSize: Vector3Value;
-			RightWristRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			RightWrist: Motor6D;
-			AvatarPartScaleType: StringValue;
-			RightHandWrapTarget: WrapTarget;
-		};
-		HumanoidRootPart: Part & {
-			RootRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			OriginalSize: Vector3Value;
-		};
-		Constraints: Folder & {
-			RightKneeRig: HingeConstraint;
-			LeftWristRig: BallSocketConstraint;
-			RightAnkleRig: BallSocketConstraint;
-			RightWristRig: BallSocketConstraint;
-			WaistRig: HingeConstraint;
-			LeftKneeRig: HingeConstraint;
-			RightShoulderRig: BallSocketConstraint;
-			LeftShoulderRig: BallSocketConstraint;
-			RightHipRig: BallSocketConstraint;
-			RightElbowRig: HingeConstraint;
-			NeckRig: BallSocketConstraint;
-			LeftAnkleRig: BallSocketConstraint;
-			LeftElbowRig: HingeConstraint;
-			LeftHipRig: BallSocketConstraint;
-		};
-		RightLowerLeg: MeshPart & {
-			RightAnkleRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			OriginalSize: Vector3Value;
-			RightKneeRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			RightKnee: Motor6D;
-			RightLowerLegWrapTarget: WrapTarget;
-			AvatarPartScaleType: StringValue;
-		};
-		LeftUpperLeg: MeshPart & {
-			LeftUpperLegWrapTarget: WrapTarget;
-			LeftHipRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftHip: Motor6D;
-			OriginalSize: Vector3Value;
-			AvatarPartScaleType: StringValue;
-			LeftKneeRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-		};
-		LeftLowerLeg: MeshPart & {
-			LeftKnee: Motor6D;
-			OriginalSize: Vector3Value;
-			LeftLowerLegWrapTarget: WrapTarget;
-			AvatarPartScaleType: StringValue;
-			LeftAnkleRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftKneeRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-		};
-		LowerTorso: MeshPart & {
-			WaistCenterAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftHipRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			Root: Motor6D;
-			OriginalSize: Vector3Value;
-			AvatarPartScaleType: StringValue;
-			RootRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			RightHipRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LowerTorsoWrapTarget: WrapTarget;
-			WaistBackAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			WaistRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			WaistFrontAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-		};
-		Head: MeshPart & {
-			HatAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			OriginalSize: Vector3Value;
-			NeckRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			FaceFrontAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			AvatarPartScaleType: StringValue;
-			HairAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			Neck: Motor6D;
-			FaceCenterAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			HeadWrapTarget: WrapTarget;
-		};
-		UpperTorso: MeshPart & {
-			RightCollarAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			BodyBackAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			NeckRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftCollarAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			Waist: Motor6D;
-			UpperTorsoWrapTarget: WrapTarget;
-			OriginalSize: Vector3Value;
-			AvatarPartScaleType: StringValue;
-			RightShoulderRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			BodyFrontAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			WaistRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftShoulderRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			NeckAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
 		};
 		TorsoAttach: IKControl;
+		Head: MeshPart & {
+			Rig6Motor6D: Motor6D;
+		};
+		RightHand: MeshPart & {
+			RigidConstraint: RigidConstraint;
+			Rig3Motor6D: Motor6D;
+		};
 		LeftAttach: IKControl;
-		LeftUpperArm: MeshPart & {
-			LeftShoulderRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftUpperArmWrapTarget: WrapTarget;
-			LeftShoulderAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftElbowRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftShoulder: Motor6D;
-			OriginalSize: Vector3Value;
-			AvatarPartScaleType: StringValue;
+		IKControlLeftLeg: IKControl;
+		IKControlRightLeg: IKControl;
+		RightLeg: MeshPart & {
+			Rig1Motor6D: Motor6D;
 		};
-		RightLowerArm: MeshPart & {
-			OriginalSize: Vector3Value;
-			RightLowerArmWrapTarget: WrapTarget;
-			RightWristRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			RightElbowRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			RightElbow: Motor6D;
-			AvatarPartScaleType: StringValue;
+		LeftArm: MeshPart & {
+			Rig4Motor6D: Motor6D;
 		};
-		LeftHand: MeshPart & {
-			OriginalSize: Vector3Value;
-			AvatarPartScaleType: StringValue;
-			LeftWrist: Motor6D;
-			LeftGripAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftHandWrapTarget: WrapTarget;
-			LeftWristRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-		};
-		RightUpperArm: MeshPart & {
-			OriginalSize: Vector3Value;
-			RightUpperArmWrapTarget: WrapTarget;
-			RightElbowRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			RightShoulder: Motor6D;
-			RightShoulderRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			RightShoulderAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			AvatarPartScaleType: StringValue;
-		};
-		LeftLowerArm: MeshPart & {
-			OriginalSize: Vector3Value;
-			LeftLowerArmWrapTarget: WrapTarget;
-			LeftElbowRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			LeftElbow: Motor6D;
-			AvatarPartScaleType: StringValue;
-			LeftWristRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
+		Torso: MeshPart & {
+			Rig5Motor6D: Motor6D;
 		};
 		RightAttach: IKControl;
-		RightUpperLeg: MeshPart & {
-			OriginalSize: Vector3Value;
-			RightHipRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
+		HumanoidRootPart: Part & {
+			IKTarget1: Attachment;
+			GroundSensor: ControllerPartSensor;
+			ClimbSensor: ControllerPartSensor;
+			BuoyancySensor: BuoyancySensor;
+			IKTarget2: Attachment;
+			["mixamorig:Hips"]: Bone & {
+				["mixamorig:LeftUpLeg"]: Bone & {
+					["mixamorig:LeftLeg"]: Bone & {
+						["mixamorig:LeftFoot"]: Bone & {
+							["mixamorig:LeftToeBase"]: Bone;
+						};
+					};
+				};
+				["mixamorig:RightUpLeg"]: Bone & {
+					["mixamorig:RightLeg"]: Bone & {
+						["mixamorig:RightFoot"]: Bone & {
+							["mixamorig:RightToeBase"]: Bone;
+						};
+					};
+				};
+				["mixamorig:Spine"]: Bone & {
+					["mixamorig:Spine1"]: Bone & {
+						["mixamorig:Spine2"]: Bone & {
+							["mixamorig:RightShoulder"]: Bone & {
+								["mixamorig:RightArm"]: Bone & {
+									["mixamorig:RightForeArm"]: Bone & {
+										["mixamorig:RightHand"]: Bone & {
+											RightAttachBone: Bone;
+										};
+									};
+								};
+							};
+							["mixamorig:Neck"]: Bone & {
+								["mixamorig:Head"]: Bone;
+							};
+							["mixamorig:LeftShoulder"]: Bone & {
+								["mixamorig:LeftArm"]: Bone & {
+									["mixamorig:LeftForeArm"]: Bone & {
+										["mixamorig:LeftHand"]: Bone & {
+											LeftAttachBone: Bone;
+										};
+									};
+								};
+							};
+						};
+					};
+				};
 			};
-			RightUpperLegWrapTarget: WrapTarget;
-			RightHip: Motor6D;
-			RightKneeRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			AvatarPartScaleType: StringValue;
 		};
-		RightFoot: MeshPart & {
-			RightFootWrapTarget: WrapTarget;
-			RightAnkleRigAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			OriginalSize: Vector3Value;
-			RightAnkle: Motor6D;
-			RightFootAttachment: Attachment & {
-				OriginalPosition: Vector3Value;
-			};
-			AvatarPartScaleType: StringValue;
+		LeftLeg: MeshPart & {
+			Rig2Motor6D: Motor6D;
 		};
 	};
 	StarterPlayerScripts: StarterPlayerScripts & {

@@ -117,7 +117,6 @@ export class Viewmodel extends Ability<ClientItem> {
 
         this.offsetChanged()
         this.clone.GetAttributeChangedSignal("ViewportOffset").Connect(() => {
-            print("offset cha")
             this.offsetChanged()
         })
 

@@ -1,5 +1,6 @@
 import { ReplicatedStorage, ServerStorage, Workspace } from "@rbxts/services";
 
+/*
 const model = ServerStorage.Models.Golem 
 type ENTITY = typeof model
 
@@ -54,3 +55,4 @@ export class Golem {
         this.idleAnimation.Play()
     }
 }
+    */
