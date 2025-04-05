@@ -5,10 +5,22 @@ const frame = Players.LocalPlayer.WaitForChild("PlayerGui")
                         .WaitForChild("Frame")
 const keyHint = ReplicatedStorage.Prefabs.KeyHint
 
+let imageKeys = new Map<string, string>([
+    [ "Shift", "rbxasset://textures/ui/Controls/shift.png" ]
+])
+
 let counter = 1;
 export function addKeyHint(key: string, content: string) {
     const clone = keyHint.Clone()
-    clone.Key.Text = key
+
+    const imageKey = imageKeys.get(key)
+    if(imageKey !== undefined) {
+        clone.KeyImage.Image = imageKey
+        clone.KeyImage.Visible = true
+    } else {
+        clone.Key.Text = key
+        clone.Key.Visible = true
+    }
     clone.Content.Text = content
     clone.Parent = frame
     counter--;

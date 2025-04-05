@@ -5,7 +5,6 @@ import { hurtHighlight } from "shared/VFX"
 import { sample } from "shared/Array"
 import { damageFlag } from "server/Flag"
 import { IZombieWeapon } from "./IZombieWeapon"
-import { KnockbackPlayer } from "shared/Knockback"
 
 const Animations = ReplicatedStorage.Animations.Zombie
 
@@ -45,7 +44,7 @@ export class MeleeWeapon implements IZombieWeapon {
             if (humanoid === zombie.model.Humanoid) return
             if (player) {
                 ReplicatedStorage.Events.CamShake.FireClient(player)
-                KnockbackPlayer(player, zombie.model.GetPivot().Position, 250)
+                player.character?.Knockback(zombie.model.GetPivot().Position, 250)
             }
             if (humanoid && zombie.target) {
                 humanoid.TakeDamage(10)

@@ -13,8 +13,8 @@
   "devDependencies": {
     "@rbxts/compiler-types": "^2.3.0-types.0",
     "@rbxts/types": "^1.0.837",
-    "roblox-ts": "^2.3.0",
-    "typescript": "^5.4.3"
+    "roblox-ts": "^3.0.0-dev-d48bd20",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@rbxts/beacon": "^2.1.1",
@@ -28,6 +28,7 @@
     "@rbxts/raycast-hitbox": "^4.0.1-ts.1",
     "@rbxts/services": "^1.5.4",
     "@rbxts/visualize": "^1.1.1",
-    "rbxts-transform-debug": "^2.2.0"
+    "rbxts-transform-debug": "^2.2.0",
+    "rbxts-transformer-macros": "file:../Desktop/rbxts-transformer-macros"
   }
 }

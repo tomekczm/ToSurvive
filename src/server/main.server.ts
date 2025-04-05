@@ -15,7 +15,8 @@ import "./PreloadAnimations"
 import "./Terrain/Main"
 import "./TimeOfDay"
 import "./Envioremental/Weather"
-import "./Terrain/Structures/Village"
+//import "./Terrain/Structures/Village"
+import "./Terrain/Structures/Cave"
 import { Zombie } from "./Entities/Zombie";
 import { Cat } from "./Entities/Cat";
 task.delay(3, () => {

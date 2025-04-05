@@ -7,9 +7,7 @@ import type { ServerItem } from "server/Item/ServerItem"
 import { Modifier } from "typescript"
 import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox"
 import { hurtHighlight } from "shared/VFX"
-import { getEntity } from "server/Entities/Entities"
-import { KnockbackEntity } from "shared/Knockback"
-
+import { isEntity } from "server/Entities/Base/Entities"
 const rng = new Random()
 
 const shakeEvent = ReplicatedStorage.Events.CamShake
@@ -27,12 +25,9 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
 
     onStart(): void {
         this.item.listenToEvent("Hit", (_humanoid) => {
-            const humanoid = _humanoid as Humanoid
-            const parent = humanoid.Parent as StarterPlayer["StarterCharacter"]
-            humanoid.TakeDamage(25)
-            if(!parent || !humanoid) return
+            const entity = (_humanoid as Instance).Parent as StarterPlayer["StarterCharacter"]
+            if(!entity) return
                 //const vectorForce = new Instance("BodyForce")
-            const humanoidRootPart = parent.HumanoidRootPart
 
                 //                humanoidRootPart.ApplyImpulse(humanoidRootPart.CFrame.LookVector.mul(-100).add(new Vector3(0, 1000, 0)))
 
@@ -51,15 +46,14 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
 
                 //Debris.AddItem(vectorForce, 0.05)
 
-            hurtHighlight(parent)
+            hurtHighlight(entity)
 
-            const owner = this.item.getOwnership()?.player
-
-            const entity = getEntity(parent)
             const player = this.item.getOwnership()?.player
-            if(entity && humanoid.Health !== 0 && player) {
-                KnockbackEntity(parent, player.Character!.GetPivot()!.Position, 250)
-                entity.attackedByPlayer(player.Character)
+            print("")
+            if(isEntity(entity) && entity.alive && player) {
+                entity.Damage(25);
+                entity.Knockback(player.Character!.GetPivot()!.Position, 250)
+                entity.controller.attackedByPlayer(player.Character)
             }
         })
         super.onStart();

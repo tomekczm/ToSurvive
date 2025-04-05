@@ -2,14 +2,13 @@ import { CollectionService, PathfindingService, Players, ReplicatedStorage, RunS
 import { damageFlag, getFlagHealth } from "server/Flag";
 import { hurtHighlight } from "shared/VFX";
 import { sample } from "shared/Array";
-import { addEntity } from "./Entities";
+import { addEntity } from "./Base/Entities";
 import { Soul } from "./Soul";
 import { Janitor } from "@rbxts/janitor";
 import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox";
 import { MeleeWeapon } from "./ZombieWeapons/Melee";
 import { IZombieWeapon } from "./ZombieWeapons/IZombieWeapon";
 import { Throwable, ThrowableBuilder } from "./ZombieWeapons/Throwable";
-import { InteractsWithPlayer } from "./InteractsWithPlayer";
 import { Visualize } from "@rbxts/visualize";
 
 const Animations = ReplicatedStorage.Animations.Zombie
@@ -44,7 +43,7 @@ params.FilterDescendantsInstances = [Workspace.PlayerBuilding]
 const PATHFIND_UPDATE_TRESHOLD = 1;
 
 type ZombieModel = ServerStorage["Models"]["ZombieModel"]
-export class Zombie implements InteractsWithPlayer {
+export class Zombie implements EntityController {
 
     state = (dt: number) => this.defaultState(dt)
 

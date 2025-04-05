@@ -1,4 +1,4 @@
-import { sample, sampleAlternative } from "shared/Array";
+import { sample } from "shared/Array";
 import { BiomeProp } from "./BiomeProp";
 import { ServerStorage } from "@rbxts/services";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
@@ -12,7 +12,7 @@ export class StoneProp extends BiomeProp {
     }
 
     getClone(random: Random) {
-        const rock = sampleAlternative(random, rocks).Clone()
+        const rock = random.Sample(rocks).Clone()
         registerCollectableItem(
             rock,
             () => new RockItem()

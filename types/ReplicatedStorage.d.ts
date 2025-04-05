@@ -14,11 +14,6 @@ interface ReplicatedStorage extends Instance {
 		};
 		WalkBackwards: Animation;
 		Walking: Animation;
-		Golem: Folder & {
-			Jump: Animation;
-			Idle: Animation;
-			Walk: Animation;
-		};
 		Zombie: Folder & {
 			Idle: Animation;
 			Kick: Folder & {
@@ -304,8 +299,9 @@ interface ReplicatedStorage extends Instance {
 	};
 	Prefabs: Folder & {
 		KeyHint: ImageLabel & {
-			Key: TextLabel;
+			KeyImage: ImageLabel;
 			Content: TextLabel;
+			Key: TextLabel;
 		};
 		Slot: ImageLabel & {
 			UICorner: UICorner;

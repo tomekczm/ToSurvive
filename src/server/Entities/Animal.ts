@@ -1,5 +1,5 @@
 import { RunService, ServerStorage, Workspace } from "@rbxts/services";
-import { sample, sampleAlternative } from "shared/Array";
+import { sample } from "shared/Array";
 export const ANIMAL_RNG = new Random()
 
 interface HumanoidEntity extends Model {

@@ -22,6 +22,9 @@
 		"outDir": "out",
 		"baseUrl": "src",
 		"incremental": true,
-		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo"
+		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
+		"plugins": [
+			{ "transform": "rbxts-transformer-macros" }
+		]
 	}
 }

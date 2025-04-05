@@ -5,7 +5,6 @@ import { RotateAbility } from "client/ItemAbility/RotateAbility";
 import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { hurtHighlight } from "shared/VFX";
 import { ImpulseProximity } from "client/ProximityPrompts";
-import { PlaySound } from "shared/Sound";
 import { ores } from "client/VFX/Ores";
 
 const mouse = Players.LocalPlayer.GetMouse()
@@ -56,7 +55,7 @@ class ShovelClient extends SwingAbility {
         if(model && CollectionService.HasTag(model, "Ore")) {
             const sound = soundsForOre.get(model.Name)
             if(sound) 
-                PlaySound(sound, 0.75, 1.25)
+                sound.PlaySound(0.75, 1.25)
 
             const serverObject = ores.get(model)?.serverObject
             this.item.invokeEvent("Dig", serverObject)
@@ -65,7 +64,7 @@ class ShovelClient extends SwingAbility {
         }
 
         if(!this.allowedMaterials.has(mouseHit.Material) || !this.isInWorldBounds(mouseHit.Position)) return;
-        PlaySound(DigSoundEffect, 0.75, 1.25)
+        DigSoundEffect.PlaySound(0.75, 1.25)
         this.item.invokeEvent("Dig", mouseHit.Position)
         super.localSwing();
     }

@@ -1,5 +1,5 @@
 import { RunService, ServerStorage, Workspace } from "@rbxts/services";
-import { sample, sampleAlternative } from "shared/Array";
+import { sample } from "shared/Array";
 import { ANIMAL_RNG, AnimalEntity } from "./Animal";
 
 const CAT_MODEL = ServerStorage.Models.WaitForChild("Cat") as CAT
@@ -48,7 +48,7 @@ export class Cat extends AnimalEntity<CAT> {
     images: thread;
 
     meow() {
-        const meow = sampleAlternative(RNG, this.meowSounds)
+        const meow = RNG.Sample(this.meowSounds)
         if(meow.IsA("Sound")) meow.Play()
     }
 
@@ -97,7 +97,7 @@ export class Cat extends AnimalEntity<CAT> {
         this.images = task.spawn(() => {
             while(true) {
                 task.wait(RNG.NextNumber(5, 5))
-                const texture = sampleAlternative(RNG, catTextures)
+                const texture = RNG.Sample(catTextures)
                 const emitter = this.entity.HumanoidRootPart.ParticleEmitter
                 emitter.Texture =  texture
                 emitter.Size = new NumberSequence(RNG.NextNumber(0.1, 1))
@@ -108,7 +108,7 @@ export class Cat extends AnimalEntity<CAT> {
 
         const humanoidRootPart = this.entity.HumanoidRootPart
         humanoid.WalkSpeed = walkSpeed;
-        const color = sampleAlternative(RNG, catColors)
+        const color = RNG.Sample(catColors)
         humanoidRootPart.Mesh.VertexColor = new Vector3(
             color.R, color.G, color.B
         )
@@ -128,7 +128,7 @@ export class Cat extends AnimalEntity<CAT> {
             eyes[firstIndex].Color = blackEyes
             eyes[secondIndex].Color = whiteEyes
         } else {
-            const eyesColor = sampleAlternative(RNG, [ whiteEyes, blackEyes ])
+            const eyesColor = RNG.Sample([ whiteEyes, blackEyes ])
             eyes[0].Color = eyesColor
             eyes[1].Color = eyesColor
         }

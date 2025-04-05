@@ -2,8 +2,8 @@ import { CollectionService, Players, ReplicatedStorage, RunService, TweenService
 import { Caster, PartCache, HighFidelityBehavior, ActiveCast, CastBehavior } from "@rbxts/nextcast";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
 import { hurtHighlight } from "shared/VFX";
-import { getEntity } from "./Entities";
 import type { SetProximity } from "client/ProximityPrompts";
+import { isEntity } from "./Base/Entities";
 
 const BULLET_MAXDIST = 1000;
 const BULLET_GRAVITY = new Vector3(0, (-Workspace.Gravity * 0.01), 0);
@@ -34,17 +34,17 @@ NextCastCaster.RayHit.Connect(async (cast, result, b, c) => {
     const origin = cast.UserData.origin
     const damage = cast.UserData.damage ?? 10
 
-    const parent = result.Instance.Parent
-    const humanoid = parent?.FindFirstChildOfClass("Humanoid")
-    if(parent && humanoid) {
+    const entity = result.Instance.Parent
+    const humanoid = entity?.FindFirstChildOfClass("Humanoid")
+    if(entity && humanoid) {
         humanoid.TakeDamage(damage)
-        hurtHighlight(parent as Model)
-        const zombie = getEntity(parent)
-        const player = Players.GetPlayerFromCharacter(parent)
+        hurtHighlight(entity as Model)
+        if(!isEntity(entity)) return
+        const player = Players.GetPlayerFromCharacter(entity)
         if(player)
             ReplicatedStorage.Events.CamShake.FireClient(player)
         if(origin)
-            zombie?.attackedByPlayer(origin)
+            entity.controller.attackedByPlayer(origin)
     }
     
     const constraint = new Instance("WeldConstraint")

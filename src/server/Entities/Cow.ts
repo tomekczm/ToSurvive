@@ -1,7 +1,6 @@
 import { RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { ANIMAL_RNG, AnimalEntity } from "./Animal";
-import { addEntity } from "./Entities";
-import { InteractsWithPlayer } from "./InteractsWithPlayer";
+import { addEntity } from "./Base/Entities";
 import { Inventory } from "server/Inventory/Inventory";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
 import { RawMeatItem } from "server/Item/GenericItems";
@@ -13,7 +12,7 @@ const RNG = ANIMAL_RNG
 
 const meat = ServerStorage.DroppedItems.Meat
 
-export class CowAnimal extends AnimalEntity<COW> implements InteractsWithPlayer {
+export class CowAnimal extends AnimalEntity<COW> implements EntityController {
     randomStopsTasks!: thread;
     cancelRunning: thread | undefined
     defaultCrazyness: number;

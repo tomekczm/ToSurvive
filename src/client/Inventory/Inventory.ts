@@ -2,6 +2,7 @@ import { Players, ReplicatedStorage, RunService, StarterPlayer, UserInputService
 import { onCharacterAdded } from "client/Events/OnCharacterAdded";
 import { ClientItem } from "client/Item/ClientItem"
 import { getItemFromInstance } from "client/Item/ItemRegistrar";
+import { addKeyHint } from "client/UI/KeyHint";
 import { slotMap } from "client/VFX/ChestMenu";
 import { Item } from "shared/Item";
 
@@ -102,6 +103,7 @@ function equipSlot(number: number) {
     equipPacket.FireServer(item.item)
     item?.equip()
     equippedItem = item
+    closeShopGui()
 }
 
 function getSlotUnderMouse(input: InputObject) {
@@ -141,10 +143,22 @@ UserInputService.InputChanged.Connect((input) => {
     }
 })
 
+function closeShopGui() {
+    shiftHint?.Destroy()
+    inventoryBackground.Visible = false;
+}
 
+
+let shiftHint: Instance | undefined = undefined
 UserInputService.InputBegan.Connect((input) => {
     if(input.KeyCode !== Enum.KeyCode.E) return
-    inventoryBackground.Visible = !inventoryBackground.Visible
+
+    if(inventoryBackground.Visible) {
+        closeShopGui()
+    } else {
+        shiftHint = addKeyHint("Shift", "Extended item description")
+        inventoryBackground.Visible = true;
+    }
 })
 
 const numberMap = new Map<Enum.KeyCode, number>([

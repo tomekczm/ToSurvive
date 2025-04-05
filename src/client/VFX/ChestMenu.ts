@@ -1,6 +1,5 @@
 import { Lighting, Players, ReplicatedStorage, RunService, SoundService, TweenService, UserInputService } from "@rbxts/services";
 import { Item } from "shared/Item";
-import { PlaySound } from "shared/Sound";
 
 const OpenChestEvent = ReplicatedStorage.Events.Inventory.OpenChest
 
@@ -194,7 +193,7 @@ function popupItem(item: Item, otherVectors: Vector2[]) {
             // will i have to do this with other maps?
             // crap (family friendly)
             isOver = false
-            PlaySound(SoundService.SoundGroup.Grab, 0.75, 1.25)
+            SoundService.SoundGroup.Grab.PlaySound(0.75, 1.25)
             connection.Disconnect()
             inputConnection.Disconnect()
             if(slotMap.size() === 0) {
@@ -216,7 +215,7 @@ function openChest() {
     blurEnableTween.Play()
     correctionEnableTween.Play()
 
-    PlaySound(SoundService.SoundGroup.StruckGold, 1,1)
+    SoundService.SoundGroup.StruckGold.PlaySound(1,1)
 
     for(let item of items) {
         task.delay(RNG.NextNumber(0, 0.25), () => {
