@@ -6,7 +6,6 @@ import { ClientItem } from "client/Item/ClientItem";
 import { SetProximity } from "client/ProximityPrompts";
 import { InputBeganEvent } from "./EventInterfaces";
 import { addKeyHint } from "client/UI/KeyHint";
-import { isInFirstPerson } from "client/FirstPersonMode";
 import { Visualizer } from "@rbxts/visualize";
 
 const localPlayer = Players.LocalPlayer
@@ -137,7 +136,7 @@ export abstract class BuildAbility extends Ability<ClientItem> implements InputB
                this.rotationHint.Destroy()
             }
             // First-person or third-person building
-            const maxRange = isInFirstPerson() ? 10 : 5;
+            const maxRange = localPlayer.inFirstPerson ? 10 : 5;
             const characterPivot = character.GetPivot().add(new Vector3(0, character.GetExtentsSize().Y / 2, 0))
             finalPosition = new CFrame(characterPivot.Position).mul(character.GetPivot().Rotation)
 

@@ -9,7 +9,10 @@ print(gato)
 import "./Notifications"
 import "./Item/ItemRegistrar"
 import "./Inventory/Inventory"
+
 import "./Weather/Wind"
+import "./Weather/Seasons"
+
 import "./CamShake"
 
 import "./VFX/SpinningItems"
@@ -24,7 +27,9 @@ import "./VFX/Ores"
 import "./VFX/ChestMenu"
 import "./VFX/FlagVFX"
 
-import "./UI/Tree"
+//import "./UI/Tree"
 import "./UI/BasicHints"
 
 import "./Events/OnKnockback"
+
+import "./Sound/WalkingSounds"

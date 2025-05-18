@@ -3,26 +3,46 @@ interface StarterGui extends BasePlayerGui {
 		Text: TextLabel;
 	};
 	BuildGui: ScreenGui & {
-		Background: Frame & {
-			UIGridLayout: UIGridLayout;
-			UIPadding: UIPadding;
-			Slot: ImageLabel & {
-				UICorner: UICorner;
-				UIGridLayout: UIGridLayout;
-				UIGradient: UIGradient;
-				UIStroke: UIStroke;
-			};
+		Background: TextButton & {
 			UICorner: UICorner;
 			UIStroke: UIStroke;
-			UIGradient: UIGradient;
+			UIPadding: UIPadding;
+			UIGridLayout: UIGridLayout;
 		};
 	};
 	DraggingGui: ScreenGui & {
 		ImageLabel: ImageLabel;
 	};
 	DayNotificator: ScreenGui & {
+		SeasonNotif: ImageLabel;
 		Text: TextLabel;
 	};
+	ItemsAdded: ScreenGui & {
+		Frame: Frame & {
+			UIListLayout: UIListLayout;
+			background: Frame & {
+				Title: TextLabel;
+				UIGradient: UIGradient;
+				UIListLayout: UIListLayout;
+				UIStroke: UIStroke;
+				UIPadding: UIPadding;
+				UICorner: UICorner;
+			};
+		};
+	};
+	Healthbar: ScreenGui & {
+		Frame: Frame & {
+			UICorner: UICorner;
+			UIStroke: UIStroke;
+			UIGradient: UIGradient;
+		};
+	};
+	KeyHints: ScreenGui & {
+		Frame: Frame & {
+			UIListLayout: UIListLayout;
+		};
+	};
+	Temp: ScreenGui;
 	Tree: ScreenGui & {
 		Background: Frame & {
 			Holder: Frame;
@@ -45,11 +65,6 @@ interface StarterGui extends BasePlayerGui {
 			UIListLayout: UIListLayout;
 		};
 		Background: Frame & {
-			ViewportFrame: ViewportFrame & {
-				UICorner: UICorner;
-				UIStroke: UIStroke;
-				UIGradient: UIGradient;
-			};
 			InventoryBackground: Frame & {
 				UICorner: UICorner;
 				UIStroke: UIStroke;
@@ -57,6 +72,13 @@ interface StarterGui extends BasePlayerGui {
 				Frame: Frame & {
 					UIGridLayout: UIGridLayout;
 				};
+			};
+			TextLabel: TextButton;
+			ViewportFrame: ViewportFrame & {
+				UICorner: UICorner;
+				UIStroke: UIStroke;
+				UIGradient: UIGradient;
+				WorldModel: WorldModel;
 			};
 		};
 	};

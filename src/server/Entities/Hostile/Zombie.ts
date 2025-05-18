@@ -1,9 +1,8 @@
 import { CollectionService, PathfindingService, Players, ReplicatedStorage, RunService, ServerStorage, Workspace } from "@rbxts/services";
-import { damageFlag, getFlagHealth } from "server/Flag";
 import { hurtHighlight } from "shared/VFX";
 import { sample } from "shared/Array";
-import { addEntity } from "./Base/Entities";
-import { Soul } from "./Soul";
+import { addEntity } from "../Base/Entities";
+import { Soul } from "../Passive/Soul";
 import { Janitor } from "@rbxts/janitor";
 import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox";
 import { MeleeWeapon } from "./ZombieWeapons/Melee";

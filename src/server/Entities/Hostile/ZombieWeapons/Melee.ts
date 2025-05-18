@@ -3,7 +3,7 @@ import type { Zombie } from "../Zombie"
 import { Players, ReplicatedStorage, Workspace } from "@rbxts/services"
 import { hurtHighlight } from "shared/VFX"
 import { sample } from "shared/Array"
-import { damageFlag } from "server/Flag"
+import { Flag } from "server/Flag"
 import { IZombieWeapon } from "./IZombieWeapon"
 
 const Animations = ReplicatedStorage.Animations.Zombie
@@ -111,7 +111,7 @@ export class MeleeWeapon implements IZombieWeapon {
         })
         let damage = 10;
         this.zombie.model.Humanoid.Health -= damage
-        damageFlag(damage);
+        Flag.damage(damage);
         hurtHighlight(Workspace.Flag)
     }
 

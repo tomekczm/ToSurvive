@@ -303,6 +303,17 @@ interface ReplicatedStorage extends Instance {
 			Content: TextLabel;
 			Key: TextLabel;
 		};
+		ShapeGui: ScreenGui & {
+			Frame: TextButton & {
+				Background: Frame & {
+					UICorner: UICorner;
+					UIStroke: UIStroke;
+					UIGradient: UIGradient;
+				};
+				Resizer: UIScale;
+				ImageLabel: ImageLabel;
+			};
+		};
 		Slot: ImageLabel & {
 			UICorner: UICorner;
 			UIStroke: UIStroke;
@@ -682,7 +693,6 @@ interface ReplicatedStorage extends Instance {
 	};
 	TS: Folder & {
 		module: ModuleScript;
-		Knockback: ModuleScript;
 		NumberSequence: ModuleScript;
 		Ability: ModuleScript;
 		Recipes: Folder & {
@@ -690,11 +700,11 @@ interface ReplicatedStorage extends Instance {
 			HammerRecipes: ModuleScript;
 		};
 		HashCode: ModuleScript;
-		Sound: ModuleScript;
-		Bezier: ModuleScript;
 		Item: ModuleScript;
-		TwoWayMap: ModuleScript;
-		InventoryData: ModuleScript;
+		Bezier: ModuleScript;
+		Macros: Folder & {
+			Macros: ModuleScript;
+		};
 		Array: ModuleScript;
 		VFX: ModuleScript;
 		AbilityManager: ModuleScript;

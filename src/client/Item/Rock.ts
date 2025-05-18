@@ -5,6 +5,7 @@ import { PointAtAbility } from "client/ItemAbility/PointAtAbility";
 import { SwingAbility } from "client/ItemAbility/SwingAbility";
 import { Ability } from "shared/Ability";
 import { SetPrompts, SetProximity } from "client/ProximityPrompts";
+import { ShapingAbility } from "client/ItemAbility/ShapingAbility";
 
 
 type Bucket = ReplicatedStorage["Builds"]["Wooden Water Bucket"]
@@ -62,7 +63,13 @@ export class RockItem extends ClientItem<Constraint> {
 
         const pointAtAbility = new PointAtAbility(this, "TorsoAttach")
 
-        this.abilityManager.add(new SwingAbility(this))
+        const options = [
+            { image: "rbxassetid://107656940362902", rotation: 0 },
+            { image: "rbxassetid://86918943009879", rotation: 0, scaleType: Enum.ScaleType.Fit, size: UDim2.fromOffset(200,200) },
+            { image: "rbxassetid://123438255033204", rotation: 0, scaleType: Enum.ScaleType.Fit },
+        ]
+
+        this.abilityManager.add(new ShapingAbility(this, options))
         this.abilityManager.add(new RotateAbility(this))
         this.abilityManager.add(pointAtAbility)
         this.abilityManager.add(new WashRockAbility(this, pointAtAbility))

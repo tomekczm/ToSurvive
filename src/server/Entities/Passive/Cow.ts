@@ -1,6 +1,6 @@
 import { RunService, ServerStorage, Workspace } from "@rbxts/services";
-import { ANIMAL_RNG, AnimalEntity } from "./Animal";
-import { addEntity } from "./Base/Entities";
+import { ANIMAL_RNG, AnimalEntity } from "../Base/Animal";
+import { addEntity } from "../Base/Entities";
 import { Inventory } from "server/Inventory/Inventory";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
 import { RawMeatItem } from "server/Item/GenericItems";

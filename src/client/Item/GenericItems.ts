@@ -1,22 +1,12 @@
 import { ClientItem } from "./ClientItem"
 
-type Constraint = ReplicatedStorage["Tools"]["Flint"]
-export class FlintItem extends ClientItem<Constraint> {
-    constructor(instance: Instance) {
-        super(instance as Constraint)
+export function GenericItem<T extends Instance = Instance>() {
+    const clazz = class extends ClientItem<T> {
+        constructor(instance: T) {
+            super(instance as T)
+        }
     }
-}
-
-type RawMeat = ReplicatedStorage["Tools"]["Flint"]
-export class RawMeatItem extends ClientItem<RawMeat> {
-    constructor(instance: Instance) {
-        super(instance as Constraint)
-    }
-}
-
-type WoodenLog = ReplicatedStorage["Tools"]["Wooden Log"]
-export class WoodenLogItem extends ClientItem<WoodenLog> {
-    constructor(instance: Instance) {
-        super(instance as Constraint)
-    }
+    return ((item: T) => {
+        return new clazz(item);
+    })
 }

@@ -17,10 +17,25 @@ interface Entity extends Model {
     alive: boolean
 }
 
-interface PlayerCharacter extends Entity {
-    Knockback(source: Vector3, power: number): void
-}
+interface PlayerCharacter extends Entity {}
 
 interface Player {
     character?: PlayerCharacter
+}
+
+interface LocalPlayer extends Player {
+    inFirstPerson: boolean
+}
+
+interface Players {
+    readonly LocalPlayer: LocalPlayer
+}
+
+interface Array<T> {
+    Sample(): T
+    SamplePop(): T | undefined
+}
+
+interface Mouse {
+    GetTarget(params?: RaycastParams): RaycastResult
 }

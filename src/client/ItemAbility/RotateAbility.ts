@@ -1,5 +1,4 @@
 import { Players, RunService, TweenService, UserInputService, Workspace } from "@rbxts/services";
-import { isInFirstPerson } from "client/FirstPersonMode";
 import { ClientItem } from "client/Item/ClientItem";
 import { Ability } from "shared/Ability";
 import { InputBeganEvent } from "./EventInterfaces";

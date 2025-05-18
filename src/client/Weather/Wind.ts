@@ -3,6 +3,7 @@ import { RunService, SoundService, TweenService, Workspace } from "@rbxts/servic
 import WindShake from "./WindShake/WindShake"
 import { shake } from "client/CamShake"
 import CameraShaker, { CameraShakeInstance } from "@rbxts/camera-shaker"
+import { getSeason } from "./Seasons"
 
 WindShake.Init({
     MatchWorkspaceWind: true
@@ -24,6 +25,14 @@ Workspace.GetPropertyChangedSignal("GlobalWind").Connect(() => {
 
 let connection: RBXScriptConnection | undefined
 const clouds = Workspace.Terrain.WaitForChild("Clouds") as Clouds;
+
+function calcRainingCover() {
+    if(getSeason() === "spring") {
+        return math.random(0, 677) / 1000
+    } else {
+        return math.random(677, 1000) / 1000
+    }
+}
 
 Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
     const weather = Workspace.GetAttribute("Weather")
@@ -58,7 +67,7 @@ Workspace.GetAttributeChangedSignal("Weather").Connect(() => {
         
         tween.Play()
 
-        clouds.SetAttribute("Cover", math.random(677, 1000) / 1000)
+        clouds.SetAttribute("Cover", calcRainingCover())
         
         task.wait(10)
         

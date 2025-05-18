@@ -9,7 +9,6 @@ target.Parent = Workspace.Terrain
 
 
 import "../VFX/MousePointer"
-import { isInFirstPerson } from "client/FirstPersonMode";
 import { setShiftlock } from "./RotateAbility";
 import { InputBeganEvent, InputEndedEvent } from "./EventInterfaces";
 
@@ -80,7 +79,7 @@ export class ThrowAbility extends Ability<ClientItem> implements InputBeganEvent
             ).Play()
         }
 
-        if(this.humanoid && !isInFirstPerson() && !isUnequipping) {
+        if(this.humanoid && !player.inFirstPerson && !isUnequipping) {
             setShiftlock(tweenCFrame, info)
         }
         const camera = Workspace.CurrentCamera

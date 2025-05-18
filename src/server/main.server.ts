@@ -11,19 +11,19 @@ Players.PlayerAdded.Connect((plr) => {
 })
 */
 import "./Inventory/Inventory"
-import "./PreloadAnimations"
+import "./Core/PreloadAnimations"
 import "./Terrain/Main"
-import "./TimeOfDay"
+import "./Envioremental/TimeOfDay"
 import "./Envioremental/Weather"
 //import "./Terrain/Structures/Village"
 import "./Terrain/Structures/Cave"
-import { Zombie } from "./Entities/Zombie";
-import { Cat } from "./Entities/Cat";
+import { Zombie } from "./Entities/Hostile/Zombie";
+import { Cat } from "./Entities/Passive/Cat";
 task.delay(3, () => {
     //new Cat(new Vector3(0, 100, 0))
 })
 
-import { CowAnimal } from "./Entities/Cow";
+import { CowAnimal } from "./Entities/Passive/Cow";
 //import { Golem } from "./Entities/Golem";
 //new CowAnimal(new Vector3(0, 100, 0))
 //new Golem(new Vector3(0, 100, 0)) 

@@ -22,3 +22,21 @@ export class WoodenLogItem extends ServerItem<WoodenLog> {
         super(ReplicatedStorage.Tools["Wooden Log"].Clone())
     }
 }
+
+export class PickaxeHead extends ServerItem<WoodenLog> {
+    constructor() {
+        super(ReplicatedStorage.Tools["Wooden Log"].Clone())
+    }
+}
+
+export class AxeHead extends ServerItem<WoodenLog> {
+    constructor() {
+        super(ReplicatedStorage.Tools["Wooden Log"].Clone())
+    }
+}
+
+export class SharpRock extends ServerItem<WoodenLog> {
+    constructor() {
+        super(ReplicatedStorage.Tools["Wooden Log"].Clone())
+    }
+}

@@ -25,32 +25,12 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
 
     onStart(): void {
         this.item.listenToEvent("Hit", (_humanoid) => {
-            const entity = (_humanoid as Instance).Parent as StarterPlayer["StarterCharacter"]
+            const entity = (_humanoid as Instance).Parent as Entity
             if(!entity) return
-                //const vectorForce = new Instance("BodyForce")
-
-                //                humanoidRootPart.ApplyImpulse(humanoidRootPart.CFrame.LookVector.mul(-100).add(new Vector3(0, 1000, 0)))
-
-                //const otherForce = humanoidRootPart.FindFirstChild("BodyForce")
-                //otherForce?.Destroy()
-
-                //const attachment = humanoidRootPart["mixamorig:Hips"]
-                //vectorForce.Parent = humanoidRootPart
-                //vectorForce.ApplyAtCenterOfMass = true
-                //vectorForce.Attachment0 = attachment
-                //vectorForce.RelativeTo = Enum.ActuatorRelativeTo.World
-                //const character = this.item.getCharacter().GetPivot().Position
-                //const zombie = parent.GetPivot().Position;
-                //const direction = character.sub(zombie).Unit
-                //vectorForce.Force = humanoidRootPart.CFrame.LookVector.mul(-10000)
-
-                //Debris.AddItem(vectorForce, 0.05)
-
             hurtHighlight(entity)
 
             const player = this.item.getOwnership()?.player
-            print("")
-            if(isEntity(entity) && entity.alive && player) {
+            if(player && isEntity(entity) && entity.alive) {
                 entity.Damage(25);
                 entity.Knockback(player.Character!.GetPivot()!.Position, 250)
                 entity.controller.attackedByPlayer(player.Character)

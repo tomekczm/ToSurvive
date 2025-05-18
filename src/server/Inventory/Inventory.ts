@@ -10,7 +10,6 @@ import { SwordItem } from "server/Item/Sword";
 import { WoodenWaterBucket } from "server/Item/WoodenWaterBucket";
 import { Item } from "shared/Item";
 import { Recipe } from "shared/Recipes/Recipe";
-import { TwoWayMap } from "shared/TwoWayMap";
 import { registerCollectableItem } from "server/Inventory/DroppedItems"
 import { RawMeatItem, WoodenLogItem } from "server/Item/GenericItems";
 

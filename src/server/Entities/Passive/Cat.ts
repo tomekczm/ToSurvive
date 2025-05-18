@@ -1,6 +1,6 @@
 import { RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { sample } from "shared/Array";
-import { ANIMAL_RNG, AnimalEntity } from "./Animal";
+import { ANIMAL_RNG, AnimalEntity } from "../Base/Animal";
 
 const CAT_MODEL = ServerStorage.Models.WaitForChild("Cat") as CAT
 

@@ -2,7 +2,7 @@ import { ProximityPromptService, ReplicatedStorage, RunService } from "@rbxts/se
 import { CollectAbility } from "server/ItemAbilities/CollectAbility";
 import { ServerItem } from "./ServerItem";
 import { Ability } from "shared/Ability";
-import { Soul } from "server/Entities/Soul";
+import { Soul } from "server/Entities/Passive/Soul";
 
 export class LanternAbility extends Ability<LanternItem> {
     connection: RBXScriptConnection | undefined;

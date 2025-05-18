@@ -3,7 +3,7 @@ import { Caster, PartCache, HighFidelityBehavior, ActiveCast, CastBehavior } fro
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
 import { hurtHighlight } from "shared/VFX";
 import type { SetProximity } from "client/ProximityPrompts";
-import { isEntity } from "./Base/Entities";
+import { isEntity } from "../Base/Entities";
 
 const BULLET_MAXDIST = 1000;
 const BULLET_GRAVITY = new Vector3(0, (-Workspace.Gravity * 0.01), 0);
@@ -44,7 +44,7 @@ NextCastCaster.RayHit.Connect(async (cast, result, b, c) => {
         if(player)
             ReplicatedStorage.Events.CamShake.FireClient(player)
         if(origin)
-            entity.controller.attackedByPlayer(origin)
+            entity!.controller!.attackedByPlayer(origin)
     }
     
     const constraint = new Instance("WeldConstraint")

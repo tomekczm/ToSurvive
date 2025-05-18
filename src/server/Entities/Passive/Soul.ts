@@ -1,7 +1,7 @@
 import { CollectionService, Debris, RunService, ServerStorage, Workspace } from "@rbxts/services";
 import { registerCollectableItem } from "server/Inventory/DroppedItems";
 import { RockItem } from "server/Item/Rock";
-import { Entity } from "./Base/Entity";
+import { Entity } from "../Base/Entity";
 import type { LanternItem } from "server/Item/Lantern";
 
 const directional = new Random();

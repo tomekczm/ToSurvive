@@ -1,5 +1,5 @@
 import { Lighting, RunService } from "@rbxts/services";
-import { Zombie } from "./Entities/Zombie";
+import { Zombie } from "../Entities/Hostile/Zombie";
 
 const RANDOM_SPAWNER = new Random();
 
@@ -23,8 +23,14 @@ function getBorderPosition(index: number) {
 let isNight = false;
 let nightTask: thread | undefined
 
+let overdrive = 0;
 RunService.Heartbeat.Connect((dt) => {
-    Lighting.ClockTime += dt * 0.05
+    overdrive += dt * 0.0125
+
+    if(overdrive >= 0.001) {
+        Lighting.ClockTime += overdrive
+        overdrive = 0;
+    }
 
     const isNightNow = Lighting.ClockTime >= 17.6 || Lighting.ClockTime <= 6.3
     if(isNightNow !== isNight) {

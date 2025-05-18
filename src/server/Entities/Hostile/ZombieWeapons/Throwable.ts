@@ -2,7 +2,7 @@ import { ReplicatedStorage, ServerStorage } from "@rbxts/services";
 import { Zombie } from "../Zombie";
 import { IZombieWeapon } from "./IZombieWeapon";
 import { MeleeWeapon } from "./Melee";
-import { Projectile } from "../Projectile";
+import { Projectile } from "../../Passive/Projectile";
 
 export class ThrowableBuilder {
     meleeSecondary: boolean = false;

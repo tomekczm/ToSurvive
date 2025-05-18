@@ -19,7 +19,9 @@
   "dependencies": {
     "@rbxts/beacon": "^2.1.1",
     "@rbxts/behavior-tree-5": "^1.0.0",
+    "@rbxts/builders": "^1.0.2",
     "@rbxts/camera-shaker": "^1.0.8",
+    "@rbxts/charm": "^0.10.0",
     "@rbxts/geom": "^1.1.20",
     "@rbxts/janitor": "^1.17.0-ts.1",
     "@rbxts/nextcast": "^0.1.1-debug",

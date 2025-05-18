@@ -6,10 +6,10 @@ import { HammerItem } from "./Hammer";
 import { AxeItem } from "./AxeItem";
 import { RockItem } from "./Rock";
 import { WoodenWaterBucket } from "./WaterBucket";
-import { FlintItem, RawMeatItem, WoodenLogItem } from "./GenericItems";
 import { SpearItem } from "./Spear";
 import { ShovelItem } from "./Shovel";
 import { LanternItem } from "./Lantern";
+import { GenericItem } from "./GenericItems";
 
 const asMap = new Map<string, (item: Instance) => ClientItem>();
 const toolMap = new Map<Instance, ClientItem>()
@@ -28,12 +28,18 @@ registerItem("Hammer", (hammer) => new HammerItem(hammer))
 registerItem("Axe", (hammer) => new AxeItem(hammer))
 registerItem("Rock", (hammer) => new RockItem(hammer))
 registerItem("Wooden Water Bucket", (bucket) => new WoodenWaterBucket(bucket))
-registerItem("Meat", (item) => new RawMeatItem(item))
-registerItem("Wooden Log", (item) => new WoodenLogItem(item))
-registerItem("Flint", (flint) => new FlintItem(flint))
 registerItem("Spear", (spear) => new SpearItem(spear))
 registerItem("Shovel", (spear) => new ShovelItem(spear))
 registerItem("Lantern", (spear) => new LanternItem(spear))
+
+// Generic Items
+registerItem("Meat", GenericItem())
+registerItem("Wooden Log", GenericItem())
+registerItem("Flint", GenericItem())
+registerItem("Pickaxe Head", GenericItem())
+registerItem("Axe Head", GenericItem())
+registerItem("Sharp Rock", GenericItem())
+// Generic Items
 
 ReplicatedStorage.Events.CreateItem.OnClientEvent.Connect((name, instance) => {
     const caller = asMap.get(name)

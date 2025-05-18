@@ -40,10 +40,20 @@ function characterAdded(_character: Model) {
 
 
     RunService.RenderStepped.Connect(() => {
-        const wPressed = UserInputService.IsKeyDown(Enum.KeyCode.W);
-        const sPressed = UserInputService.IsKeyDown(Enum.KeyCode.S);
-        const aPressed = UserInputService.IsKeyDown(Enum.KeyCode.A);
-        const dPressed = UserInputService.IsKeyDown(Enum.KeyCode.D);
+        let wPressed = UserInputService.IsKeyDown(Enum.KeyCode.W) || UserInputService.IsKeyDown(Enum.KeyCode.Up);
+        let sPressed = UserInputService.IsKeyDown(Enum.KeyCode.S) || UserInputService.IsKeyDown(Enum.KeyCode.Down);;
+        let aPressed = UserInputService.IsKeyDown(Enum.KeyCode.A);
+        let dPressed = UserInputService.IsKeyDown(Enum.KeyCode.D);
+
+        if(wPressed && sPressed) {
+            wPressed = false
+            sPressed = false
+        }
+
+        if(aPressed && dPressed) {
+            aPressed = false
+            dPressed = false
+        }
 
         if(!wPressed && !sPressed && !aPressed && !dPressed) {
             playAnimation()

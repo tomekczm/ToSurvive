@@ -3,7 +3,7 @@ import { ServerItem } from "./ServerItem";
 import { Ability } from "../../shared/Ability";
 import { SwingAbility } from "../ItemAbilities/Swing";
 import { SwingFight } from "server/ItemAbilities/SwingFight";
-import { Projectile } from "server/Entities/Projectile";
+import { Projectile } from "server/Entities/Passive/Projectile";
 
 const PROJECTILE = ServerStorage.Models.Spear
 

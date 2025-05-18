@@ -1,5 +1,4 @@
-import { Players, ReplicatedStorage, RunService, UserInputService, Workspace } from "@rbxts/services";
-import { isInFirstPerson } from "client/FirstPersonMode";
+import { Players, ReplicatedStorage, RunService, TweenService, UserInputService, Workspace } from "@rbxts/services";
 import { ClientItem } from "client/Item/ClientItem";
 import { Ability } from "shared/Ability";
 
@@ -11,6 +10,7 @@ const animator = viewmodel.AnimationController.Animator
 export const VIEWMODEL_ANIMATOR = animator
 
 const animations = ReplicatedStorage.Animations
+const player = Players.LocalPlayer
 
 //DEBUG STATEMENTS
 let isInFreeCam = false
@@ -30,7 +30,10 @@ export class Viewmodel extends Ability<ClientItem> {
     clone!: Instance;
     animation?: AnimationTrack;
     offset: Vector3 = new Vector3(0,0,0);
+    additionalYOffset = 0;
+
     animator: Animator | undefined;
+    popupConnection?: RBXScriptConnection;
 
     fetchAnimation(name: string) {
         const itemName = this.item.item.Name
@@ -50,12 +53,27 @@ export class Viewmodel extends Ability<ClientItem> {
         return cframe.XVector.mul(this.offset.X)
             .add(cframe.YVector.mul(this.offset.Y))
             .add(cframe.ZVector.mul(this.offset.Z)) 
+            .add(cframe.ZVector.mul(-this.additionalYOffset))
+            .add(cframe.YVector.mul(this.additionalYOffset))
     }
 
     onUnequip() {
         this.clone.Parent = ReplicatedStorage
         this.connection?.Disconnect()
         viewmodel.Parent = ReplicatedStorage
+    }
+    
+    private vmPop(state: "IN" | "OUT") {
+        this.popupConnection?.Disconnect()
+        let VM_UNDER_HEIGHT = -1;
+        this.additionalYOffset = (state === "IN") ? VM_UNDER_HEIGHT : 0;
+        let timePassed = 0;
+
+        this.popupConnection = RunService.RenderStepped.Connect((dt) => {
+            timePassed = math.clamp(timePassed + dt * 2.5, 0 , 1)
+            this.additionalYOffset = VM_UNDER_HEIGHT * (1 - TweenService.GetValue(timePassed, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut));
+            if(timePassed >= 1) this.popupConnection?.Disconnect();
+        })
     }
 
     onEquip() {
@@ -78,6 +96,9 @@ export class Viewmodel extends Ability<ClientItem> {
             this.animation?.Play();
 
             let lastCFrame: CFrame = Workspace.CurrentCamera!.CFrame
+
+            
+
             this.connection = RunService.RenderStepped.Connect((dt) => {
                 time += dt;
                 let cframe = lastCFrame
@@ -94,20 +115,23 @@ export class Viewmodel extends Ability<ClientItem> {
         
                 //print(cframe)
 
+                if(player.inFirstPerson) {
+                    if(viewmodel.Parent !== NoRay) {
+                        this.vmPop("IN")
+                    }
+
+                    viewmodel.Parent = NoRay
+                } else {
+                    viewmodel.Parent = undefined
+                }
+
                 const walkOffset = 
                     cframe.RightVector.mul(sinX) // Horizontal component
                     .add(cframe.UpVector.mul(sinY))
-    
-
-                if(isInFirstPerson()) {
-                    viewmodel.Parent = NoRay
-                } else {
-                    viewmodel.Parent = ReplicatedStorage
-                }
         
                 cframe = cframe.add(walkOffset)
                 cframe = cframe.add(this.getViewportOffset(cframe));
-            
+
                 viewmodel.PivotTo(cframe);
             })
     }

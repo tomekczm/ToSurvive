@@ -1,6 +1,5 @@
-import { RunService } from "@rbxts/services"
+import { Players, RunService } from "@rbxts/services"
 import { addKeyHint } from "./KeyHint"
-import { isInFirstPerson } from "client/FirstPersonMode"
 
 export let areHintsOn = true
 
@@ -9,6 +8,6 @@ if(areHintsOn) {
     addKeyHint("E", "Inventory")
 
     RunService.RenderStepped.Connect(() => {
-        lockUnlock.Visible = !isInFirstPerson()
+        lockUnlock.Visible = Players.LocalPlayer.inFirstPerson
     })
 }
