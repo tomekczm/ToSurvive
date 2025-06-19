@@ -89,10 +89,6 @@ task.spawn(() => {
     
         task.wait(17);
 
-        print("SUMMAH SOON")
-        task.wait(5) // remove after
-        
-
         // Summer
         setGrassColor(Color3.fromRGB(111, 126, 62))
         setLeafyGrass(Color3.fromRGB(106, 134, 64))

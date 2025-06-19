@@ -38,7 +38,7 @@ const CHUNK_SIZE = 16
 
 const SIZE_WHOLE = CELL_SIZE * CHUNK_SIZE
 
-const tickString = math.floor(tick())
+const tickString = math.floor(os.clock())
 const MASTER_SEED = new Random(tickString).NextNumber(-100000, 100000)
 print(`MASTER_SEED=${MASTER_SEED}`)
 const VIEW_RANGE = 6
