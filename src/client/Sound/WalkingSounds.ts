@@ -27,8 +27,7 @@ RunService.RenderStepped.Connect((dt) => {
     sum += dt;
     if(humanoid && humanoid.MoveDirection.Magnitude !== 0) {
         let newFloorMat = map.get(humanoid.FloorMaterial)
-        print(getSeason())
-        if(newFloorMat === walkSound.Grass && getSeason() === "winter") {
+                if(newFloorMat === walkSound.Grass && getSeason() === "winter") {
             newFloorMat = walkSound.Snow
         }
 

@@ -249,8 +249,9 @@ Players.PlayerAdded.Connect((player) => {
         player,
         inventory
     )
+    task.wait(5)
     inventory.setSlot(1, new HammerItem())
-    inventory.setSlot(2, new SwordItem())
+    inventory.setSlot(2, new SwordItem().setQuantity(100))
     inventory.setSlot(3, new AxeItem())
     inventory.setSlot(4, new RockItem().setQuantity(10))
     inventory.setSlot(5, new WoodenWaterBucket().setCapacity(5))

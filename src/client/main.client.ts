@@ -8,7 +8,8 @@ print(gato)
 
 import "./Notifications"
 import "./Item/ItemRegistrar"
-import "./Inventory/Inventory"
+//import "./Inventory/Inventory"
+import "./Inventory/InventoryUI"
 
 import "./Weather/Wind"
 import "./Weather/Seasons"

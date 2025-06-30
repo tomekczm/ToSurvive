@@ -4,8 +4,6 @@
 		"allowSyntheticDefaultImports": true,
 		"downlevelIteration": true,
 		"jsx": "react",
-		"jsxFactory": "Roact.createElement",
-		"jsxFragmentFactory": "Roact.createFragment",
 		"module": "commonjs",
 		"moduleResolution": "Node",
 		"noLib": true,
@@ -25,6 +23,8 @@
 		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
 		"plugins": [
 			{ "transform": "rbxts-transformer-macros" }
-		]
+		],
+		"jsxFactory": "React.createElement",
+  		"jsxFragmentFactory": "React.Fragment"
 	}
 }
