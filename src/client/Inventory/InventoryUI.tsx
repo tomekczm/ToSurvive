@@ -53,6 +53,13 @@ function equipSlot(item: ClientItem | undefined) {
 }
 
 const defaultUdim = new UDim2(0, 100, 0, 100)
+const inventory = new Map<number, ClientItem | undefined>()
+SetSlot.OnClientEvent.Connect((slot, item) => {
+    const asInstance = getItemFromInstance(item);
+    inventory.set(slot, asInstance)
+})
+
+
 function Slot(props: { index: number, hotbar: boolean }) {
 
     let item: ClientItem | undefined = undefined
@@ -62,7 +69,10 @@ function Slot(props: { index: number, hotbar: boolean }) {
         isHotbar: props.hotbar,
     }
 
-    let [state, setState] = useState<ItemUI>(EMPTY_STATE)
+    let [state, setState] = useState<ItemUI>({
+        ...EMPTY_STATE,
+        item: inventory.get(props.index)
+    })
 
     function updateSelf() {
         if(!item) {
