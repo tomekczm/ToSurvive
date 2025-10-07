@@ -36,7 +36,7 @@ export class SwingAbility<T extends ServerItem = ServerItem> extends Ability<T> 
 
         this.onSwingStart()
 
-        this.swingAnimationLoaded.Priority = Enum.AnimationPriority.Action4
+        this.swingAnimationLoaded.Priority = Enum.AnimationPriority.Action3
         this.swingAnimationLoaded?.Play(0.25)
 
         this.swingAnimationLoaded.GetMarkerReachedSignal("Impact").Once(() => {

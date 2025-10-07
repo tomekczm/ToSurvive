@@ -24,14 +24,6 @@ export const SOUND_MACROS = $defineCallMacros<Sound>({
   }
 })
 
-export const LOCAL_PLAYER_MACROS = $definePropMacros<LocalPlayer>({
-  inFirstPerson() {
-    const localPlayer = Players.LocalPlayer
-    const head = localPlayer.Character?.WaitForChild("Head") as Part
-    return head.LocalTransparencyModifier === 1
-  }
-})
-
 export const ARRAY_MACROS = $defineCallMacros<Array<any>>({
   Sample() {
     const arr = this as unknown as Array<unknown>

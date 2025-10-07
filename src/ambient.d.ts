@@ -1,3 +1,13 @@
+type StatusEffectsTypes = "Stunned" | "LostBalance"
+
+interface StatusEffects {
+    setBaseSpeed: (baseSpeed: number) => void;
+    addStatusEffect: (key: StatusEffectsTypes) => () => boolean;
+    clearStatusEffect: (key: StatusEffectsTypes) => void;
+    hasStatusEffect: (key: StatusEffectsTypes) => boolean;
+    getBaseSpeed(): number
+}
+
 interface Random {
     Sample<T>(arr: T[]): T
 }
@@ -17,14 +27,17 @@ interface Entity extends Model {
     alive: boolean
 }
 
-interface PlayerCharacter extends Entity {}
+interface PlayerCharacter extends Entity {
+    Humanoid: Humanoid,
+}
 
 interface Player {
     character?: PlayerCharacter
 }
 
 interface LocalPlayer extends Player {
-    inFirstPerson: boolean
+    inFirstPerson: boolean,
+    statusEffects: StatusEffects,
 }
 
 interface Players {

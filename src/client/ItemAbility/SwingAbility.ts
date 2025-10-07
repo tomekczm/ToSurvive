@@ -2,44 +2,56 @@ import RaycastHitbox, { HitboxObject } from "@rbxts/raycast-hitbox";
 import { Players, UserInputService } from "@rbxts/services";
 import { ClientItem } from "client/Item/ClientItem";
 import { Ability } from "shared/Ability";
+import { InputBeganEvent } from "./EventInterfaces";
 
-export class SwingAbility extends Ability<ClientItem<Model>> {
-    connection: RBXScriptConnection | undefined;
+export class SwingAbility extends Ability<ClientItem<Model>> implements InputBeganEvent {
     connectionAttribute: RBXScriptConnection | undefined
     raycastHitbox!: HitboxObject;
 
 
     canSwing() {
-        return !this.item.item.GetAttribute("SwingDelay") && UserInputService.IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+
+        const isAiming = this.item.item.GetAttribute("IsAiming") === true
+        const m1Pressed = UserInputService.IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+        const isOnDelay = this.item.item.GetAttribute("SwingDelay");
+
+        return (
+            !isOnDelay && 
+            m1Pressed &&
+            !isAiming
+        )
     }
 
     localSwing() {}
 
     onNoLongerSwinging() {}
 
-    onEquip() {
-        const physicalItem = this.item.item
-        const instance = this.item.item;
-        this.connection = Players.LocalPlayer.GetMouse().Button1Down.Connect(() => {
-            if(instance.GetAttribute("IsAiming")) return
+    inputBegan(input: InputObject, processed: boolean): void {
+        if(input.UserInputType !== Enum.UserInputType.MouseButton1)
+            return
+        
+
+        print()
+        if(this.canSwing()) {
             this.localSwing()
             this.item.invokeEvent("Swing")
-        })
-        this.connectionAttribute = physicalItem.GetAttributeChangedSignal("SwingDelay").Connect(() => {
-            if(instance.GetAttribute("IsAiming")) return
-            if(this.canSwing()) {
-                this.localSwing()
-                this.item.invokeEvent("Swing")
-            } else {
-                if(!this.item.item.GetAttribute("SwingDelay")) {
-                    this.onNoLongerSwinging()
+
+            this.connectionAttribute = this.item.item.GetAttributeChangedSignal("SwingDelay").Connect(() => {
+                if(this.canSwing()) {
+                    this.localSwing()
+                    this.item.invokeEvent("Swing")
+                } else {
+                    if(!this.item.item.GetAttribute("SwingDelay")) {
+                        this.onNoLongerSwinging()
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
+    onEquip() {}
+
     onUnequip() {
-        this.connection?.Disconnect()
         this.connectionAttribute?.Disconnect()
     }
 

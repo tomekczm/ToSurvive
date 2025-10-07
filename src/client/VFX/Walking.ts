@@ -1,4 +1,5 @@
 import { Players, ReplicatedStorage, RunService, UserInputService } from "@rbxts/services";
+import { LocalPlayer } from "client/Character/LocalPlayer";
 
 const Animations = ReplicatedStorage.Animations
 
@@ -44,6 +45,16 @@ function characterAdded(_character: Model) {
         let sPressed = UserInputService.IsKeyDown(Enum.KeyCode.S) || UserInputService.IsKeyDown(Enum.KeyCode.Down);;
         let aPressed = UserInputService.IsKeyDown(Enum.KeyCode.A);
         let dPressed = UserInputService.IsKeyDown(Enum.KeyCode.D);
+
+        if(
+            LocalPlayer.statusEffects.hasStatusEffect("LostBalance")
+        ) {
+            sPressed = true
+
+            wPressed = false
+            aPressed = false
+            dPressed = false
+        }
 
         if(wPressed && sPressed) {
             wPressed = false

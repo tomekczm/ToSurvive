@@ -30,7 +30,11 @@ import "./VFX/FlagVFX"
 
 //import "./UI/Tree"
 import "./UI/BasicHints"
+import "./UI/Tilt"
 
 import "./Events/OnKnockback"
 
 import "./Sound/WalkingSounds"
+
+import "./Character/StatusEffectsCompute"
+import "./Character/StatusEffectsDerivatives"

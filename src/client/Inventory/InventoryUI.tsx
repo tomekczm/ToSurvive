@@ -59,6 +59,25 @@ SetSlot.OnClientEvent.Connect((slot, item) => {
     inventory.set(slot, asInstance)
 })
 
+UserInputService.InputBegan.Connect((...args: unknown[]) => {
+    if(equippedItem !== undefined) {
+        equippedItem.abilityManager.callAbilityEvent("inputBegan", ...args)
+    }
+})
+
+UserInputService.InputEnded.Connect((...args: unknown[]) => {
+    if(equippedItem !== undefined) {
+         equippedItem.abilityManager.callAbilityEvent("inputEnded", ...args)
+    }
+})
+
+UserInputService.InputChanged.Connect((...args: unknown[]) => {
+    if(equippedItem !== undefined) {
+        equippedItem.abilityManager.callAbilityEvent("inputChanged", ...args)
+    }
+})
+
+
 
 function Slot(props: { index: number, hotbar: boolean }) {
 
