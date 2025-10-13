@@ -44,7 +44,7 @@ export class MeleeWeapon implements IZombieWeapon {
             if (humanoid === zombie.model.Humanoid) return
             if (player) {
                 ReplicatedStorage.Events.CamShake.FireClient(player)
-                player.character?.Knockback(zombie.model.GetPivot().Position, 250)
+                player.character!.Knockback(zombie.model.GetPivot().Position, 250)
             }
             if (humanoid && zombie.target) {
                 humanoid.TakeDamage(10)

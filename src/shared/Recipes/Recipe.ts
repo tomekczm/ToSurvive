@@ -18,6 +18,10 @@ export class Recipe<T = Item, R = Stack<Item>> {
     }
 }
 
+export class FloorRecipe {
+    
+}
+
 /*
 export const recipes: Recipe<Item, Model>[] = [
     new Recipe<Item, Model>().setRecipe(

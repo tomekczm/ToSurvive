@@ -47,7 +47,7 @@ export class MeleeSwing extends SwingAbility {
             this.item.fetchAnimation("Block")
         )
 
-        if(animation && !this.blockDebounce) {
+        if(animation && !this.blockDebounce && this.canSwing()) {
             this.blockDebounce = true
             animation.Priority = Enum.AnimationPriority.Action4
             animation.Play(0.25)

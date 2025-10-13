@@ -3,6 +3,7 @@ import { $defineCallMacros, $definePropMacros } from "rbxts-transformer-macros"
 import { entitiesMap } from "./Entities"
 
 function KnockbackPlayer(player: Player, source: Vector3, power: number) {
+    print("knocking back")
     ReplicatedStorage.Events.ApplyKnockback.FireClient(player, source, power)
   }
   

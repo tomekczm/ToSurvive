@@ -25,7 +25,7 @@ let nightTask: thread | undefined
 
 let overdrive = 0;
 RunService.Heartbeat.Connect((dt) => {
-    overdrive += dt * 0.0125
+    overdrive += dt * 0.1 // 0.0125
 
     if(overdrive >= 0.001) {
         Lighting.ClockTime += overdrive

@@ -23,6 +23,13 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
         this.knockback = knockback;
     }
 
+    onEntityDamage(entity: Entity) {
+        const player = this.item.getOwnership()!.player
+        entity.Damage(25);
+        entity.Knockback(player.Character!.GetPivot()!.Position, 250)
+        entity.controller.attackedByPlayer(player.Character)
+    }
+
     onStart(): void {
         this.item.listenToEvent("Hit", (_humanoid) => {
             const entity = (_humanoid as Instance).Parent as Entity
@@ -31,9 +38,7 @@ export class SwingFight extends SwingAbility<ServerItem<Constriant>> {
 
             const player = this.item.getOwnership()?.player
             if(player && isEntity(entity) && entity.alive) {
-                entity.Damage(25);
-                entity.Knockback(player.Character!.GetPivot()!.Position, 250)
-                entity.controller.attackedByPlayer(player.Character)
+                this.onEntityDamage(entity);
             }
         })
         super.onStart();
